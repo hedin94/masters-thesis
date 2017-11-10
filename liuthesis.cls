@@ -959,8 +959,8 @@ document integrity, please refer to its www home page:
   \fi
   \cleartorecto%
 \phantomsection
-\swedishenglish{\addcontentsline{toc}{chapter}{Sammanfattning}}
-{\addcontentsline{toc}{chapter}{Abstract}}
+%\swedishenglish{\addcontentsline{toc}{chapter}{Sammanfattning}}
+%{\addcontentsline{toc}{chapter}{Abstract}}
 \clearpage
 \ifstudent
 %\begin{abstract}
