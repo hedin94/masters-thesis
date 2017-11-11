@@ -39,21 +39,33 @@ The introduction shall be divided into these sections:
 \section{Motivation}
 \label{sec:motivation}
 
+\iffalse
 This is where the studied problem is described from a general
 point of view and put in a context which makes it clear that
 it is interesting and well worth studying. The aim is to make
 the reader interested in the work and create an urge to
 continue reading.
+\fi
+
+Rendering of large polygonal meshes in real-time consumes valuable computation time that
+could otherwise be used for other problems. If the amount of polygons can be reduced without
+affecting the visual quality of the final render significantly, then we can save computation time
+and memory. Algorithms that reduce the polygon count of a mesh based on some metric are
+called mesh simplification algorithms. An issue that has been found in industry and research is
+that the quality of the texture coordinates use for texture mapping are degraded when this
+simplification algorithm is applied.
 
 \section{Aim}
 \label{sec:aim}
 
+\iffalse
 What is the underlying purpose of the thesis project?
+\fi
 
 \section{Research Questions}
 \label{sec:research-questions}
 
-
+\iffalse
 This is where the research questions are described.
 Formulate these as explicit questions, terminated with a
 question mark. A report will usually contain several different
@@ -77,7 +89,6 @@ and generalized):
 
 \end{enumerate}
 
-
 Observe that a very specific research question almost always
 leads to a better thesis report than a general research question
 (it is simply much more difficult to make something good
@@ -97,17 +108,26 @@ beginning working on the literature review. The thesis
 supervisor can be of assistance in deciding when the research
 question is sufficiently specific and well-grounded in related
 research.
+\fi
+
+\begin{enumerate}
+\item How can \emph{mesh simplification} be done without affecting the \emph{visual apperance} significantly?
+
+\item What are the alternatives to achieve \emph{mesh simplification} with \emph{apperence preservation}?
+
+\item Which alternative gives the best effect considering \emph{performance} and \emph{apperance preservation}?
+\end{enumerate}
+
 
 \section{Delimitations}
 \label{sec:delimitations}
 
+\iffalse
 This is where the main delimitations are described. For
 example, this could be that one has focused the study on a
 specific application domain or target user group. In the
 normal case, the delimitations need not be justified.
-
-%\nocite{scigen}
-%We have included Paper \ref{art:scigen}
+\fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Intro.tex ends here
