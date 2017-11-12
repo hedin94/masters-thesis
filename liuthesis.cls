@@ -120,14 +120,6 @@
 \createvariable{thesissubject}
 \createvariable{thesissubjectenglish}
 
-\newif\ifsubtitleswedish
-\subtitleswedishfalse
-\def\subtitleswedish#1{\subtitleswedishtrue\gdef\@subtitleswedish{#1}}
-
-\newif\ifsubtitleenglish
-\subtitleenglishfalse
-\def\subtitleenglish#1{\subtitleenglishtrue\gdef\@subtitleenglish{#1}}
-
 \newif\ifdedication
 \dedicationfalse
 \def\dedication#1{\dedicationtrue\gdef\@dedication{#1}}
@@ -559,8 +551,6 @@
   \begin{center}
     \tryfonts{KorolevLiU}{Calibri}
       \@publicationseries{} No. \@thesisnumber\\[3\baselineskip]
-      {\Large\@titleswedish\\
-        \@subtitleswedish}\\[5mm]\fi
       \small
       {\bfseries\@author}\\[5mm]
     {\bfseries Akademisk avhandling}\\
@@ -581,8 +571,6 @@
   \clearpage{}
   \normalsize
    {\@publicationseries{} No. \@thesisnumber}\\[3\baselineskip]
-   {\Large\@titleenglish\\
-     \@subtitleenglish}\\[5mm]
    \small
    {\bfseries\@author}\\[5mm]
     {\textbf{Academic dissertation}\\
@@ -647,25 +635,19 @@
         \setlength{\thesiswidth}{\paperwidth-88mm}%
       }%
 \begin{minipage}[t]{\thesiswidth}
+      \vspace{4em}
       {\fontsize{25pt}{30pt}\selectfont\swedishenglish{\@titleswedish}{\@titleenglish}\par}%
-      \swedishenglish{\ifsubtitleswedish}{\ifsubtitleenglish} -- {\fontsize{13pt}{15pt}\selectfont\swedishenglish{\@subtitleswedish}{\@subtitleenglish}\par}\fi%
+      \vspace{3em}
       \hrulefill{}
       \\{}
       {\tryfonts{Calibri}{Carlito}{%
           \fontsize{13pt}{15pt}\selectfont%
           \textit{\swedishenglish{\@titleenglish}{\@titleswedish}}\par}%
-        \swedishenglish{\ifsubtitleenglish}{\ifsubtitleswedish}--
-        {\fontsize{13pt}{15pt}\textit{\selectfont\swedishenglish{\@subtitleenglish}{\@subtitleswedish}}\par}
       \fi}%
       \vspace*{10mm}%
       {\tryfonts{Calibri}{Carlito}\fontsize{12pt}{13pt}\selectfont\textbf{\@author}\par
       }%
       \vspace*{10mm}%
-      {\tryfonts{Calibri}{Carlito}\fontsize{10pt}{11pt}\selectfont
-        \parbox{\textwidth}{\swedishenglish{Handledare}{Supervisor}: \@supervisor\\
-          \swedishenglish{Examinator}{Examiner}: \@examiner\\[2\baselineskip]
-        \ifexternalsupervisor \swedishenglish{Extern
-          handledare}{External supervisor}: \@externalsupervisor\fi}}%
  \end{minipage}
 \vfill{}
 \begin{textblock*}{\textwidth}(2cm,\paperheight-4cm)
@@ -942,7 +924,7 @@ document integrity, please refer to its www home page:
 \end{document}%
 \endinput%
 \fi
-  \pagenumbering{roman}
+  \pagenumbering{gobble}
 \begin{adjustwidth}{-1cm}{-1cm}
  \maketitle
   \newpage
