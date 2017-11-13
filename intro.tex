@@ -34,20 +34,18 @@
 \chapter{Introduction}
 \label{cha:introduction}
 
-Recently the field of \emph{computer graphics} has become important in many industries, especially in the entertainment industry (for media such as video games and motion pictures). These industries generate a lot of money, and are quickly growing in size. A recent study by \emph{Kroon and Nilsson}~\cite{kroon2017game} from Dataspelsbranschen has shown that the games industry in Sweden generated \euro 1325 \emph{million} in revenue in 2016, a steep increase from the \euro 392.3 million in 2012. 
+In recent years the field of \emph{computer graphics} has become an important part in many industries, but especially in the entertainment industry (for instance video games and motion pictures). These industries generate a lot of money, and are quickly growing in size. A recent survey by \emph{Kroon and Nilsson}~\cite{kroon2017game} from \emph{Dataspelsbranschen} have shown that the video games industry in Sweden generated \euro 1325 M in revenue in 2016, a steep increase from the \euro 392 M in 2012. Also, most movies nowadays use to some extent 3-D computer graphics in scenes where the cost would be to large to reproduce in reality, be too risky for actors, or simply be impossible.
 
-Rendering \emph{meshes}, a collection of polygons that describe a surface, is one of the main activities in computer graphics. In many cases, the amount of triangles in these is large, and since the rendering time is decided by the amount of such primitives, it's important to reduce these as much as possible. This is especially true in video games, where the model needs to be rendered in real-time. However, if we reduce the amount of polygons too much, we'll reduce the visual quality of the mesh and get flat surfaces instead of smooth ones. While the geometrical shape is important, the texture is also a vital part of the appearance of the model. Therefore, both the geometry and the texture needs to be taken into account when simplifying a mesh.
+The \emph{rendering} of \emph{meshes} (a collection of \emph{polygons} that describe a \emph{surface}) is one of the main activities in computer graphics (usually, a \emph{collection of meshes}, a so called \emph{scene} to be rendered). In many cases, these meshes are very detailed, and require a large amount of polygons to fully describe its surface. This is problematic, since the \emph{rendering time} of a scene is mostly dependent on the number of polygons in has. Therefore, it's important to reduce the \emph{polygon count} of a mesh as much as possible. This is especially true in video games, where the scene needs to be rendered in \emph{real-time}. However, if we reduce the amount of polygons too much, we'll reduce the \emph{visual quality} of the mesh, giving a flatter surface than intended, and also remove small visible details. This will destroy the intended \emph{geometrical appearance} of the mesh.
 
 \section{Motivation}
 \label{sec:motivation}
 
-Rendering of large polygonal meshes in real-time consumes valuable computation time that
-could otherwise be used for other problems. If the amount of polygons can be reduced without
-affecting the visual quality of the final render significantly, then we can save computation time
-and memory. Algorithms that reduce the polygon count of a mesh based on some metric are
-called mesh simplification algorithms. An issue that has been found in industry and research \cite{} is
-that the quality of the texture coordinates used for texture mapping are degraded when this
-simplification algorithm is applied. This leads to a poor visual quality of the model.
+While the geometrical appearance of a mesh is important, it's not the only factor which give the \emph{final appearance} of a mesh when rendering. According to \emph{Cohen et al.}~\cite{cohen1998appearance}, both the \emph{surface curvature} and \emph{surface color} are equally as important contributors. We'll use \emph{textured appearance} as the common name for these, since surface properties are usually specified in a \emph{texture map}.
+
+In computer graphics, the process to reduce the number of polygons in a mesh based on some metric is called a \emph{mesh simplification algorithm}, as seen in \emph{Talton's survey}~\cite{talton2004short} on the subject. Historically, these have been mostly concerned with minimizing the geometrical deviation of a mesh when applying it. Somewhat recently, methods for minimizing the texture deviation when simplifying a mesh have also appeared. They attempt to reduce \emph{texture deviation} and \emph{texture stretching} caused when removing polygons from a mesh, as described in \emph{Hoppe et al.}~\cite{hoppe1996progressive}.
+
+By simultaneously taking into account the geometrical and texture deviation of a mesh, one can \emph{preserve the appearance} of a mesh when applying mesh simplification. If polygons can be removed without affecting appearance significantly, we can reduce render times for ``free''.
 
 \section{Aim}
 \label{sec:aim}
