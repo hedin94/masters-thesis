@@ -34,6 +34,10 @@
 \chapter{Introduction}
 \label{cha:introduction}
 
+Recently the field of \emph{computer graphics} has become important in many industries, especially in the entertainment industry (for media such as video games and motion pictures). These industries generate a lot of money, and are quickly growing in size. A recent study by \emph{Kroon and Nilsson}~\cite{kroon2017game} from Dataspelsbranschen has shown that the games industry in Sweden generated \euro 1325 \emph{million} in revenue in 2016, a steep increase from the \euro 392.3 million in 2012. 
+
+Rendering \emph{meshes}, a collection of polygons that describe a surface, is one of the main activities in computer graphics. In many cases, the amount of triangles in these is large, and since the rendering time is decided by the amount of such primitives, it's important to reduce these as much as possible. This is especially true in video games, where the model needs to be rendered in real-time. However, if we reduce the amount of polygons too much, we'll reduce the visual quality of the mesh and get flat surfaces instead of smooth ones. While the geometrical shape is important, the texture is also a vital part of the appearance of the model. Therefore, both the geometry and the texture needs to be taken into account when simplifying a mesh.
+
 \section{Motivation}
 \label{sec:motivation}
 
@@ -41,14 +45,14 @@ Rendering of large polygonal meshes in real-time consumes valuable computation t
 could otherwise be used for other problems. If the amount of polygons can be reduced without
 affecting the visual quality of the final render significantly, then we can save computation time
 and memory. Algorithms that reduce the polygon count of a mesh based on some metric are
-called mesh simplification algorithms. An issue that has been found in industry and research is
-that the quality of the texture coordinates use for texture mapping are degraded when this
-simplification algorithm is applied.
+called mesh simplification algorithms. An issue that has been found in industry and research \cite{} is
+that the quality of the texture coordinates used for texture mapping are degraded when this
+simplification algorithm is applied. This leads to a poor visual quality of the model.
 
 \section{Aim}
 \label{sec:aim}
 
-First to survey the field for state-of-the-art mesh simplification algorithms that preserve the visual appearance of meshes and then integrate these into Configura's graphics pipeline. Thereafter, we evaluate each of these by measuring the algorithm's performance and appearance preservation properties. Our goal is to find the mesh simplification algorithm which suits Configura's requirements best.
+We plan to approach this problem by first surveying the field for state-of-the-art mesh simplification algorithms that preserve the visual appearance of a mesh, and then attempt integrate these algorithms into Configura's graphics pipeline. Thereafter, we evaluate each of these by measuring the algorithm's performance and its ability to preserve the meshes original appearance. Our goal is to find a mesh simplification algorithm which suits Configura's requirements.
 
 \section{Research Questions}
 \label{sec:research-questions}
@@ -79,13 +83,17 @@ Also, since implementing and doing measurements on all algorithms would take too
 \section{Background}
 \label{sec:background}
 
+This thesis was requested by \emph{Configura AB}, a company in Linköping which provides space planning software. Their main product, CET Designer, among other things, let's companies create and render 3-D scenes. These scenes have a large amount of polygons, and can be visualized in real-time to customers.
 
+To allow larger scenes to be rendered with higher framerates, for example for exploring environments in Virtual Reality (VR), it would be beneficial to reduce the amount of polygons as much as possible. The models in the scene are usually textured to some degree, and it's important to keep their visual quality high.
+
+While Configura already has a mesh simplification in their pipeline, it only accounts for surface simplifications, and doesn't take into account the texture appearance that might be degraded when applying it. Therefore, the task is to integrate a new mesh simplification method that takes texture quality into account when simplfying the mesh. 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%% Intro.tex ends here
+%%% intro.tex ends here
 
 
 %%% Local Variables: 
 %%% mode: latex
-%%% TeX-master: "demothesis"
+%%% TeX-master: "thesis"
 %%% End: 
