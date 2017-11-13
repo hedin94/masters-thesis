@@ -37,14 +37,6 @@
 \section{Motivation}
 \label{sec:motivation}
 
-\iffalse
-This is where the studied problem is described from a general
-point of view and put in a context which makes it clear that
-it is interesting and well worth studying. The aim is to make
-the reader interested in the work and create an urge to
-continue reading.
-\fi
-
 Rendering of large polygonal meshes in real-time consumes valuable computation time that
 could otherwise be used for other problems. If the amount of polygons can be reduced without
 affecting the visual quality of the final render significantly, then we can save computation time
@@ -56,76 +48,38 @@ simplification algorithm is applied.
 \section{Aim}
 \label{sec:aim}
 
-\iffalse
-What is the underlying purpose of the thesis project?
-\fi
+First to survey the field for state-of-the-art mesh simplification algorithms that preserve the visual appearance of meshes and then integrate these into Configura's graphics pipeline. Thereafter, we evaluate each of these by measuring the algorithm's performance and appearance preservation properties. Our goal is to find the mesh simplification algorithm which suits Configura's requirements best.
 
 \section{Research Questions}
 \label{sec:research-questions}
 
-\iffalse
-This is where the research questions are described.
-Formulate these as explicit questions, terminated with a
-question mark. A report will usually contain several different
-research questions that are somehow thematically connected.
-There are usually 2-4 questions in total.
-
-Examples of common types of research questions (simplified
-and generalized):
-
 \begin{enumerate}
-\item How does technique X affect the possibility of achieving the
-  effect Y?
+\item How can \emph{mesh simplification} be done without affecting the \emph{visual appearance} significantly?
 
-\item How can a system (or a solution) for X be realized so
-  that the effect Y is achieved?
+\item What are the alternatives to achieve \emph{mesh simplification} with \emph{appearance preservation}?
 
-\item What are the alternatives to
-  achieving X, and which alternative gives the best effect considering
-  Y and Z? (This research question is normally broken down in to 2
-  separate questions.)
-
-\end{enumerate}
-
-Observe that a very specific research question almost always
-leads to a better thesis report than a general research question
-(it is simply much more difficult to make something good
-from a general research question.)
-
-The best way to achieve a really good and specific research
-question is to conduct a thorough literature review and get
-familiarized with related research and practice. This leads to
-ideas and terminology which allows one to express oneself
-with precision and also have something valuable to say in the
-discussion chapter. And once a detailed research question
-has been specified, it is much easier to establish a suitable
-method and thus carry out the actual thesis work much faster
-than when starting with a fairly general research question. In
-the end, it usually pays off to spend some extra time in the
-beginning working on the literature review. The thesis
-supervisor can be of assistance in deciding when the research
-question is sufficiently specific and well-grounded in related
-research.
-\fi
-
-\begin{enumerate}
-\item How can \emph{mesh simplification} be done without affecting the \emph{visual apperance} significantly?
-
-\item What are the alternatives to achieve \emph{mesh simplification} with \emph{apperence preservation}?
-
-\item Which alternative gives the best effect considering \emph{performance} and \emph{apperance preservation}?
+\item{Which alternative gives the best effect considering \emph{performance} and  \emph{appearance preservation}?
+  \begin{enumerate}
+  \item When measuring the algorithm's \emph{computation time} while targeting an \emph{appearance threshold}?
+  \item When measuring the algorithm's \emph{memory usage} while targeting an \emph{appearance threshold}?
+  \item When measuring the \emph{rendering time} of the simplified mesh? 
+  \end{enumerate}
+}
+\item Which alternative gives the best \emph{appearance preservation} when targeting a certain \emph{polygon count threshold}?
 \end{enumerate}
 
 
 \section{Delimitations}
 \label{sec:delimitations}
 
-\iffalse
-This is where the main delimitations are described. For
-example, this could be that one has focused the study on a
-specific application domain or target user group. In the
-normal case, the delimitations need not be justified.
-\fi
+Since there are many mesh simplification algorithms in previous work, a proper literature review would have to be done to find possible candidates for implementation. However, since this thesis is mostly concerned with implementing and measuring the performance, we've decided to base our choices on existing surveys and literature reviews to skip doing a literature review ourselves.
+
+Also, since implementing and doing measurements on all algorithms would take too long, we've decided to only pick a interesting subset of the algorithms presented in the surveys.
+
+\section{Background}
+\label{sec:background}
+
+
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% Intro.tex ends here
