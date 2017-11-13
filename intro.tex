@@ -50,42 +50,44 @@ By simultaneously taking into account the geometrical and texture deviation of a
 \section{Aim}
 \label{sec:aim}
 
-We plan to approach this problem by first surveying the field for state-of-the-art mesh simplification algorithms that preserve the visual appearance of a mesh, and then attempt integrate these algorithms into Configura's graphics pipeline. Thereafter, we evaluate each of these by measuring the algorithm's performance and its ability to preserve the meshes original appearance. Our goal is to find a mesh simplification algorithm which suits Configura's requirements.
+To survey the field for state-of-the-art mesh simplification algorithms that preserve the visual appearance of a mesh, and integrate these into \emph{Configura's} (see Section~\ref{sec:background}) graphics pipeline. This will enable Configura to generate better \emph{Level of Detail (LoD)} meshes for speeding up their rendering time. Currently, Configura only uses geometrical deviation for simplification.
+
+Thereafter, we plan to evaluate each of these solutions by measuring their performance and ability to preserve the meshes' original appearance. In the end, the goal is to find the mesh simplification algorithm that suits Configura's requirements best based on our findings.
 
 \section{Research Questions}
 \label{sec:research-questions}
 
 \begin{enumerate}
-\item How can \emph{mesh simplification} be done without affecting the \emph{visual appearance} significantly?
+    \item How can \emph{mesh simplification} be done without affecting the \emph{visual appearance significantly}?
 
-\item What are the alternatives to achieve \emph{mesh simplification} with \emph{appearance preservation}?
+\item What are the alternatives to achieve \emph{mesh simplification} but with \emph{appearance preservation}?
 
-\item{Which alternative gives the best effect considering \emph{performance} and  \emph{appearance preservation}?
+\item{Which of these alternatives give the best \emph{performance} and \emph{appearance preservation}? When:
   \begin{enumerate}
-  \item When measuring the algorithm's \emph{computation time} while targeting an \emph{appearance threshold}?
-  \item When measuring the algorithm's \emph{memory usage} while targeting an \emph{appearance threshold}?
-  \item When measuring the \emph{rendering time} of the simplified mesh? 
+  \item Measuring the algorithm's \emph{computation time} while targeting an \emph{appearance threshold}?
+  \item Measuring the algorithm's \emph{memory usage} while targeting an \emph{appearance threshold}?
+  \item Measuring the \emph{rendering time} of the LoD-hierarchy of the \emph{simplified mesh}?
   \end{enumerate}
 }
-\item Which alternative gives the best \emph{appearance preservation} when targeting a certain \emph{polygon count threshold}?
+\item Which of the alternatives gives the best \emph{appearance preservation} for a target \emph{polygon count}?
 \end{enumerate}
 
 
 \section{Delimitations}
 \label{sec:delimitations}
 
-Since there are many mesh simplification algorithms in previous work, a proper literature review would have to be done to find possible candidates for implementation. However, since this thesis is mostly concerned with implementing and measuring the performance, we've decided to base our choices on existing surveys and literature reviews to skip doing a literature review ourselves.
+Since there are many mesh simplification algorithms in previous work, a proper literature review would have to be done to find possible candidate solutions. Since our thesis' goals are mostly concerned with implementing and evaluating each solution, we've decided to base our choices on existing surveys and literature reviews to skip doing some of these ourselves.
 
-Also, since implementing and doing measurements on all algorithms would take too long, we've decided to only pick a interesting subset of the algorithms presented in the surveys.
+Also, since implementing and doing measurements on all algorithms would take too long, we've decided to only pick an interesting subset of the algorithms presented in the surveys. More precisely, we've chosen to pick three different mesh simplification algorithms, one that doesn't take texture deviation into account and two that do. In addition, we'll also compare them to Configura's own existing mesh simplification scheme; for a total of four algorithms.
 
 \section{Background}
 \label{sec:background}
 
-This thesis was requested by \emph{Configura AB}, a company in Linköping which provides space planning software. Their main product, CET Designer, among other things, let's companies create and render 3-D scenes. These scenes have a large amount of polygons, and can be visualized in real-time to customers.
+This thesis was requested by \emph{Configura AB}, a company in Linköping which provides space planning software. Their main product, CET designer, let's companies plan, create and render 3-D office spaces (among other things). These scenes can have a large amount of polygons that need to be rendered in real-time for customers to evaluate their creations in CET designer.
 
-To allow larger scenes to be rendered with higher framerates, for example for exploring environments in Virtual Reality (VR), it would be beneficial to reduce the amount of polygons as much as possible. The models in the scene are usually textured to some degree, and it's important to keep their visual quality high.
+To allow larger scenes to be rendered with higher frame-rates (e.g. needed when exploring environments in \emph{Virtual Reality (VR)} to prevent motion sickness), it would be beneficial to reduce the amount of polygons as much as possible. The meshes in these scenes usually have textures applied to them, and it's therefore important to keep their quality as high as possible.
 
-While Configura already has a mesh simplification in their pipeline, it only accounts for surface simplifications, and doesn't take into account the texture appearance that might be degraded when applying it. Therefore, the task is to integrate a new mesh simplification method that takes texture quality into account when simplfying the mesh. 
+While Configura already has a mesh simplification in their pipeline, it only accounts for surface simplifications, and doesn't take into account the texture appearance that might be degraded when applying mesh simplification. Hence, the given task was to integrate a new mesh simplification scheme that takes into account texture quality when simplifying a mesh.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% intro.tex ends here
