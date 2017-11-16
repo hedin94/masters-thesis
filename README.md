@@ -7,7 +7,7 @@ You'll find the latest draft in `thesis.pdf`.
 
 If you for some reason want to build it yourself:
 
-1. Go to the root of this project.
+1. Go to the `thesis` directory.
 
 2. Call `make` and hope for the best.
 
