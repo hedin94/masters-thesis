@@ -19,6 +19,7 @@ $(PDFNAME).pdf: $(TEXMAINFILE) *.tex
 	$(MKLATEX) $(MKLATEXOPTS) $<
 
 view: $(PDFNAME).pdf
+	cp thesis.pdf ../thesis.pdf
 	$(PDFVIEWER) $(PDFNAME).pdf &
 
 clean:
