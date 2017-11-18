@@ -34,23 +34,23 @@
 \chapter{Introduction}
 \label{cha:introduction}
 
-In recent years the field of \emph{computer graphics} has become an important part in many industries, but especially in the entertainment industry (for instance video games and motion pictures). These industries generate a lot of money, and are quickly growing in size. A recent survey by \emph{Kroon and Nilsson}~\cite{kroon2017game} from \emph{Dataspelsbranschen} have shown that the video games industry in Sweden generated \euro 1325 M in revenue in 2016, a steep increase from the \euro 392 M in 2012. Also, most movies nowadays use to some extent 3-D computer graphics in scenes where the cost would be to large to reproduce in reality, be too risky for actors, or simply be impossible.
+For many years the field of computer graphics has been an important part in many industries, but especially in the entertainment industry (for instance video games and motion pictures). These industries generate a lot of money, and are quickly growing in size. A recent survey by \emph{Kroon and Nilsson}~\cite{kroon2017game} from \emph{Dataspelsbranschen} have shown that the video games industry in Sweden generated \euro 1325 M in revenue in 2016, a steep increase from the \euro 392 M in 2012. Also, most movies nowadays use to some extent 3-D computer graphics in scenes where the cost would be to large to reproduce in reality, be too risky for actors, or simply be impossible.
 
-The \emph{rendering} of \emph{meshes} (a collection of \emph{polygons} that describe a \emph{surface}) is one of the main activities in computer graphics (usually, a \emph{collection of meshes}; a so called \emph{scene} to be rendered). In many cases, these meshes are very detailed, and require a large amount of polygons to fully describe a surface. This is problematic, since the \emph{rendering time} of a scene is mostly dependent on the number of polygons it has. Therefore, it's important to reduce the \emph{polygon count} of a mesh as much as possible. This is especially true in video games, where the scene needs to be rendered in \emph{real-time}. However, if the number of polygons are reduced too much, it will degrade the \emph{visual quality} of the mesh, giving a progressively flatter surface than intended and removing small surface details. This destroys the intended \emph{geometrical appearance} of a mesh.
+The rendering of meshes (a collection of polygons describing a surface) is one of the main activities in computer graphics (usually, a collection of meshes; a so called scene description). In many cases, these meshes are very detailed, and require a large amount of polygons to fully describe a surface. This is problematic, since the rendering time of a scene depends on the number of polygons it has. Therefore, it's important to reduce the number of polygons in a mesh as much as possible. This is especially true in video games, where the scene needs to be rendered in real-time. However, if the number of polygons are reduced too much, it will degrade the visual quality of a mesh, giving a progressively flatter surface than intended and removing small surface details. This destroys the intended \emph{geometrical appearance} of the mesh.
 
 \section{Motivation}
 \label{sec:motivation}
 
-While the geometrical appearance of a mesh is important, it's not the only factor which give the \emph{final appearance} of a mesh when rendering. According to \emph{Cohen et al.}~\cite{cohen1998appearance}, both the \emph{surface curvature} and \emph{surface color} are equally as important contributors. We'll use \emph{textured appearance} as the common name for these, since surface properties are usually specified in a \emph{texture map}.
+While the geometrical appearance of a mesh is important, it's not the only factor which gives the final appearance of a mesh when rendering. According to \emph{Cohen et al.}~\cite{cohen1998appearance}, both the surface curvature and color are equally as important contributors. We'll use \emph{textured appearance} as the common name for these since surface properties are usually specified by using a texture map.
 
-In computer graphics, the process to reduce the number of polygons in a mesh based on some metric is called a \emph{mesh simplification algorithm}, as seen in \emph{Talton's survey}~\cite{talton2004short} on the subject. Historically, these have been mostly concerned with minimizing the geometrical deviation of a mesh when applying it. Somewhat recently, methods for minimizing the texture deviation when simplifying a mesh have also appeared. They attempt to reduce \emph{texture deviation} and \emph{texture stretching} caused when removing polygons from a mesh, as described in \emph{Hoppe et al.}~\cite{hoppe1996progressive}.
+In computer graphics, the process to reduce the number of polygons in a mesh based on some metric is called a \emph{mesh simplification algorithm}, as seen in \emph{Talton's} survey~\cite{talton2004short} on the subject. Historically, these have been mostly concerned with minimizing the geometrical deviation of a mesh when applying it. Somewhat recently, methods for minimizing the texture deviation when simplifying a mesh have also appeared. They attempt to reduce the texture deviation and stretching caused when removing polygons from a mesh, as described in \emph{Hoppe et al.}~\cite{hoppe1996progressive}.
 
-By simultaneously taking into account the geometrical and texture deviation of a mesh, one can \emph{preserve the appearance} of a mesh when applying mesh simplification. If polygons can be removed without affecting appearance significantly, we can reduce render times for ``free''.
+By simultaneously taking into account the geometrical and texture deviation of a mesh, one can \emph{preserve the appearance of a mesh} when applying mesh simplification. If polygons can be removed without affecting appearance significantly, we can reduce render times for ``free''.
 
 \section{Aim}
 \label{sec:aim}
 
-To survey the field for state-of-the-art mesh simplification algorithms that preserve the visual appearance of a mesh, and integrate these into \emph{Configura's} (see Section~\ref{sec:background}) graphics pipeline. This will enable Configura to generate better \emph{Level of Detail (LoD)} meshes for speeding up their rendering time. Currently, Configura only uses geometrical deviation for simplification.
+To survey the field for state-of-the-art mesh simplification algorithms that preserve the visual appearance of a mesh, and integrate these into \emph{Configura's} (see Section~\ref{sec:background}) graphics pipeline. This will enable Configura to generate better \emph{Level of Detail} (LoD) meshes for speeding up their rendering time. Currently, Configura only uses geometrical deviation for simplification.
 
 Thereafter, we plan to evaluate each of these solutions by measuring their performance and ability to preserve the meshes' original appearance. In the end, the goal is to find the mesh simplification algorithm that suits Configura's requirements best based on our findings.
 
@@ -60,15 +60,14 @@ Thereafter, we plan to evaluate each of these solutions by measuring their perfo
 After implementing and measuring the performance of these mesh simplification algorithms, answers to the questions below should have been obtained. These will be used to decide on a suitable alternative for Configura and also other systems with a similar set of requirements.
 
 \begin{enumerate}
-    \item How can \emph{mesh simplification} be done without affecting the \emph{visual appearance significantly}?
-
-\item What are the alternatives to achieve \emph{mesh simplification} but with \emph{appearance preservation}?
+\item What alternative \emph{mesh simplification schemes} exist that \emph{preserves the appearance} of a mesh?
 
 \item{Which of these alternatives give the best \emph{performance} and \emph{appearance preservation}? When:
   \begin{enumerate}
   \item Measuring the algorithm's \emph{computation time} while targeting an \emph{appearance threshold}?
-  \item Measuring the algorithm's \emph{memory usage} while targeting an \emph{appearance threshold}?
-  \item Measuring the \emph{rendering time} of the LoD-hierarchy of the \emph{simplified mesh}?
+  \item Measuring the algorithm's \emph{memory usage} while targeting some \emph{appearance threshold}?
+  \item Measuring the real-time \emph{rendering time} of the LoD-hierarchy of the \emph{simplified mesh}?
+        (by using the meshes generated according to the target \emph{appearance threshold} above)
   \end{enumerate}
 }
 \item Which of the alternatives gives the best \emph{appearance preservation} for a target \emph{polygon count}?
@@ -85,9 +84,9 @@ Also, since implementing and doing measurements on all algorithms would take too
 \section{Background}
 \label{sec:background}
 
-This thesis was requested by \emph{Configura AB}, a company in Linköping which provides space planning software. Their main product, CET designer, let's companies plan, create and render 3-D office spaces (among other things). These scenes can have a large amount of polygons that need to be rendered in real-time for customers to evaluate their creations in CET designer.
+This thesis was requested by Configura AB, a company in Linköping which provides space planning software. Their main product, \emph{CET designer}, let's companies plan, create and render 3-D office spaces (among other things). These scenes can have a large amount of polygons that need to be rendered in real-time for customers to evaluate their creations in CET designer.
 
-To allow larger scenes to be rendered with higher frame-rates (e.g. needed when exploring environments in \emph{Virtual Reality (VR)}, to prevent motion sickness), it would be beneficial to reduce the amount of polygons as much as possible. The meshes in these scenes usually have textures applied to them, and it's therefore important to keep their quality as high as possible.
+To allow larger scenes to be rendered with higher frame-rates (e.g. needed when exploring environments in \emph{Virtual Reality} (VR), to prevent motion sickness), it would be beneficial to reduce the amount of polygons as much as possible. The meshes in these scenes usually have textures applied to them, and it's therefore important to keep their quality as high as possible.
 
 While Configura already has a mesh simplification in their pipeline, it only accounts for surface simplifications, and doesn't take into account the texture appearance that might be degraded when applying mesh simplification. Hence, the given task was to integrate a new mesh simplification scheme that takes into account texture quality when simplifying a mesh.
 
