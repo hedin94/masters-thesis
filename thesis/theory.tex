@@ -39,6 +39,12 @@
 \subsection{Appearance-Preserving Simplification} \label{sec:appearance-preserving_simplification}
 
 \subsection{Texture Mapped Progressive Meshes} \label{sec:texture-mapped_progressive_meshes}
+Given an arbitrary mesh, Hoppe et. al \cite{hoppe1996progressive} presents a method to construct a \emph{progressive mesh} (PM) where a texture parametrization is shared between all meshes in a PM sequence. In order to create a texture mapping for a simplified mesh, the original mesh's attributes, e.g normals, is sampled. This method was developed with two goals taken into consideration:
+\begin{itemize}
+\item{Minimize \emph{texture stretch}:}~~~When a mesh is simplified the texture may be stretched in some areas which decrease the quality of the appearance. Since the texture parametrization determines the sampling density, a balanced parametrization is prefered over one that samples with different density in different areas. The balanced parametrization is obtained by minimizing the largest texture stretch over all points in the domain. No point in the domain will therefore not be too stretched and thus making no point undersampled. 
+\item{Minimize \emph{texture deviation}:}~~~Conventional methods use geometric error for the mesh simplification. According to the authors this is not appropriate when a mesh is textured. The stricter texture deviation error metric, where the geometric error is measured according to the parametrization, is more appropriate. By plotting a graph of the texture deviation vs the number of faces, the goal is to minimize the heighf of this graph.
+\end{itemize}
+
 
 \section{Metrics for Appearance Preservation} \label{sec:metrics_for_appearance_preservation}
 
