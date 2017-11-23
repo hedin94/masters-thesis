@@ -36,16 +36,16 @@
 
 For many years the field of computer graphics has been an important part in many industries, but especially in the entertainment industry (for instance video games and motion pictures). These industries generate a lot of money, and are quickly growing in size. A recent survey by \emph{Kroon and Nilsson}~\cite{kroon2017game} from \emph{Dataspelsbranschen} have shown that the video games industry in Sweden generated \euro 1325 M in revenue in 2016, a steep increase from the \euro 392 M in 2012. Also, most movies nowadays use to some extent 3-D computer graphics in scenes where the cost would be to large to reproduce in reality, be too risky for actors, or simply be impossible.
 
-The rendering of meshes (a collection of polygons describing a surface) is one of the main activities in computer graphics (usually, a collection of meshes; a so called scene description). In many cases, these meshes are very detailed, and require a large amount of polygons to fully describe a surface. This is problematic, since the rendering time of a scene depends on the number of polygons it has. Therefore, it's important to reduce the number of polygons in a mesh as much as possible. This is especially true in video games, where the scene needs to be rendered in real-time. However, if the number of polygons are reduced too much, it will degrade the visual quality of a mesh, giving a progressively flatter surface than intended and removing small surface details. This destroys the intended \emph{geometrical appearance} of the mesh.
+The rendering of meshes (a collection of polygons describing a surface) is one of the main activities in computer graphics (usually, a collection of meshes; a so called scene description). In many cases, these meshes are very detailed, and require a large amount of polygons to fully describe a surface. This is problematic, since the rendering time of a scene depends on the number of polygons it has. Therefore, it is important to reduce the number of polygons in a mesh as much as possible. This is especially true in video games, where the scene needs to be rendered in real-time. However, if the number of polygons are reduced too much, it will degrade the visual quality of a mesh, giving a progressively flatter surface than intended and removing small surface details. This destroys the intended \emph{geometrical appearance} of the mesh.
 
 \section{Motivation}
 \label{sec:motivation}
 
-While the geometrical appearance of a mesh is important, it's not the only factor which gives the final appearance of a mesh when rendering. According to \emph{Cohen et al.}~\cite{cohen1998appearance}, both the surface curvature and color are equally as important contributors. We'll use \emph{textured appearance} as the common name for these since surface properties are usually specified by using a texture map.
+While the geometrical appearance of a mesh is important, it is not the only factor which gives the final appearance of a mesh when rendering. According to \emph{Cohen et al.}~\cite{cohen1998appearance}, both the surface curvature and color are equally as important contributors. \emph{Textured appearance} will be used as the common name for these since surface properties are usually specified by using a texture map.
 
 In computer graphics, the process to reduce the number of polygons in a mesh based on some metric is called a \emph{mesh simplification algorithm}, as seen in \emph{Talton's} survey~\cite{talton2004short} on the subject. Historically, these have been mostly concerned with minimizing the geometrical deviation of a mesh when applying it. Somewhat recently, methods for minimizing the texture deviation when simplifying a mesh have also appeared. They attempt to reduce the texture deviation and stretching caused when removing polygons from a mesh, as described in \emph{Hoppe et al.}~\cite{hoppe1996progressive}.
 
-By simultaneously taking into account the geometrical and texture deviation of a mesh, one can \emph{preserve the appearance of a mesh} when applying mesh simplification. If polygons can be removed without affecting appearance significantly, we can reduce render times for ``free''.
+By simultaneously taking into account the geometrical and texture deviation of a mesh, one can \emph{preserve the appearance of a mesh} when applying mesh simplification. If polygons can be removed without affecting appearance significantly, the render times can be reduced for ``free''.
 
 \section{Aim}
 \label{sec:aim}
@@ -77,18 +77,18 @@ After implementing and measuring the performance of these mesh simplification al
 \section{Delimitations}
 \label{sec:delimitations}
 
-Since there are many mesh simplification algorithms in previous work, a proper literature review would have to be done to find possible candidate solutions. Since our thesis' goals are mostly concerned with implementing and evaluating each solution, we've decided to base our choices on existing surveys and literature reviews to skip doing some of these ourselves.
+Since there are many mesh simplification algorithms in previous work, a proper literature review would have to be done to find possible candidate solutions. Since our thesis' goals are mostly concerned with implementing and evaluating each solution, we have decided to base our choices on existing surveys and literature reviews to skip doing some of these ourselves.
 
-Also, since implementing and doing measurements on all algorithms would take too long, we've decided to only pick an interesting subset of the algorithms presented in the surveys. More precisely, we've chosen to pick three different mesh simplification algorithms, one that doesn't take texture deviation into account and two that do. In addition, we'll also compare them to Configura's own existing mesh simplification scheme; for a total of four algorithms.
+Also, since implementing and doing measurements on all algorithms would take too long, we have decided to only pick an interesting subset of the algorithms presented in the surveys. More precisely, we have chosen to pick three different mesh simplification algorithms, one that doesn not take texture deviation into account and two that do. In addition, we will also compare them to Configura's own existing mesh simplification scheme; for a total of four algorithms.
 
 \section{Background}
 \label{sec:background}
 
-This thesis was requested by Configura AB, a company in Linköping which provides space planning software. Their main product, \emph{CET designer}, let's companies plan, create and render 3-D office spaces (among other things). These scenes can have a large amount of polygons that need to be rendered in real-time for customers to evaluate their creations in CET designer.
+This thesis was requested by Configura AB, a company in Linköping which provides space planning software. Their main product, \emph{CET designer}, lets companies plan, create and render 3-D office spaces (among other things). These scenes can have a large amount of polygons that need to be rendered in real-time for customers to evaluate their creations in CET designer.
 
-To allow larger scenes to be rendered with higher frame-rates (e.g. needed when exploring environments in \emph{Virtual Reality} (VR), to prevent motion sickness), it would be beneficial to reduce the amount of polygons as much as possible. The meshes in these scenes usually have textures applied to them, and it's therefore important to keep their quality as high as possible.
+To allow larger scenes to be rendered with higher frame-rates (e.g. needed when exploring environments in \emph{Virtual Reality} (VR), to prevent motion sickness), it would be beneficial to reduce the amount of polygons as much as possible. The meshes in these scenes usually have textures applied to them, and it is therefore important to keep their quality as high as possible.
 
-While Configura already has a mesh simplification in their pipeline, it only accounts for surface simplifications, and doesn't take into account the texture appearance that might be degraded when applying mesh simplification. Hence, the given task was to integrate a new mesh simplification scheme that takes into account texture quality when simplifying a mesh.
+While Configura already has a mesh simplification in their pipeline, it only accounts for surface simplifications, and doesn not take into account the texture appearance that might be degraded when applying mesh simplification. Hence, the given task was to integrate a new mesh simplification scheme that takes into account texture quality when simplifying a mesh.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% intro.tex ends here
