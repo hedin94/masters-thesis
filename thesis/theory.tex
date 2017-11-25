@@ -32,23 +32,29 @@
 
 \chapter{Theory} \label{ch:theory}
 
+Since several mesh simplification algorithms are being considered, Section~\ref{sec:mesh_simplification} presents the most notable schemes found (through peer-reviewed surveys) in previous work. An outline of the algorithm and the results found by authors are given for the reader's convenience, and also to be used as a guideline when implementing the solutions into Configura's CG pipeline.
+
+Afterwards, in Section~\ref{sec:metrics_for_appearance_preservation}, we discuss the different metrics that can be used to measure the appearance preservation after a simplification has been done. This will later be used to evaluate the solutions and provide an empirical way to answer research questions 2 and 3 by giving a concrete metric for appearance thresholds and the amount of appearance deviation.
+
+Finally, in Section~\ref{sec:measuring_algorithmic_performance}, the methods and common practices for measuring performance of an algorithm are discussed. Based on existing industry practices, we show how to measure the computation time and memory usage of the algorithms. Since these measurements can be noisy, statistical methods will need to be used to truthfully answer our research questions.
+
+
 \section{Mesh Simplification} \label{sec:mesh_simplification}
 
-\subsection{Quadric-Based Error Metrics} \label{sec:quadric-based_error_metrics}
+\subsection{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric}
 
 \subsection{Appearance-Preserving Simplification} \label{sec:appearance-preserving_simplification}
 
-\subsection{Texture Mapped Progressive Meshes} \label{sec:texture-mapped_progressive_meshes}
+\subsection{Texture Mapped Progressive Meshing} \label{sec:texture_mapped_progressive_meshing}
 Given an arbitrary mesh, Hoppe et. al \cite{hoppe1996progressive} presents a method to construct a \emph{progressive mesh} (PM) where a texture parametrization is shared between all meshes in a PM sequence. In order to create a texture mapping for a simplified mesh, the original mesh's attributes, e.g normals, is sampled. This method was developed with two goals taken into consideration:
 \begin{itemize}
 \item{Minimize \emph{texture stretch}:}~~~When a mesh is simplified the texture may be stretched in some areas which decrease the quality of the appearance. Since the texture parametrization determines the sampling density, a balanced parametrization is prefered over one that samples with different density in different areas. The balanced parametrization is obtained by minimizing the largest texture stretch over all points in the domain. No point in the domain will therefore not be too stretched and thus making no point undersampled. 
 \item{Minimize \emph{texture deviation}:}~~~Conventional methods use geometric error for the mesh simplification. According to the authors this is not appropriate when a mesh is textured. The stricter texture deviation error metric, where the geometric error is measured according to the parametrization, is more appropriate. By plotting a graph of the texture deviation vs the number of faces, the goal is to minimize the heighf of this graph.
 \end{itemize}
 
-
 \section{Metrics for Appearance Preservation} \label{sec:metrics_for_appearance_preservation}
 
-\section{Measuring Performance} \label{measuring_performance}
+\section{Measuring Algorithmic Performance} \label{sec:measuring_algorithmic_performance}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% theory.tex ends here
