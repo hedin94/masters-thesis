@@ -38,8 +38,9 @@ Afterwards, in Section~\ref{sec:metrics_for_appearance_preservation}, we discuss
 
 Finally, in Section~\ref{sec:measuring_algorithmic_performance}, the methods and common practices for measuring performance of an algorithm are discussed. Based on existing industry practices, we show how to measure the computation time and memory usage of the algorithms. Since these measurements can be noisy, statistical methods will need to be used to truthfully answer our research questions.
 
-
 \section{Mesh Simplification} \label{sec:mesh_simplification}
+
+According to \emph{David Leubke's survey}~\cite{luebke2001developer} on the subject, mesh simplification is a technique which transforms a geometrically complex mesh (with a lot of polygons) to a simpler representation by removing unimportant geometrical details (reducing the number of polygons). It does this by assuming that some meshes are small, distant, or have areas which are unimportant to the visual quality of the rendered image. For example, if the camera in a scene always faces towards a certain direction, then removing details from the backside of a mesh won't affect the final rendered result, since they will never be seen by the camera anyway.
 
 \subsection{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric}
 
