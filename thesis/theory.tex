@@ -48,6 +48,20 @@ While the scheme above is simple and fast, it unfortunately doesn't give a geome
 
 \subsection{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric}
 
+\emph{Garland and Heckbert}~\cite{garland1998simplifying}
+
+\[\bar{\mathbf{v}}_i = \begin{bmatrix}
+    q_{11} & q_{12} & q_{13} & q_{14}\\
+    q_{21} & q_{22} & q_{23} & q_{24}\\
+    q_{31} & q_{32} & q_{33} & q_{34}\\
+    0 & 0 & 0 & 1\\
+\end{bmatrix}^{-1} \begin{bmatrix} 0 \\
+                                   0 \\
+                                   0 \\
+                                   1 \end{bmatrix} \; ,\]
+
+\[\Delta(\mathbf{v}_i) = \mathbf{v}_i^\intercal \mathbf{Q}_i  \mathbf{v}_i \;\;,\;\; \mathbf{Q}_i = \sum_{f_k \in N_i}  \mathbf{f_k} \mathbf{f_k}^\intercal\]
+
 \begin{figure}[h]
     \centering
     \begin{minipage}{0.49\textwidth}
