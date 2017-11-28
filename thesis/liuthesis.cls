@@ -958,9 +958,6 @@ document integrity, please refer to its www home page:
   %{\addcontentsline{toc}{chapter}{Acknowledgments}}
  % \clearpage
   {\pagestyle{plain}\tableofcontents\relax\clearpage}
-  \iftotalfigures {\pagestyle{plain}\listoffigures\relax\clearpage}\fi
-  \iftotaltables {\pagestyle{plain}\listoftables\relax\clearpage}\fi
-  \@ifpackageloaded{todonotes}{\pagestyle{plain}\listoftodos\relax\clearpage}{}
   \ifprinterfriendly
     \cleartooddpage
   \else

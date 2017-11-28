@@ -48,6 +48,31 @@ While the scheme above is simple and fast, it unfortunately doesn't give a geome
 
 \subsection{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric}
 
+\begin{figure}[h]
+    \centering
+    \begin{minipage}{0.49\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/contraction_types.eps}
+        \caption{(a) edge \(e_{ji} = (v_j, v_i)\) contraction towards \(v_i\)
+                 and (b) pair \((v_j, v_k)\) contraction in the distance threshold \(t\) toward new vertex \(v_i\).}
+        \label{fig:contractions}
+    \end{minipage} \hfill
+    \begin{minipage}{0.485\textwidth}
+        \centering
+        \includegraphics[width=\textwidth]{figures/quadric_planes.eps}
+        \caption{depiction of one of the planes \(f_k\) in the neighborhood \(N_i\) of the vertex \(v_i\). It has a normal \(\mathbf{\hat{n}}_k\); found by the \(\mathbf{\hat{w}}_k \times \mathbf{\hat{u}}_k\) of its edges.}
+        \label{fig:quadrics}
+    \end{minipage}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/naive_simplification.png}
+    \includegraphics[width=\textwidth]{figures/quadric_simplification.png}
+    \caption{simplification using a na\"ive (top image) and a quadric error metric (bottom image) at different levels of detail at some vertex count (left to right: 50 \%, 35 \% and 17 \% of original).}
+    \label{fig:naive_vs_quadric}
+\end{figure}
+
 \subsection{Appearance-Preserving Simplification} \label{sec:appearance-preserving_simplification}
 In order to preserve the appearance of a model when it is simplified, \emph{Cohen et al.} \cite{cohen1998appearance} defines a new \emph{texture deviation metric}. This metric takes three attributes into account: Surface position, surface curvature, and surface color. To properly sample these attributes from the input surface, the surface position is decoupled from the color and normals stored in texture and normal maps, respecticely. The metric guarantees that the maps will not shift more than a user-specified number of pixels on the screen $\epsilon$.
 
