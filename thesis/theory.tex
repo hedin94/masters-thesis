@@ -48,19 +48,7 @@ While the scheme above is simple and fast, it unfortunately doesn't give a geome
 
 \subsection{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric}
 
-\emph{Garland and Heckbert}~\cite{garland1998simplifying}
-
-\[\bar{\mathbf{v}}_i = \begin{bmatrix}
-    q_{11} & q_{12} & q_{13} & q_{14}\\
-    q_{21} & q_{22} & q_{23} & q_{24}\\
-    q_{31} & q_{32} & q_{33} & q_{34}\\
-    0 & 0 & 0 & 1\\
-\end{bmatrix}^{-1} \begin{bmatrix} 0 \\
-                                   0 \\
-                                   0 \\
-                                   1 \end{bmatrix} \; ,\]
-
-\[\Delta(\mathbf{v}_i) = \mathbf{v}_i^\intercal \mathbf{Q}_i  \mathbf{v}_i \;\;,\;\; \mathbf{Q}_i = \sum_{f_k \in N_i}  \mathbf{f_k} \mathbf{f_k}^\intercal\]
+Besides \emph{decimation-based methods}, such as the aforementioned mesh decimation scheme, there exists another class of simplifiers based on \emph{vertex-merging mechanisms}. According to \emph{Luebke}~\cite{luebke2001developer}, these work by iteratively collapsing a pair or vertices \((v_j, v_k)\) into a single vertex \(v_i\). This will also remove any polygons which were suspended by \((v_j, v_k)\). The first collapse scheme is due to \emph{Hoppe et al.}~\cite{hoppe1993mesh}, which shows an \emph{edge collapse} of \(e_{ji} = (v_j, v_i) \rightarrow v_i\) as in Figure~\ref{fig:contractions} (a). There exist other schemes, such as \emph{pair contraction} in Figure~\ref{fig:contractions} (b), but these don't tend to preserve the local topology of the original mesh, and instead focus on a more aggressive simplification.
 
 \begin{figure}[h]
     \centering
@@ -74,10 +62,30 @@ While the scheme above is simple and fast, it unfortunately doesn't give a geome
     \begin{minipage}{0.485\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/quadric_planes.eps}
-        \caption{depiction of one of the planes \(f_k\) in the neighborhood \(N_i\) of the vertex \(v_i\). It has a normal \(\mathbf{\hat{n}}_k\); found by the \(\mathbf{\hat{w}}_k \times \mathbf{\hat{u}}_k\) of its edges.}
+        \caption{depiction of one of the planes \(f_k\) in the neighborhood \(N_i\) of the vertex \(v_i\). It has a normal \(\mathbf{n}_k\); found by the \(\mathbf{w}_k \times \mathbf{u}_k\) of its edges.}
         \label{fig:quadrics}
     \end{minipage}
 \end{figure}
+
+\vspace{-0.7em}
+
+Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garland and Heckbert}~\cite{garland1998simplifying}, is based on the vertex merging paradigm. It provides a provably optimal simplification in each iteration, by collapsing the edge \(e_{ji} \rightarrow v_i\) and re-positioning it at \(\mathbf{\bar{v}}\), which gives it the lowest possible geometrical error. By assigning a matrix \(\mathbf{Q}_i\) for each vertex \(v_i\), one can find the error \(\Delta(\mathbf{v})\) introduced by moving \(v_i\) to \(\mathbf{v}\). \(\Delta(\mathbf{v})\) is the sum of distances from \(\mathbf{v}\) to the planes \(\mathbf{f}_k\) in \(v_i\)'s neighborhood \(N_i\) (all polygons around \(v_i\)). Since \(\Delta(\mathbf{v})\) is quadratic, finding a \(\mathbf{v}\) which gives a minimal error is a linear problem. The best position \(\mathbf{\bar{v}}_i\) for \(v_i\) after a collapse \((v_j, v_i) \rightarrow v_i\) is a solution to the eq. \((\mathbf{Q}_j + \mathbf{Q}_i)\mathbf{\bar{v}}_i = \begin{bmatrix} 0 & 0 & 0 & 1 \end{bmatrix}^\intercal\). Thus, according to \emph{Garland and Heckbert}~\cite{garland1998simplifying}:
+
+\[\bar{\mathbf{v}}_i = \begin{bmatrix}
+    q_{11} & q_{12} & q_{13} & q_{14}\\
+    q_{21} & q_{22} & q_{23} & q_{24}\\
+    q_{31} & q_{32} & q_{33} & q_{34}\\
+    0 & 0 & 0 & 1\\
+\end{bmatrix}^{-1} \begin{bmatrix} 0 \\
+                                   0 \\
+                                   0 \\
+                                   1 \end{bmatrix} \; ,\]
+
+\[\Delta(\mathbf{v}) = \mathbf{v}^\intercal \mathbf{Q}_i  \mathbf{v} \;,\;\; \mathbf{Q}_i = \sum_{f_k \in N_i}  \mathbf{f_k} \mathbf{f_k}^\intercal \; .\]
+
+By storing the \(\Delta(\mathbf{\bar{v}}_i)\) for every valid collapse \(e_{ji} \rightarrow v_i\) in a min-heap, the least cost collapse on the top of the heap can be done in each iteration, removing a vertex in each step. This is repeated until either a user-given vertex count \(|\mathcal{V}|\) is reached or until some error threshold \(\epsilon\).
+
+The results by \emph{Garland and Heckbert}~\cite{garland1998simplifying} show that QEM can reduce the simplification error by up to 50 \% in comparison to a na\"ive scheme where \(\mathbf{\bar{v}}_i = (v_i + v_j) \div 2\) and \(\Delta(\mathbf{v}) = ||\mathbf{v} - v_i||\), as can be seen in Figure~\ref{fig:naive_vs_quadric}. They also argue that QEM gives higher-quality simplifications than \emph{vertex clustering} and that it is faster than \emph{progressive meshing} (which we also present later).
 
 \begin{figure}[h]
     \centering
@@ -125,6 +133,10 @@ To evaluate the quality of the simplified mesh the authors capture images from 2
 \end{figure}
 
 \section{Measuring Algorithmic Performance} \label{sec:measuring_algorithmic_performance}
+
+\[ a = \bar{x} - t_k\frac{s}{\sqrt{n}}, \quad
+   b = \bar{x} + t_k\frac{s}{\sqrt{n}}, \quad
+   t_k = t_{1-\alpha/2,n-1} \]
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% theory.tex ends here
