@@ -44,7 +44,7 @@ According to \emph{David Luebke's survey}~\cite{luebke2001developer} on the subj
 
 There are many mesh simplification algorithms, as can be seen in \emph{David Luebke's survey}~\cite{luebke2001developer}, each presenting a new approach with their own strengths and weaknesses. The first scheme is due to \emph{Schroeder et al.}~\cite{schroeder1992decimation} in 1992, called \emph{mesh decimation}. It was meant to be used to simplify meshes produced by the marching cubes algorithm, which usually gives unnecessary details. It works by making multiple passes through the meshes' vertices, and deleting vertices that don't destroy local topology and are within a given distance threshold when re-triangulated.
 
-While the scheme above is simple and fast, it unfortunately doesn't give a geometrically optimal simplification. But by using \emph{quadric error metrics}, which we discuss on the next page, it is possible to achieve such an optimal result. We then consider texture preserving simplifiers.
+While the scheme above is simple and fast, it unfortunately doesn't give a geometrically optimal simplification. But by using \emph{quadric error metrics}, which we discuss in section~\ref{sec:quadric-based_error_metric}, it is possible to achieve such an optimal result. We then consider texture preserving simplifiers.
 
 \subsection{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric}
 
