@@ -52,15 +52,19 @@
 
         The pack of test meshes that are going to be used in the comparison are a combination of textured models provided by Configura and others taken from the public domain. The exact selection of these is still to be decided, but should include both low- \& high-polygon meshes.
 
-        \subsection{Appearance Preservation} \label{sub:appearance_preservation}
+        \subsection{Appearance Preservation} \label{sec:appearance_preservation}
 
-        \subsection{Polygon Count} \label{sub:polygon_count}
+        \subsection{Polygon Count} \label{sec:polygon_count}
 
-        \subsection{Computation Time} \label{sub:computation_time}
+        \subsection{Computation Time} \label{sec:computation_time}
 
-        \subsection{Memory Usage} \label{sub:memory_usage}
+        An important property of a mesh simplification algorithm is the time it takes to simplify a full-resolution mesh to a lower-resolution mesh. While this doesn't impact the run-time of the mesh (that is accounted for by the rendering time, measured in Section~\ref{sec:rendering_time}), it is still important to reduce it as much as possible. This is especially true if the LoD is dynamically generated at run-time, but it is also important since many more meshes can be simplified per time unit (important if a simplifier is to be provided as a service, as \emph{Simplygon Linköping} does).
 
-        \subsection{Rendering Time} \label{sub:rendering_time}
+        In order to compare the execution time of the different algorithms, they all target the same appearance thresholds as specified in Section~\ref{sec:appearance_preservation} by tweaking the parameters unique to each algorithm. We then measure the time it takes for the simplification algorithm to execute when using these parameters, in other words, simply by: \(time_\mathcal{A} = end_\mathcal{A} - start_\mathcal{A}\) for an algorithm \(\mathcal{A}\). Of course, this measurement is done several times to account for noise. After calculating the mean \(\bar{x}\) and the standard-deviation \(s\), one can find the confidence interval \([a, b]\) of the execution time by the equations shown in Section~\ref{sec:measuring_algorithmic_performance} with 20 degrees of freedom and \(\alpha = 5 \%\).
+
+        \subsection{Memory Usage} \label{sec:memory_usage}
+
+        \subsection{Rendering Time} \label{sec:rendering_time}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% method.tex ends here
