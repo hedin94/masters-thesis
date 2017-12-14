@@ -188,7 +188,7 @@
   \phdfalse
   \licfalse
   \level{A}
-  \gdef\@thesistypenameenglish{Master}
+  \gdef\@thesistypenameenglish{Master's}
   \gdef\@thesistypenameswedish{avancerad nivå}
   \thesiscredits{30}
   \PassOptionsToClass{oneside}{memoir}
