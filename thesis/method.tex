@@ -52,9 +52,14 @@
 
         The pack of test meshes that are going to be used in the comparison are a combination of textured models provided by Configura and others taken from the public domain. The exact selection of these is still to be decided, but should include both low- \& high-polygon meshes.
 
-        \subsection{Appearance Preservation} \label{sec:appearance_preservation}
+        \subsection{Appearance Preservation} \label{sub:appearance_preservation}
+        In order to compare the appearance preservation of the mesh simplification algorithms, the image-metric explained in section~\ref{sec:metrics_for_appearance_preservation} is used. It is useful since it can compare the difference of any two meshes, therefore, it does not depend on the algorithm used.
 
-        \subsection{Polygon Count} \label{sec:polygon_count}
+        For both the original mesh and a simplified mesh, 24 images with resolution $512 \times 512$ is rendered with a simple renderer based on \emph{OpenGL}. The camera is placed at the vertices of a rhombicuboctahedron and is faced towards the center where the mesh is placed. A light source is placed at the camera position. This will make sure that the surface facing the camera will be illuminated.
+
+        The two sets of 24 images each is used to compute the RMS of the simplified mesh with equation~\ref{eq:rms_image_sets}. This RMS value can then be used to compare how well the algorithms perform. 
+        
+        \subsection{Polygon Count} \label{sub:polygon_count}
 
         \subsection{Computation Time} \label{sec:computation_time}
 

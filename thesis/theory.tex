@@ -112,17 +112,17 @@ Given an arbitrary mesh, \emph{Sander et. al} \cite{sander2001texture} presents 
 \emph{Cohen et al.} \cite{cohen1998appearance} stored an error bound for each vertex in a PM. \emph{Sander et al.} \cite{sander2001texture} instead tries to find an atlas parametrization that minimizes both texture deviation and texture stretch for all meshes in the PM. 
 
 \section{Metrics for Appearance Preservation} \label{sec:metrics_for_appearance_preservation}
-Previously in sections \ref{sec:appearance-preserving_simplification} and \ref{sec:texture_mapped_progressive_meshing}, the metrics texture deviation and texture stretch have been defined. But to measure more exactly how much the visual appearance of a simplified mesh deviate from the original mesh another metric would be better. \emph{Lindstrom and Turk} \cite{lindstrom2000image} defines \emph{image-driven simplification} which captures images from different angles of the mesh. The difference between the images of the original and simplified mesh are computed in order to measure how well the appearance is preserved. This metric is more general and can be applied to all simplification algorithms since it only compares the original mesh from the simplified mesh.
+Previously in sections \ref{sec:appearance-preserving_simplification} and \ref{sec:texture_mapped_progressive_meshing}, the metrics texture deviation and texture stretch have been defined. But to measure more exactly how much the visual appearance of a simplified mesh deviate from the original mesh another metric would be better. \emph{Lindstrom and Turk} \cite{lindstrom2000image} defines \emph{image-driven simplification} which captures images from different angles of the mesh. The difference between the images of the original and simplified mesh are computed in order to measure how well the appearance is preserved. This metric is more general and can be applied to all simplification algorithms since it only compares the original mesh to the simplified mesh.
 
 The \emph{image metric} is defined as a function taking two images and gives the distance between them. To measure the distance the authors use root mean square of the luminance values of two images $Y^0$ and $Y^1$ with dimensions $m \times n$ pixels. It is defined as:
-\begin{equation*}
+\begin{equation} \label{eq:rms_images}
   d_{RMS}(Y^0,Y^1) = \sqrt{\tfrac{1}{mn}\sum^m_{i=1}\sum^n_{j=1}(y^0_{ij} - y^1_{ij})^2}
-\end{equation*}
+\end{equation}
 
 To evaluate the quality of the simplified mesh the authors capture images from 24 different camera positions. The positions are defined as the vertices of a rhombicuboctahedron which can be seen in figure~\ref{fig:rhombicuboctahedron}. Two sets of $l$ images $Y^0 = {Y^0_h}$ and $Y^1 = {Y^1_h}$ with dimensions $m \times n$ is rendered and the RMS is then computed as:
-\begin{equation*}
-  d_{RMS}(Y^0,Y^1) = \sqrt{\tfrac{1}{lmn}\sum^l_{h=1}\sum^m_{i=1}\sum^n_{j=1}(y^0_{ij} - y^1_{ij})^2}
-\end{equation*}
+\begin{equation}  \label{eq:rms_image_sets}
+  d_{RMS}(Y^0,Y^1) = \sqrt{\tfrac{1}{lmn}\sum^l_{h=1}\sum^m_{i=1}\sum^n_{j=1}(y^0_{hij} - y^1_{hij})^2}
+\end{equation}
 
 \begin{figure}[h]
     \centering
