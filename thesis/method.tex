@@ -35,11 +35,18 @@
     \begin{figure}[h]
         \centering
         \includegraphics[width=0.7\textwidth]{figures/system_overview.eps}
-        \caption{}
+        \caption{System overview}
         \label{fig:system_overview}
     \end{figure}
 
     \section{Implementation} \label{sec:implementation}
+    Before any mesh simplification algorithm can be integrated into Configura's CET Designer they need to be evaluated. Therefore, an appearance evaluator is implemented first taking the original mesh and a simplified version.
+
+    One possibility is to implement the algorithms and the evaluator directly in Configura's language CM. However, we first only want to evaluate the algorithms wihtout overhead that may be introduced by CET Designer. Therefore, we decided to implement and evaluate them outside CET Designer with a simple renderer based on \emph{OpenGL}.
+
+    To be able to change between the different algorithms, a common interface is implemented that can interact with the appearance evaluator. As seen in figure~\ref{fig:system_overview} the simplification algorithm takes a mesh and then gives a simplified mesh to the evaluator which will compare it to the original mesh. The simplification will be performed until a given appearance-threshold is reached.
+
+    A quick overview of how the algorithms work is explained in the theory chapter. But a more detailed description of how they are implemented for the purpose of the evaluation will be described in the following sections. However, these sections will be left empty at the moment since the implementations is not done for the scientific method course.
 
         \subsection{Quadric-Based Error Metric} \label{sub:quadric-based_error_metric}
 
