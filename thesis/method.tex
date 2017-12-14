@@ -45,7 +45,12 @@
     \section{Evaluation} \label{sec:evaluation}
 
         \subsection{Appearance Preservation} \label{sub:appearance_preservation}
+        In order to compare the appearance preservation of the mesh simplification algorithms, the image-metric explained in section~\ref{sec:metrics_for_appearance_preservation} is used. It is useful since it can compare the difference of any two meshes, therefore, it does not depend on the algorithm used.
 
+        For both the original mesh and a simplified mesh, 24 images with resolution $512 \times 512$ is rendered with a simple renderer based on \emph{OpenGL}. The camera is placed at the vertices of a rhombicuboctahedron and is faced towards the center where the mesh is placed. A light source is placed at the camera position. This will make sure that the surface facing the camera will be illuminated.
+
+        The two sets of 24 images each is used to compute the RMS of the simplified mesh with equation~\ref{eq:rms_image_sets}. This RMS value can then be used to compare how well the algorithms perform. 
+        
         \subsection{Computation Time} \label{sub:computation_time}
 
         \subsection{Memory Usage} \label{sub:memory_usage}
