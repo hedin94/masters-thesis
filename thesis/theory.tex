@@ -71,7 +71,7 @@ Besides \emph{decimation-based methods}, such as the aforementioned mesh decimat
 
 Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garland and Heckbert}~\cite{garland1998simplifying}, is based on the vertex merging paradigm. It provides a provably optimal simplification in each iteration, by collapsing the edge \(e_{ji} \rightarrow v_i\) and re-positioning it at \(\mathbf{\bar{v}}\), which gives it the lowest possible geometrical error. By assigning a matrix \(\mathbf{Q}_i\) for each vertex \(v_i\), one can find the error \(\Delta(\mathbf{v})\) introduced by moving \(v_i\) to \(\mathbf{v}\). \(\Delta(\mathbf{v})\) is the sum of distances from \(\mathbf{v}\) to the planes \(\mathbf{f}_k\) in \(v_i\)'s neighborhood \(N_i\) (all polygons around \(v_i\)). Since \(\Delta(\mathbf{v})\) is quadratic, finding a \(\mathbf{v}\) which gives a minimal error is a linear problem. The best position \(\mathbf{\bar{v}}_i\) for \(v_i\) after a collapse \((v_j, v_i) \rightarrow v_i\) is a solution to the eq. \((\mathbf{Q}_j + \mathbf{Q}_i)\mathbf{\bar{v}}_i = \begin{bmatrix} 0 & 0 & 0 & 1 \end{bmatrix}^\intercal\). Thus, according to \emph{Garland and Heckbert}~\cite{garland1998simplifying}:
 
-\[\bar{\mathbf{v}}_i = \begin{bmatrix}
+    \begin{equation} \bar{\mathbf{v}}_i = \begin{bmatrix}
     q_{11} & q_{12} & q_{13} & q_{14}\\
     q_{21} & q_{22} & q_{23} & q_{24}\\
     q_{31} & q_{32} & q_{33} & q_{34}\\
@@ -79,9 +79,9 @@ Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garlan
 \end{bmatrix}^{-1} \begin{bmatrix} 0 \\
                                    0 \\
                                    0 \\
-                                   1 \end{bmatrix} \; ,\]
+    1 \end{bmatrix} \; ,\end{equation}
 
-\[\Delta(\mathbf{v}) = \mathbf{v}^\intercal \mathbf{Q}_i  \mathbf{v} \;,\;\; \mathbf{Q}_i = \sum_{f_k \in N_i}  \mathbf{f_k} \mathbf{f_k}^\intercal \; .\]
+\begin{equation}\Delta(\mathbf{v}) = \mathbf{v}^\intercal \mathbf{Q}_i  \mathbf{v} \;,\;\; \mathbf{Q}_i = \sum_{f_k \in N_i}  \mathbf{f_k} \mathbf{f_k}^\intercal \; .\end{equation}
 
 By storing the \(\Delta(\mathbf{\bar{v}}_i)\) for every valid collapse \(e_{ji} \rightarrow v_i\) in a min-heap, the least cost collapse on the top of the heap can be done in each iteration, removing a vertex in each step. This is repeated until either a user-given vertex count \(|\mathcal{V}|\) is reached or until some error threshold \(\epsilon\).
 
@@ -138,9 +138,9 @@ According to \emph{David Lilja}~\cite[p.~4]{lilja2005measuring}, there are three
 
 Since not all of the algorithms in Section~\ref{sec:mesh_simplification} have an analytical model derived by the authors, and also because the algorithms are to be evaluated in a real system, only the problems inherent to the measurement approach will be considered. One of the problems with doing measurements of a real system (a program running on a computer in this case), according to \emph{David Lilja}~\cite[p.~43]{lilja2005measuring}, is that they introduce noise. This noise needs to be modeled to be able to reach a correct conclusion, such as determining if algorithm A is faster than algorithm B. One way of doing this, according to \emph{David Lilja}~\cite[p.~48]{lilja2005measuring}, is to find the confidence interval of the measured value, by assuming the source's error is distributed according to some statistical distribution (like the Gaussian or the Student t-distribution). The confidence interval \([a,b]\) when assuming the source's error is t-distributed, can be found as shown below. Where \(n\) tests are taken (giving \(n-1\) degrees of freedom), with a significance level of \(\alpha\) (usually 5 \%).
 
-\[ a = \bar{x} - t_k\frac{s}{\sqrt{n}}, \quad
+\begin{equation} a = \bar{x} - t_k\frac{s}{\sqrt{n}}, \quad
    b = \bar{x} + t_k\frac{s}{\sqrt{n}}, \quad
-   t_k = t_{1-\alpha/2,n-1} \]
+t_k = t_{1-\alpha/2,n-1} \end{equation}
 
 One common mistake, according to \emph{Schenker et al.}~\cite{schenker2001judging}, when using confidence intervals to determine if e.g. an implemented algorithm A is faster than B, is the use of the overlapping method to reach conclusions. If two confidence intervals \emph{do not} overlap, then the result is provably significant (that is, algorithm A is either faster or slower than B). However, the converse is not true, if two intervals \emph{do} overlap, then no conclusions can be reached since the result could be either significant or not significant.
 

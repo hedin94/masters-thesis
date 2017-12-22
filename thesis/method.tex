@@ -32,10 +32,14 @@
 
 \chapter{Method} \label{cha:method}
 
+    Now that the theoretical groundwork has been laid out, we describe in Section~\ref{sec:implementation} how the solution was implemented into Configuras graphics pipeline and then show how to evaluate it in Section~\ref{sec:evaluation} according to the posed research questions. In more detail, the implementation description shows how the different algorithms are implemented in practice and how these fit into Configura's pipeline. Moreover, we also show how the appearance evaluator has been implemented and integrated into the system, which provides a uniform way to simplify a mesh until a certain appearance threshold has been reached. In the evaluation part of the method, we describe how to measure the computation time, memory usage, polygon count and appearance preservation of a algorithm given a certain mesh and parameters. This method will thereafter be used to acquire the results needed to answer our research questions.
+
+    \section{System Overview} \label{sec:system_overview}
+
     \begin{figure}[h]
         \centering
         \includegraphics[width=0.7\textwidth]{figures/system_overview.eps}
-        \caption{System overview}
+        \caption{System Overview of the Mesh Simplification Pipeline}
         \label{fig:system_overview}
     \end{figure}
 
@@ -48,11 +52,13 @@
 
     A quick overview of how the algorithms work is explained in the theory chapter. But a more detailed description of how they are implemented for the purpose of the evaluation will be described in the following sections. However, these sections will be left empty at the moment since the implementations is not done for the scientific method course.
 
-        \subsection{Quadric-Based Error Metric} \label{sub:quadric-based_error_metric}
+        \subsection{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric2}
 
-        \subsection{Appearance-Preserving Simplification} \label{sub:appearance-preserving_simplification}
+        \subsection{Appearance-Preserving Simplification} \label{sec:appearance-preserving_simplification2}
 
-        \subsection{Texture Mapped Progressive Meshing} \label{sub:texture_mapped_progressive_meshing}
+        \subsection{Texture Mapped Progressive Meshing} \label{sec:texture_mapped_progressive_meshing2}
+
+        \subsection{Integrating Solution into the Pipeline} \label{sec:integrating_solution_into_the_pipeline}
 
     \newpage
 
