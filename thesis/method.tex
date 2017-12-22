@@ -36,10 +36,12 @@
 
     \section{System Overview} \label{sec:system_overview}
 
+    Before describing the system in detail, an overview is given in the Figure~\ref{fig:system_overview} below. In brief, the original mesh that is going to be simplified is given as input to the simplification algorithm, and as output comes a simpler mesh with less polygons. In order to provide a common interface to each of the algorithm's parameters, an appearance evaluator takes as input an appearance threshold (given as a RMS value) and the original and candidate meshes. This will provide the specific parameters to the algorithm in question, and incrementally reduce the quality measure (e.g. $|\mathcal{V}|$ or $\epsilon$) until the appearance threshold of a mesh candidate is satisfied.
+
     \begin{figure}[h]
         \centering
-        \includegraphics[width=0.7\textwidth]{figures/system_overview.eps}
-        \caption{System Overview of the Mesh Simplification Pipeline}
+        \includegraphics[width=0.55\textwidth]{figures/system_overview.eps}
+        \caption{System Overview of a Simplifier Pipeline}
         \label{fig:system_overview}
     \end{figure}
 
