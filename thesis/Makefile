@@ -13,7 +13,6 @@ MKLATEX = latexmk
 MKLATEXOPTS = -pdf -pdflatex="xelatex -interaction=nonstopmode" -use-make -f
 
 all: $(PDFNAME).pdf
-	cp thesis.pdf ../thesis.pdf
 
 $(PDFNAME).pdf: $(TEXMAINFILE) *.tex
 	$(MKLATEX) $(MKLATEXOPTS) $<
