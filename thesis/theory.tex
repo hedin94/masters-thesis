@@ -46,8 +46,8 @@ The detail of a mesh can be reduced/increased by altering the vertices and edges
 \begin{itemize}
 \item Edge collapsing
 \item Vertex removal
-\item Vertex split
 \item Pair contraction
+\item Vertex split
 \end{itemize}
 
 In edge collapsing, the vertices of the edge $e_{ij} = (v_i, v_j)$ is removed and replaced with a single vertex $v$ somewhere in between. The triangles that used the edge $e_{ij}$ is removed and the neighbors of $v_i, v_j$ will be connected with the new created vertex. This can be seen in figure~\ref{fig:mesh_transformations}(a).
@@ -108,7 +108,7 @@ Besides \emph{decimation-based methods}, such as the aforementioned mesh decimat
 
 \vspace{-0.7em}
 
-Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garland and Heckbert}~\cite{garland1998simplifying}, is based on the vertex merging paradigm. It provides a provably optimal simplification in each iteration, by collapsing the edge \((v_j, v_i) \rightarrow v_i\) and re-positioning it at \(\mathbf{\bar{v}}\), which gives it the lowest possible geometrical error. By assigning a matrix \(\mathbf{Q}_i\) for each vertex \(v_i\), one can find the error \(\Delta(\mathbf{v})\) introduced by moving \(v_i\) to \(\mathbf{v}\). \(\Delta(\mathbf{v})\) is the sum of distances from \(\mathbf{v}\) to the planes \(\mathbf{f}_k\) in \(v_i\)'s neighborhood \(N_i\) (all polygons around \(v_i\)). Since \(\Delta(\mathbf{v})\) is quadratic, finding a \(\mathbf{v}\) which gives a minimal error is a linear problem. The best position \(\mathbf{\bar{v}}_i\) for \(v_i\) after a collapse \((v_j, v_i) \rightarrow v_i\) is a solution to the eq. \((\mathbf{Q}_j + \mathbf{Q}_i)\mathbf{\bar{v}}_i = \begin{bmatrix} 0 & 0 & 0 & 1 \end{bmatrix}^\intercal\). Thus, according to \emph{Garland and Heckbert}~\cite{garland1998simplifying}:
+Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garland and Heckbert}~\cite{garland1997surface}, is based on the vertex merging paradigm. It provides a provably optimal simplification in each iteration, by collapsing the edge \((v_j, v_i) \rightarrow v_i\) and re-positioning it at \(\mathbf{\bar{v}}\), which gives it the lowest possible geometrical error. By assigning a matrix \(\mathbf{Q}_i\) for each vertex \(v_i\), one can find the error \(\Delta(\mathbf{v})\) introduced by moving \(v_i\) to \(\mathbf{v}\). \(\Delta(\mathbf{v})\) is the sum of distances from \(\mathbf{v}\) to the planes \(\mathbf{f}_k\) in \(v_i\)'s neighborhood \(N_i\) (all polygons around \(v_i\)). Since \(\Delta(\mathbf{v})\) is quadratic, finding a \(\mathbf{v}\) which gives a minimal error is a linear problem. The best position \(\mathbf{\bar{v}}_i\) for \(v_i\) after a collapse \((v_j, v_i) \rightarrow v_i\) is a solution to the eq. \((\mathbf{Q}_j + \mathbf{Q}_i)\mathbf{\bar{v}}_i = \begin{bmatrix} 0 & 0 & 0 & 1 \end{bmatrix}^\intercal\). Thus, according to \emph{Garland and Heckbert}~\cite{garland1997surface}:
 
     \begin{equation} \bar{\mathbf{v}}_i = \begin{bmatrix}
     q_{11} & q_{12} & q_{13} & q_{14}\\
@@ -124,7 +124,7 @@ Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garlan
 
 By storing the \(\Delta(\mathbf{\bar{v}}_i)\) for every valid collapse \((v_j, v_i) \rightarrow v_i\) in a min-heap, the least cost collapse on the top of the heap can be done in each iteration, removing a vertex in each step. This is repeated until either a user-given vertex count \(|\mathcal{V}|\) is reached or until some error threshold \(\epsilon\).
 
-The results by \emph{Garland and Heckbert}~\cite{garland1998simplifying} show that QEM can reduce the simplification error by up to 50 \% in comparison to a na\"ive scheme where \(\mathbf{\bar{v}}_i = (v_i + v_j) \div 2\) and \(\Delta(\mathbf{v}) = ||\mathbf{v} - v_i||\), as can be seen in Figure~\ref{fig:naive_vs_quadric}. They also argue that QEM gives higher-quality simplifications than \emph{vertex clustering} and that it is faster than \emph{progressive meshing} (which we also present later).
+The results by \emph{Garland and Heckbert}~\cite{garland1997surface} show that QEM can reduce the simplification error by up to 50 \% in comparison to a na\"ive scheme where \(\mathbf{\bar{v}}_i = (v_i + v_j) \div 2\) and \(\Delta(\mathbf{v}) = ||\mathbf{v} - v_i||\), as can be seen in Figure~\ref{fig:naive_vs_quadric}. They also argue that QEM gives higher-quality simplifications than \emph{vertex clustering} and that it is faster than \emph{progressive meshing} (which we also present later).
 
 \begin{figure}[h]
     \centering
@@ -133,6 +133,11 @@ The results by \emph{Garland and Heckbert}~\cite{garland1998simplifying} show th
     \caption{simplification using a na\"ive (top image) and a quadric error metric (bottom image) at different levels of detail at some vertex count (left to right: 50 \%, 35 \% and 17 \% of original).}
     \label{fig:naive_vs_quadric}
 \end{figure}
+
+Garland and Heckbert \cite{garland1998simplifying} have also presented a more general QEM where the vertices can be placed in $n$-dimensional space. This makes it possible to, for example, include the color of the surface in the computation. Each vertex is treated as a vector $v \in R^n$. Thus, when the color is considered each vertex will be represented by a 6-dimensional vector $v = [x, y, z, r, g, b]^T$. The first three values is the spatial coordinates and the last three values will be the color. The same thing can be done with for example texture coordinates where each vertex would be represented by a 5-dimensional vector $v = [x, y, z, s, t]$ where $s, t$ is the 2D texture coordinates.
+
+The overhead of the higher dimensional quadrics is not extreme according to Garland and Heckbert. However, when using this with colors, normals, and texture coordinates some caution is needed. Colors may need to be clamped and normals needs to be normalized to unit length.
+
 
 \subsection{Progressive Meshes} \label{sec:progressive_meshes}
 Hugues Hoppe \cite{hoppe1996progressive} introduced the \emph{Progressive Mesh} (PM) representation as a scheme for storing and transmitting arbitrary polygon meshes. An abitrary mesh $\hat{M}$ in PM form is defined by a sequence of meshes $M^0, M^1, ..., M^n$ with increasing accuracy of the original mesh $\hat{M} = M^n$. Only the most coarse mesh $M^0$ is stored together with records of \emph{vertex splits} that is used to refine $M^0$ into the more detailed meshes. A vertex split will transform $M^i$ the more detailed mesh $M^{i+1}$ and an edge collapse transforms $M^i$ to the coarser mesh $M^{i-1}$.
@@ -147,6 +152,16 @@ Hoppe based the simplification on the previous work \emph{Mesh Optimizaton} \cit
 \emph{Distance energy} $E_{dist}(M)$ measures the sum of the squared distances from the points to the mesh. \emph{Spring energy} $E_{spring}$ is used to regularize the optimization problem. \emph{Scalar energy} $E_{scalar}$ measures the accuracy of the scalar attributes of the mesh. The last term, $E_{disc}$ measures the geometric accuracy of the discontinuity curves (e.g creases). All legal edge collapses is placed in a priority queue where the edge collapse with lowest $\Delta E$ (estimated energy) is on the top of the queue. After a transformation is performed, the energy of the neighboring edges is updated.
 
 
+\subsection{Texture Mapped Progressive Meshing} \label{sec:texture_mapped_progressive_meshing}
+Given an arbitrary mesh, \emph{Sander et. al} \cite{sander2001texture} presents a method to construct a PM where a texture parametrization is shared between all meshes in the PM sequence. In order to create a texture mapping for a simplified mesh, the original mesh's attributes, e.g normals, is sampled. This method was developed with two goals taken into consideration:
+\begin{itemize}
+\item{Minimize \emph{texture stretch}:}~~~When a mesh is simplified the texture may be stretched in some areas which decrease the quality of the appearance. Since the texture parametrization determines the sampling density, a balanced parametrization is preferred over one that samples with different density in different areas. The balanced parametrization is obtained by minimizing the largest texture stretch over all points in the domain. No point in the domain will therefore be too stretched and thus making no point undersampled. 
+\item{Minimize \emph{texture deviation}:}~~~Conventional methods use geometric error for the mesh simplification. According to the authors this is not appropriate when a mesh is textured. The stricter texture deviation error metric, where the geometric error is measured according to the parametrization, is more appropriate. This is the metric by \emph{Cohen et al.} \cite{cohen1998appearance} explained in Section~\ref{sec:appearance-preserving_simplification}. By plotting a graph of the texture deviation vs the number of faces, the goal is to minimize the height of this graph.
+\end{itemize}
+
+\emph{Cohen et al.} \cite{cohen1998appearance} stored an error bound for each vertex in a PM. \emph{Sander et al.} \cite{sander2001texture} instead tries to find an atlas parametrization that minimizes both texture deviation and texture stretch for all meshes in the PM.
+
+
 \subsection{Appearance-Preserving Simplification} \label{sec:appearance-preserving_simplification}
 In order to preserve the appearance of a model when it is simplified, \emph{Cohen et al.} \cite{cohen1998appearance} defines a new \emph{texture deviation metric}. This metric takes three attributes into account: Surface position, surface curvature, and surface color. To properly sample these attributes from the input surface, the surface position is decoupled from the color and normals stored in texture and normal maps, respectively. The metric guarantees that the maps will not shift more than a user-specified number of pixels on the screen. This user-specified number is defined as $\epsilon$.
 
@@ -154,14 +169,6 @@ Approximation of the surface position is done offline with simplification operat
 
 Before any simplification can be made, a parametrization of the surface is required in order to store the color and normals in maps. If the input mesh does not have a parametrization, it is created and stored per-vertex in texture and normal maps. Next, the surface and maps are fed into the simplification algorithm which decides which simplification operations to use and in what order. The deviation caused by each operation is measured with the texture deviation metric. A \emph{progressive mesh} (PM) with error bounds for each operation is returned by the algorithm, which can then be used to create a set of LOD with error bounds. Using the error bounds, the tessellation of the model can be adjusted to meet the user-specified error $\epsilon$.
 
-\subsection{Texture Mapped Progressive Meshing} \label{sec:texture_mapped_progressive_meshing}
-Given an arbitrary mesh, \emph{Sander et. al} \cite{sander2001texture} presents a method to construct a PM where a texture parametrization is shared between all meshes in a PM sequence. In order to create a texture mapping for a simplified mesh, the original mesh's attributes, e.g normals, is sampled. This method was developed with two goals taken into consideration:
-\begin{itemize}
-\item{Minimize \emph{texture stretch}:}~~~When a mesh is simplified the texture may be stretched in some areas which decrease the quality of the appearance. Since the texture parametrization determines the sampling density, a balanced parametrization is preferred over one that samples with different density in different areas. The balanced parametrization is obtained by minimizing the largest texture stretch over all points in the domain. No point in the domain will therefore be too stretched and thus making no point undersampled. 
-\item{Minimize \emph{texture deviation}:}~~~Conventional methods use geometric error for the mesh simplification. According to the authors this is not appropriate when a mesh is textured. The stricter texture deviation error metric, where the geometric error is measured according to the parametrization, is more appropriate. This is the metric by \emph{Cohen et al.} \cite{cohen1998appearance} explained in Section~\ref{sec:appearance-preserving_simplification}. By plotting a graph of the texture deviation vs the number of faces, the goal is to minimize the height of this graph.
-\end{itemize}
-
-\emph{Cohen et al.} \cite{cohen1998appearance} stored an error bound for each vertex in a PM. \emph{Sander et al.} \cite{sander2001texture} instead tries to find an atlas parametrization that minimizes both texture deviation and texture stretch for all meshes in the PM. 
 
 \section{Metrics for Appearance Preservation} \label{sec:metrics_for_appearance_preservation}
 Previously in sections \ref{sec:appearance-preserving_simplification} and \ref{sec:texture_mapped_progressive_meshing}, the metrics texture deviation and texture stretch have been defined. But to measure more exactly how much the visual appearance of a simplified mesh deviate from the original mesh another metric would be better. \emph{Lindstrom and Turk} \cite{lindstrom2000image} defines \emph{image-driven simplification} which captures images from different angles of the mesh. The difference between the images of the original and simplified mesh are computed in order to measure how well the appearance is preserved. This metric is more general and can be applied to all simplification algorithms since it only compares the original mesh to the simplified mesh.
