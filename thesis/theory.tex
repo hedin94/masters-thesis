@@ -1,3 +1,4 @@
+
 %%% lorem.tex --- 
 %% 
 %% Filename: lorem.tex
@@ -38,13 +39,51 @@ Afterwards, in Section~\ref{sec:metrics_for_appearance_preservation}, we discuss
 
 Finally, in Section~\ref{sec:measuring_algorithmic_performance}, the methods and common practices for measuring performance of an algorithm are discussed. Based on existing industry practices, we show how to measure the computation time and memory usage of the algorithms. Since these measurements can be noisy, statistical methods will need to be used to truthfully answer our research questions.
 
+
+\section{Mesh Transformations} \label{sec:mesh_transformations}
+The detail of a mesh can be reduced/increased by altering the vertices and edges of the mesh. There exist several mechanisms that can be used.
+
+\begin{itemize}
+\item Edge collapsing
+\item Vertex removal
+\item Vertex split
+\item Pair contraction
+\end{itemize}
+
+In edge collapsing, the vertices of the edge $e_{ij} = (v_i, v_j)$ is removed and replaced with a single vertex $v$ somewhere in between. The triangles that used the edge $e_{ij}$ is removed and the neighbors of $v_i, v_j$ will be connected with the new created vertex. This can be seen in figure~\ref{fig:mesh_transformations}(a).
+
+Vertex removal is similar to edge collapsing, but now only one vertex is removed and the other vertex is moved to the location of the removed vertex. The neighbors of the removed vertex will be connected to the one that remains. In figure~\ref{fig:mesh_transformations}(b) vertex $v_j$ of edge $e_{ji}$ is removed and vertex $v_i$ is moved to the location of $v_j$.
+
+In a pair contraction, it is possible to merge two distant vertices that are not connected by an edge. Usually, the vertices have to within a certain threshold to be considered for a contraction. In figure~\ref{fig:mesh_transformations}(c) the vertices $v_j, v_k$ is contracted into the new vertex $v_i$. 
+
+To increase the detail of the mesh an existing vertex can be split into two, i.e. vertex split. When performing a vertex split a vertex $v$ is split into two new vertices $v_i, v_j$ connected by an edge $e_{ij}$. 
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/mesh_transformations.eps}
+    \caption{(a) edge collapse, (b) vertex removal, and (c) pair contraction}
+    \label{fig:mesh_transformations}
+\end{figure}
+
+
 \section{Mesh Simplification} \label{sec:mesh_simplification}
+
+
+% \subsection{Image-Based Simplification} \label{sec:image-based_simplification}
+
+%\section{Mesh Parameterization} %\section{Mesh Unwrapping}
+
+%\section{Ray Casting} \label{sec:ray_casting}
+%\section{Octree} \label{sec:octree}
+
+
+
 
 According to \emph{David Luebke's survey}~\cite{luebke2001developer} on the subject, mesh simplification is a technique which transforms a geometrically complex mesh (with a lot of polygons) to a simpler representation by removing unimportant geometrical details (reducing the number of polygons). It does this by assuming that some meshes are small, distant, or have areas which are unimportant to the visual quality of the rendered image. For example, if the camera in a scene always faces towards a certain direction, then removing details from the backside of a mesh won't affect the final rendered result, since they will never be seen by the camera anyway. Reducing the number of polygons allows meshes to use less storage space and need less computation time.
 
-There are many mesh simplification algorithms, as can be seen in \emph{David Luebke's survey}~\cite{luebke2001developer}, each presenting a new approach with their own strengths and weaknesses. The first scheme is due to \emph{Schroeder et al.}~\cite{schroeder1992decimation} in 1992, called \emph{mesh decimation}. It was meant to be used to simplify meshes produced by the marching cubes algorithm, which usually gives unnecessary details. It works by making multiple passes through the meshes' vertices, and deleting vertices that don't destroy local topology and are within a given distance threshold when re-triangulated.
+There are many mesh simplification algorithms, as can be seen in \emph{David Luebke's survey}~\cite{luebke2001developer}, each presenting a new approach with their own strengths and weaknesses. The first scheme is due to \emph{Schroeder et al.}~\cite{schroeder1992decimation} in 1992, called \emph{mesh decimation}. It was meant to be used to simplify meshes produced by the marching cubes algorithm, which usually gives unnecessary details. It works by making multiple passes through the meshes' vertices, and deleting vertices that do not destroy local topology and are within a given distance threshold when re-triangulated.
 
-While the scheme above is simple and fast, it unfortunately doesn't give a geometrically optimal simplification. But by using \emph{quadric error metrics}, which we discuss in section~\ref{sec:quadric-based_error_metric}, it is possible to achieve such an optimal result. We then consider texture preserving simplifiers.
+While the scheme above is simple and fast, it unfortunately does not give a geometrically optimal simplification. But by using \emph{quadric error metrics}, which we discuss in section~\ref{sec:quadric-based_error_metric}, it is possible to achieve such an optimal result. We then consider texture preserving simplifiers.
 
 \subsection{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric}
 
@@ -69,7 +108,7 @@ Besides \emph{decimation-based methods}, such as the aforementioned mesh decimat
 
 \vspace{-0.7em}
 
-Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garland and Heckbert}~\cite{garland1998simplifying}, is based on the vertex merging paradigm. It provides a provably optimal simplification in each iteration, by collapsing the edge \(e_{ji} \rightarrow v_i\) and re-positioning it at \(\mathbf{\bar{v}}\), which gives it the lowest possible geometrical error. By assigning a matrix \(\mathbf{Q}_i\) for each vertex \(v_i\), one can find the error \(\Delta(\mathbf{v})\) introduced by moving \(v_i\) to \(\mathbf{v}\). \(\Delta(\mathbf{v})\) is the sum of distances from \(\mathbf{v}\) to the planes \(\mathbf{f}_k\) in \(v_i\)'s neighborhood \(N_i\) (all polygons around \(v_i\)). Since \(\Delta(\mathbf{v})\) is quadratic, finding a \(\mathbf{v}\) which gives a minimal error is a linear problem. The best position \(\mathbf{\bar{v}}_i\) for \(v_i\) after a collapse \((v_j, v_i) \rightarrow v_i\) is a solution to the eq. \((\mathbf{Q}_j + \mathbf{Q}_i)\mathbf{\bar{v}}_i = \begin{bmatrix} 0 & 0 & 0 & 1 \end{bmatrix}^\intercal\). Thus, according to \emph{Garland and Heckbert}~\cite{garland1998simplifying}:
+Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garland and Heckbert}~\cite{garland1998simplifying}, is based on the vertex merging paradigm. It provides a provably optimal simplification in each iteration, by collapsing the edge \((v_j, v_i) \rightarrow v_i\) and re-positioning it at \(\mathbf{\bar{v}}\), which gives it the lowest possible geometrical error. By assigning a matrix \(\mathbf{Q}_i\) for each vertex \(v_i\), one can find the error \(\Delta(\mathbf{v})\) introduced by moving \(v_i\) to \(\mathbf{v}\). \(\Delta(\mathbf{v})\) is the sum of distances from \(\mathbf{v}\) to the planes \(\mathbf{f}_k\) in \(v_i\)'s neighborhood \(N_i\) (all polygons around \(v_i\)). Since \(\Delta(\mathbf{v})\) is quadratic, finding a \(\mathbf{v}\) which gives a minimal error is a linear problem. The best position \(\mathbf{\bar{v}}_i\) for \(v_i\) after a collapse \((v_j, v_i) \rightarrow v_i\) is a solution to the eq. \((\mathbf{Q}_j + \mathbf{Q}_i)\mathbf{\bar{v}}_i = \begin{bmatrix} 0 & 0 & 0 & 1 \end{bmatrix}^\intercal\). Thus, according to \emph{Garland and Heckbert}~\cite{garland1998simplifying}:
 
     \begin{equation} \bar{\mathbf{v}}_i = \begin{bmatrix}
     q_{11} & q_{12} & q_{13} & q_{14}\\
@@ -83,7 +122,7 @@ Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garlan
 
 \begin{equation}\Delta(\mathbf{v}) = \mathbf{v}^\intercal \mathbf{Q}_i  \mathbf{v} \;,\;\; \mathbf{Q}_i = \sum_{f_k \in N_i}  \mathbf{f_k} \mathbf{f_k}^\intercal \; .\end{equation}
 
-By storing the \(\Delta(\mathbf{\bar{v}}_i)\) for every valid collapse \(e_{ji} \rightarrow v_i\) in a min-heap, the least cost collapse on the top of the heap can be done in each iteration, removing a vertex in each step. This is repeated until either a user-given vertex count \(|\mathcal{V}|\) is reached or until some error threshold \(\epsilon\).
+By storing the \(\Delta(\mathbf{\bar{v}}_i)\) for every valid collapse \((v_j, v_i) \rightarrow v_i\) in a min-heap, the least cost collapse on the top of the heap can be done in each iteration, removing a vertex in each step. This is repeated until either a user-given vertex count \(|\mathcal{V}|\) is reached or until some error threshold \(\epsilon\).
 
 The results by \emph{Garland and Heckbert}~\cite{garland1998simplifying} show that QEM can reduce the simplification error by up to 50 \% in comparison to a na\"ive scheme where \(\mathbf{\bar{v}}_i = (v_i + v_j) \div 2\) and \(\Delta(\mathbf{v}) = ||\mathbf{v} - v_i||\), as can be seen in Figure~\ref{fig:naive_vs_quadric}. They also argue that QEM gives higher-quality simplifications than \emph{vertex clustering} and that it is faster than \emph{progressive meshing} (which we also present later).
 
@@ -94,6 +133,19 @@ The results by \emph{Garland and Heckbert}~\cite{garland1998simplifying} show th
     \caption{simplification using a na\"ive (top image) and a quadric error metric (bottom image) at different levels of detail at some vertex count (left to right: 50 \%, 35 \% and 17 \% of original).}
     \label{fig:naive_vs_quadric}
 \end{figure}
+
+\subsection{Progressive Meshes} \label{sec:progressive_meshes}
+Hugues Hoppe \cite{hoppe1996progressive} introduced the \emph{Progressive Mesh} (PM) representation as a scheme for storing and transmitting arbitrary polygon meshes. An abitrary mesh $\hat{M}$ in PM form is defined by a sequence of meshes $M^0, M^1, ..., M^n$ with increasing accuracy of the original mesh $\hat{M} = M^n$. Only the most coarse mesh $M^0$ is stored together with records of \emph{vertex splits} that is used to refine $M^0$ into the more detailed meshes. A vertex split will transform $M^i$ the more detailed mesh $M^{i+1}$ and an edge collapse transforms $M^i$ to the coarser mesh $M^{i-1}$.
+
+To construct a PM the edge collapses of the original mesh needs to be determined. Multiple possible algorithims for chosing those edge collapses is presented by Hoppe \cite{hoppe1996progressive}, some with high speed but low accuracy and some more accurate but with lower speed. A fast but maybe not so accurate strategy is to choose the edge collapses at random but with some conditions. Another more accurate scheme is to use heursitics. According to Hoppe, the construction of a PM is supposed to be a preprocess, Therefore, the author chose an algorithm that take some time but is more accurate.
+
+Hoppe based the simplification on the previous work \emph{Mesh Optimizaton} \cite{hoppe1993mesh} where the goal is to find a mesh that fits a sets $X$ of points $x_i \in R^3$ with a small number of vertices. This problem is defined as a minimization of the energy function.
+\begin{equation}
+  E(M) = E_{dist}(M) + E_{spring}(M) + E_{scalar}(M) + E_{disc}(M)n
+\end{equation}
+
+\emph{Distance energy} $E_{dist}(M)$ measures the sum of the squared distances from the points to the mesh. \emph{Spring energy} $E_{spring}$ is used to regularize the optimization problem. \emph{Scalar energy} $E_{scalar}$ measures the accuracy of the scalar attributes of the mesh. The last term, $E_{disc}$ measures the geometric accuracy of the discontinuity curves (e.g creases). All legal edge collapses is placed in a priority queue where the edge collapse with lowest $\Delta E$ (estimated energy) is on the top of the queue. After a transformation is performed, the energy of the neighboring edges is updated.
+
 
 \subsection{Appearance-Preserving Simplification} \label{sec:appearance-preserving_simplification}
 In order to preserve the appearance of a model when it is simplified, \emph{Cohen et al.} \cite{cohen1998appearance} defines a new \emph{texture deviation metric}. This metric takes three attributes into account: Surface position, surface curvature, and surface color. To properly sample these attributes from the input surface, the surface position is decoupled from the color and normals stored in texture and normal maps, respectively. The metric guarantees that the maps will not shift more than a user-specified number of pixels on the screen. This user-specified number is defined as $\epsilon$.
