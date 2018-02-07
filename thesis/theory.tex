@@ -1,4 +1,3 @@
-
 %%% lorem.tex --- 
 %% 
 %% Filename: lorem.tex
@@ -28,7 +27,7 @@
 %% 
 %% RCS $Log$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% 
+% %
 %%% Code:
 
 \chapter{Theory} \label{ch:theory}
@@ -65,13 +64,12 @@ To increase the detail of the mesh an existing vertex can be split into two, i.e
     \label{fig:mesh_transformations}
 \end{figure}
 
+\section{Mesh Parameterization} \label{sec:mesh_parametrization}
+In order to apply, for example, a texture to a mesh each vertex is given a texture coordinate. This problem of finding a mapping between a surface (mesh)and a parameter domain (texture map) is called parameterization. Given a triangular mesh Hormann et al. \cite{hormann2007mesh} refers to the mapping problem as mesh parameterization. According to Hormann et al. there exists a one-to-one mapping between two surfaces with similar topology. Thus, a surface that is homeomorphic to a disk can be mapped onto a plane, i.e. a texture. If a mesh is not homeomorphic to a disk it have to be split into parts which are homeomorphic to a disk. These parts can then be put onto the same plane only one texture is needed.
+
+%\emph{"Given a surface (mesh) $S \in R^3$ and a domain D find F:D \leftrightarrow S"}
 
 \section{Mesh Simplification} \label{sec:mesh_simplification}
-
-
-% \subsection{Image-Based Simplification} \label{sec:image-based_simplification}
-
-%\section{Mesh Parameterization} %\section{Mesh Unwrapping}
 
 %\section{Ray Casting} \label{sec:ray_casting}
 %\section{Octree} \label{sec:octree}
