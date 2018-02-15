@@ -69,13 +69,21 @@ In order to apply, for example, a texture to a mesh each vertex is given a textu
 
 %\emph{"Given a surface (mesh) $S \in R^3$ and a domain D find F:D \leftrightarrow S"}
 
+\section{Multiple attributes for a vertex} \label{sec:vertex-with-}
+A vertex of mesh often have a property associated with it such as texture coordinates, color, and normal. A common way of texturing a model is to use a texture atlas where each triangle of the mesh is assigned a specific part of the texture. Since a texture is in a 2-dimensional domain a mesh parameterization needs to be performed. In many cases the mesh needs to be cut somewhere which will create seams. The vertices along this seam would need two sets of texture coordinates and this will create a discontinuity. In figure~\ref{fig:cylinder_unwrap} a cylinder is unwrapped to 2D which creates a seam. All vertices along the seam will have texture coordinates $(s,t)$ where $s=0$ and $s=1$.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{figures/cylinder_unwrap.eps}
+    \caption{Unwrapping a cylinder. Vertices along seam (red line) need two texture coordinates}
+    \label{fig:cylinder_unwrap}
+\end{figure}
+
+Hugues Hoppe \cite{hoppe1998efficient} presents a mesh representation where each face adjacent to a vertex can have different appearnace attributes. The attribute values is associated with the corners of the faces instead of the vertices. A \emph{corner} is defined by Hoppe as a tuple $<vertex,face>$. The attribute values at a corner defines the value that should be used for face $f$ at vertex $v$. Corners with the same attributes and adjacent vertex are stored in a \emph{wedge}. The wedge has one or more corners and each vertex will be divided into one or more wedges. This representation is useful for simplification of meshes with discontinuities in their attribute fields. Discontinuities could result in a simplified mesh where adjacent faces have been separated which introduces new holes in the mesh.
+
+
+
 \section{Mesh Simplification} \label{sec:mesh_simplification}
-
-%\section{Ray Casting} \label{sec:ray_casting}
-%\section{Octree} \label{sec:octree}
-
-
-
 
 According to \emph{David Luebke's survey}~\cite{luebke2001developer} on the subject, mesh simplification is a technique which transforms a geometrically complex mesh (with a lot of polygons) to a simpler representation by removing unimportant geometrical details (reducing the number of polygons). It does this by assuming that some meshes are small, distant, or have areas which are unimportant to the visual quality of the rendered image. For example, if the camera in a scene always faces towards a certain direction, then removing details from the backside of a mesh won't affect the final rendered result, since they will never be seen by the camera anyway. Reducing the number of polygons allows meshes to use less storage space and need less computation time.
 
@@ -136,6 +144,7 @@ Garland and Heckbert \cite{garland1998simplifying} have also presented a more ge
 
 The overhead of the higher dimensional quadrics is not extreme according to Garland and Heckbert. However, when using this with colors, normals, and texture coordinates some caution is needed. Colors may need to be clamped and normals needs to be normalized to unit length.
 
+Garland and Heckbert have assumed that the properties vary continiously over the whole surface. However, if we want to for example apply a texture to a cylinder there will always be a seam where the ends of the texture meets. All vertices along this seam needs to be duplicated since they would require two different texture coordinates. The authors suggested having boundary constraints that would maintain the seam. However, in the case where a mesh have a corresponding texture atlas where each face have a specific part of the texture this might not work. The solution suggested by the authors is to allow multiple quadrics for each vertex, but, this is not yet implemented.
 
 \subsection{Progressive Meshes} \label{sec:progressive_meshes}
 Hugues Hoppe \cite{hoppe1996progressive} introduced the \emph{Progressive Mesh} (PM) representation as a scheme for storing and transmitting arbitrary polygon meshes. An abitrary mesh $\hat{M}$ in PM form is defined by a sequence of meshes $M^0, M^1, ..., M^n$ with increasing accuracy of the original mesh $\hat{M} = M^n$. Only the most coarse mesh $M^0$ is stored together with records of \emph{vertex splits} that is used to refine $M^0$ into the more detailed meshes. A vertex split will transform $M^i$ the more detailed mesh $M^{i+1}$ and an edge collapse transforms $M^i$ to the coarser mesh $M^{i-1}$.
@@ -167,7 +176,6 @@ Approximation of the surface position is done offline with simplification operat
 
 Before any simplification can be made, a parametrization of the surface is required in order to store the color and normals in maps. If the input mesh does not have a parametrization, it is created and stored per-vertex in texture and normal maps. Next, the surface and maps are fed into the simplification algorithm which decides which simplification operations to use and in what order. The deviation caused by each operation is measured with the texture deviation metric. A \emph{progressive mesh} (PM) with error bounds for each operation is returned by the algorithm, which can then be used to create a set of LOD with error bounds. Using the error bounds, the tessellation of the model can be adjusted to meet the user-specified error $\epsilon$.
 
-
 \section{Metrics for Appearance Preservation} \label{sec:metrics_for_appearance_preservation}
 Previously in sections \ref{sec:appearance-preserving_simplification} and \ref{sec:texture_mapped_progressive_meshing}, the metrics texture deviation and texture stretch have been defined. But to measure more exactly how much the visual appearance of a simplified mesh deviate from the original mesh another metric would be better. \emph{Lindstrom and Turk} \cite{lindstrom2000image} defines \emph{image-driven simplification} which captures images from different angles of the mesh. The difference between the images of the original and simplified mesh are computed in order to measure how well the appearance is preserved. This metric is more general and can be applied to all simplification algorithms since it only compares the original mesh to the simplified mesh.
 
@@ -188,6 +196,13 @@ To evaluate the quality of the simplified mesh the authors capture images from 2
       (\href{https://commons.wikimedia.org/wiki/File:Rhombicuboctahedron.jpg}{Rhombicuboctahedron} by Hellisp / \href{https://creativecommons.org/licenses/by/3.0/}{CC BY 3.0})}
     \label{fig:rhombicuboctahedron}
 \end{figure}
+
+
+\section{Ray Casting} \label{sec:ray_casting}
+
+
+\section{Octree} \label{sec:octree}
+
 
 \section{Measuring Algorithmic Performance} \label{sec:measuring_algorithmic_performance}
 
