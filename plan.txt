@@ -1,0 +1,3 @@
+Configura utvecklar programvara för rumsplanering där 3D objekt (såsom möbler, väggar m.m.) placeras ut. För att renderingen ska gå snabbare genereras olika LoD:s med hjälp av en mesh simplifierings algoritm. Denna algoritmen tar dock inte hänsyn till texturer vilket försämrar den visuella kvaliteten.
+
+I exjobbet kommer olika metoder för att generera LoD:s för texurerade meshar att undersökas i en litteraturstudie. Den bäst lämpade metoden kommer sedan att implementeras och integreras in i Configura:s programvara CET Designer. Vissa meshar som ska användas i CET Designer har ibland väldigt många polygoner. Hur bra den valda metoden skalar till polygonantal bör därför också undersökas.
