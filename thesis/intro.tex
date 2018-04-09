@@ -50,11 +50,15 @@ By simultaneously taking into account the geometrical and texture deviation, one
 \section{Aim}
 \label{sec:aim}
 
-\iffalse
+\iffalse %% --------
 To survey the field for state-of-the-art mesh simplification algorithms that preserve the visual appearance of a mesh, and integrate these into \emph{Configura's} (see Section~\ref{sec:background}) graphics pipeline. This will enable Configura to generate better \emph{Level of Detail} (LoD) meshes for speeding up their rendering time. Currently, Configura only takes into account the geometrical deviation when simplifying, with no regard for the textures (e.g. diffuse or normal) on top of the mesh.
 
 Thereafter, we plan to evaluate each of these solutions by measuring their performance and ability to preserve the meshes' original appearance. In the end, the goal is to find the mesh simplification algorithm which both performs and preserves the mesh appearance well.
-\fi
+\fi %% --------
+
+The aim of this thesis is to first perform a literature study of mesh simplification algorithms that preserve the visual appearance of a mesh. A suitable solution will then integrated as a preprocessing step in \emph{Configura's} (see Section~\ref{sec:background}) graphics pipeline. This will enable Configura to generate better \emph{Level of Detail} (LoD) meshes for speeding up their rendering time. Currently, Configura only takes into account the geometrical deviation when simplifying, with no regard for the textures (e.g. diffuse or normal) on top of the mesh.
+
+%% Maybe add some more text here?
 
 \section{Research Questions}
 \label{sec:research-questions}
@@ -62,9 +66,9 @@ Thereafter, we plan to evaluate each of these solutions by measuring their perfo
 After implementing and measuring the performance of these mesh simplification algorithms, answers to the questions below should have been obtained. These will be used to decide on a suitable alternative for Configura and also other systems with a similar set of requirements.
 
 \begin{enumerate}
-\item What alternative \emph{mesh simplification schemes} exist that \emph{preserves the appearance} of a mesh?
+\item What alternative \emph{mesh simplification schemes} exist that \emph{preserves the appearance} of a mesh? 
 
-\item{Which of these alternatives give the best \emph{performance} and \emph{appearance preservation}? When:
+\item{Which of these alternatives give the best \emph{performance} and \emph{appearance preservation}? When: %% edit
   \begin{enumerate}
   \item Measuring the algorithm's \emph{computation time} while targeting an \emph{appearance threshold}?
   \item Measuring the algorithm's \emph{memory usage} while targeting some \emph{appearance threshold}?
@@ -72,7 +76,7 @@ After implementing and measuring the performance of these mesh simplification al
         (by using the meshes generated according to the target \emph{appearance threshold} above)
   \end{enumerate}
 }
-\item Which of the alternatives gives the best \emph{appearance preservation} for a target \emph{polygon count}?
+\item Which of the alternatives gives the best \emph{appearance preservation} for a target \emph{polygon count}? % edit
 \end{enumerate}
 
 

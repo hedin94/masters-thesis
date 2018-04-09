@@ -30,6 +30,29 @@
 % %
 %%% Code:
 
+
+\iffalse
+
+\section{Related Work}
+Progressive meshes
+Texture mapped progressive meshes
+
+Appearance-preserving simplification
+
+Surface simplification using quadric error metric
+Simplifying surfaces with color and texture using quadric error metric
+New quadric error metric
+
+Image-driven simplification
+
+Mesh parametrization
+Resampling texture
+Ray tracing
+Volume UV
+
+\fi
+
+
 \chapter{Theory} \label{ch:theory}
 
 Since several mesh simplification algorithms are being considered, Section~\ref{sec:mesh_simplification} presents the most notable schemes found (through peer-reviewed surveys) in previous work. An outline of the algorithm and the results found by authors are given for the reader's convenience, and also to be used as a guideline when implementing the solutions into Configura's CG pipeline.
@@ -65,12 +88,12 @@ To increase the detail of the mesh an existing vertex can be split into two, i.e
 \end{figure}
 
 \section{Mesh Parameterization} \label{sec:mesh_parametrization}
-In order to apply, for example, a texture to a mesh each vertex is given a texture coordinate. This problem of finding a mapping between a surface (mesh)and a parameter domain (texture map) is called parameterization. Given a triangular mesh Hormann et al. \cite{hormann2007mesh} refers to the mapping problem as mesh parameterization. According to Hormann et al. there exists a one-to-one mapping between two surfaces with similar topology. Thus, a surface that is homeomorphic to a disk can be mapped onto a plane, i.e. a texture. If a mesh is not homeomorphic to a disk it have to be split into parts which are homeomorphic to a disk. These parts can then be put onto the same plane only one texture is needed.
+In order to apply, for example, a texture to a mesh each vertex is given a texture coordinate. This problem of finding a mapping between a surface (mesh)and a parameter domain (texture map) is called parameterization. Given a triangular mesh Hormann et al. \cite{hormann2007mesh} refers to the mapping problem as mesh parameterization. According to Hormann et al. there exists a one-to-one mapping between two surfaces with similar topology. Thus, a surface that is homeomorphic to a disk can be mapped onto a plane, i.e. a texture. If a mesh is not homeomorphic to a disk it have to be split into parts which are homeomorphic to a disk. These parts can then be put onto the same plane and only one texture is needed.
 
 %\emph{"Given a surface (mesh) $S \in R^3$ and a domain D find F:D \leftrightarrow S"}
 
 \section{Multiple attributes for a vertex} \label{sec:vertex-with-}
-A vertex of mesh often have a property associated with it such as texture coordinates, color, and normal. A common way of texturing a model is to use a texture atlas where each triangle of the mesh is assigned a specific part of the texture. Since a texture is in a 2-dimensional domain a mesh parameterization needs to be performed. In many cases the mesh needs to be cut somewhere which will create seams. The vertices along this seam would need two sets of texture coordinates and this will create a discontinuity. In figure~\ref{fig:cylinder_unwrap} a cylinder is unwrapped to 2D which creates a seam. All vertices along the seam will have texture coordinates $(s,t)$ where $s=0$ and $s=1$.
+A vertex of mesh often have a property associated with it such as texture coordinates, color, and normal. A common way of texturing a model is to use a texture atlas where each triangle of the mesh is assigned a specific part of the texture. Since a texture is in a 2-dimensional domain a mesh parameterization needs to be performed. In many cases the mesh needs to be cut somewhere which will create seams. The vertices along this seam would need two sets of texture coordinates and this will create a discontinuity. In figure~\ref{fig:cylinder_unwrap} a cylinder is unwrapped to 2D which creates a seam. All vertices along the seam will have two sets of texture coordinates $(s,t)$, one with $s=0$ and a second with $s=1$.
 
 \begin{figure}[h]
     \centering
