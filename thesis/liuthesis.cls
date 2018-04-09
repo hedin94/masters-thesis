@@ -543,7 +543,7 @@
   \clearpage{}
   \tryfonts{Calibri}{Carlito}
     \small \textbf{Abstract}\\
-    %\@abstract
+    \@abstract
     \vfill
     \footnotesize
     \begin{flushleft}
@@ -578,7 +578,9 @@
     ISBN \@isbn{} ISSN \@issn
   \clearpage{}
   \normalsize
-   {\@publicationseries{} No. \@thesisnumber}\\[3\baselineskip]
+      {\@publicationseries{} No. \@thesisnumber}\\[3\baselineskip]
+      {\Large\@titleenglish\\
+        \@subtitleenglish}\\[5mm]
    \small
    {\bfseries\@author}\\[5mm]
     {\textbf{Academic dissertation}\\
@@ -811,7 +813,7 @@ tillstånd. All annan användning av dokumentet kräver upphovsmannens medgivand
 För att garantera äktheten, säkerheten och tillgängligheten finns lösningar av
 teknisk och administrativ art. Upphovsmannens ideella rätt innefattar rätt att
 bli nämnd som upphovsman i den omfattning som god sed kräver vid användning av
-dokumentet på ovan beskrivna sätt samt skydd mot att dokumentet ändras eller
+dokumentet på ovan beskrivna sätt samt skydd mot att dokumentet ändras eller 
 presenteras i sådan form eller i sådant sammanhang som är kränkande för
 upphovsmannens litterära eller konstnärliga anseende eller egenart. För
 ytterligare information om Linköping University Electronic Press se förlagets
@@ -945,7 +947,7 @@ document integrity, please refer to its www home page:
 \end{adjustwidth}
 
   \ifstudent
-  %%\makeinsidepage
+  \makeinsidepage
   \else
   \pagestyle{plain}
   \makepermissionpage
@@ -972,6 +974,10 @@ document integrity, please refer to its www home page:
   {\addcontentsline{toc}{chapter}{Acknowledgments}}
   \clearpage
   {\pagestyle{plain}\tableofcontents\relax\clearpage}
+  \iftotalfigures {\pagestyle{plain}\listoffigures\relax\clearpage}\fi
+  \iftotaltables {\pagestyle{plain}\listoftables\relax\clearpage}\fi
+  \@ifpackageloaded{todonotes}{\pagestyle{plain}\listoftodos\relax\clearpage}{}
+
   \ifprinterfriendly
     \cleartooddpage
   \else
