@@ -120,6 +120,14 @@
 \createvariable{thesissubject}
 \createvariable{thesissubjectenglish}
 
+\newif\ifsubtitleswedish
+\subtitleswedishfalse
+\def\subtitleswedish#1{\subtitleswedishtrue\gdef\@subtitleswedish{#1}}
+
+\newif\ifsubtitleenglish
+\subtitleenglishfalse
+\def\subtitleenglish#1{\subtitleenglishtrue\gdef\@subtitleenglish{#1}}
+
 \newif\ifdedication
 \dedicationfalse
 \def\dedication#1{\dedicationtrue\gdef\@dedication{#1}}
@@ -130,9 +138,9 @@
 
 \createvariable{divanumber}
 % Include the abstract
-%\gdef\@abstract{\input{abstract}}
-%\gdef\@sammanfattning{\input{sammanfattning.tex}}
-%\gdef\@acknowledgments{\input{acknowledgments.tex}}
+\gdef\@abstract{\input{abstract}}
+\gdef\@sammanfattning{\input{sammanfattning.tex}}
+\gdef\@acknowledgments{\input{acknowledgements.tex}}
 
 \newif\iflith
 \lithtrue
@@ -648,6 +656,12 @@
       {\tryfonts{Calibri}{Carlito}\fontsize{12pt}{13pt}\selectfont\textbf{\@author}\par
       }%
       \vspace*{10mm}%
+      {\tryfonts{Calibri}{Carlito}\fontsize{10pt}{11pt}\selectfont
+        \parbox{\textwidth}{\swedishenglish{Handledare}{Supervisor}: \@supervisor\\
+          \swedishenglish{Examinator}{Examiner}: \@examiner\\[2\baselineskip]
+        \ifexternalsupervisor \swedishenglish{Extern
+          handledare}{External supervisor}: \@externalsupervisor\fi}}%
+
  \end{minipage}
 \vfill{}
 \begin{textblock*}{\textwidth}(2cm,\paperheight-4cm)
@@ -941,22 +955,22 @@ document integrity, please refer to its www home page:
   \fi
   \cleartorecto%
 \phantomsection
-%\swedishenglish{\addcontentsline{toc}{chapter}{Sammanfattning}}
-%{\addcontentsline{toc}{chapter}{Abstract}}
+\swedishenglish{\addcontentsline{toc}{chapter}{Sammanfattning}}
+{\addcontentsline{toc}{chapter}{Abstract}}
 \clearpage
 \ifstudent
-%\begin{abstract}
-%  \@abstract
-%\end{abstract}
+\begin{abstract}
+  \@abstract
+\end{abstract}
 \else
 \abstractpages
 \fi
 \clearpage
   \newpage
-  %\@acknowledgments
-  %\swedishenglish{\addcontentsline{toc}{chapter}{Författarens tack}}
-  %{\addcontentsline{toc}{chapter}{Acknowledgments}}
- % \clearpage
+  \@acknowledgments
+  \swedishenglish{\addcontentsline{toc}{chapter}{Författarens tack}}
+  {\addcontentsline{toc}{chapter}{Acknowledgments}}
+  \clearpage
   {\pagestyle{plain}\tableofcontents\relax\clearpage}
   \ifprinterfriendly
     \cleartooddpage
