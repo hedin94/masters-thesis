@@ -12,7 +12,7 @@ MKLATEX = latexmk
 #Options to latexmk, should need to be changed
 MKLATEXOPTS = -pdf -pdflatex="xelatex -interaction=nonstopmode" -use-make -f
 
-all: $(PDFNAME).pdf
+all: $(PDFNAME).pdf clearwindow
 
 $(PDFNAME).pdf: $(TEXMAINFILE) *.tex
 	$(MKLATEX) $(MKLATEXOPTS) $<
@@ -26,4 +26,8 @@ clean:
 
 distclean: clean
 	rm -f $(PDFNAME).pdf
-.PHONY: clean all
+
+clearwindow:
+	clear
+
+.PHONY: clean all clearwindow
