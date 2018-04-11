@@ -51,7 +51,7 @@ By simultaneously taking into account the geometrical and texture deviation, one
 \label{sec:aim}
 
 \iffalse %% --------
-To survey the field for state-of-the-art mesh simplification algorithms that preserve the visual appearance of a mesh, and integrate these into \emph{Configura's} (see Section~\ref{sec:background}) graphics pipeline. This will enable Configura to generate better \emph{Level of Detail} (LoD) meshes for speeding up their rendering time. Currently, Configura only takes into account the geometrical deviation when simplifying, with no regard for the textures (e.g. diffuse or normal) on top of the mesh.
+To survey the field for state-of-the-art mesh simplification algorithms that preserve the visual appearance of a mesh, and integrate these into \emph{Configura's} (see Section~\ref{sec:background}) graphics pipeline. This will enable Configura to generate better \emph{Level of Detail} (LoD) meshes for speeding up their rendering time. Currently, Configura only takes into account the geometrical deviation when simplifying, with no regard for the textures (e.g. diffuse or normal) applied to the mesh.
 
 Thereafter, we plan to evaluate each of these solutions by measuring their performance and ability to preserve the meshes' original appearance. In the end, the goal is to find the mesh simplification algorithm which both performs and preserves the mesh appearance well.
 \fi %% --------
@@ -63,29 +63,17 @@ The aim of this thesis is to first perform a literature study of mesh simplifica
 \section{Research Questions}
 \label{sec:research-questions}
 
-After implementing and measuring the performance of these mesh simplification algorithms, answers to the questions below should have been obtained. These will be used to decide on a suitable alternative for Configura and also other systems with a similar set of requirements.
 
 \begin{enumerate}
 \item What alternative \emph{mesh simplification schemes} exist that \emph{preserves the appearance} of a mesh? 
+\item Which of these alternatives would be appropriate to integrate into Configura's software?
 
-\item{Which of these alternatives give the best \emph{performance} and \emph{appearance preservation}? When: %% edit
-  \begin{enumerate}
-  \item Measuring the algorithm's \emph{computation time} while targeting an \emph{appearance threshold}?
-  \item Measuring the algorithm's \emph{memory usage} while targeting some \emph{appearance threshold}?
-  \item Measuring the \emph{rendering time} of the \emph{simplified mesh}?
-        (by using the meshes generated according to the target \emph{appearance threshold} above)
-  \end{enumerate}
-}
-\item Which of the alternatives gives the best \emph{appearance preservation} for a target \emph{polygon count}? % edit
 \end{enumerate}
 
 
 \section{Delimitations}
 \label{sec:delimitations}
-
-Since there are many mesh simplification algorithms in previous work, a proper literature review would have to be done to find possible candidate solutions. Since our thesis' goals are mostly concerned with implementing and evaluating each solution, we have decided to base our choices on existing surveys and literature reviews to skip doing some of these ourselves.
-
-Also, since implementing and doing measurements on all algorithms would take too long, we have decided to only pick an interesting subset of the algorithms presented in the surveys. More precisely, we have chosen to pick three different mesh simplification algorithms, one that does not take texture deviation into account and two that do. In addition, we will also compare them to Configura's existing mesh simplifier scheme; for a total of four algorithms.
+Since the thesis is done on a time limit a comparison of multiple mesh simplification schemes taking the appearance into account is not feasible. Therefore, one mesh simplification algorithm will be chosen to be implemented and evaluated. The choice will be based on a study of algorithms that can be found in the literature.
 
 \section{Background}
 \label{sec:background}
