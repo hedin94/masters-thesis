@@ -198,7 +198,7 @@ The results by \emph{Garland and Heckbert}~\cite{garland1997surface} show that Q
 \end{figure}
 
 %Simplifying surfaces with color and texture using quadric error metrics
-\subsection{Considering appearance attributes}
+\subsection{Preserving appearance}
 A general version of QEM was later presented by Garland and Heckbert \cite{garland1998simplifying} where vertices can be placed in $n$-dimensional space. This makes it possible to, for example, include the color of the surface in the computation. Each vertex is treated as a vector \(v \subset \mathbb{R}^n\). Thus, when the color is considered each vertex will be represented by a 6-dimensional vector \(v = [x, y, z, r, g, b]^\intercal\). The first three values is the spatial coordinates and the last three values will be the color. The same thing can be done with for example texture coordinates where each vertex would be represented by a 5-dimensional vector \(v = [x, y, z, s, t]\) where $s, t$ is the 2D texture coordinates.
 
 The original version of QEM used a 4x4 homogeneous matrix $Q_i$ for the computations. A more convenient notation is used in the general version. A face in the original model defines a plane which satisfies the equation \(n^{\intercal}v + d = 0\) where $n$ is the face normal and $d$ is a scalar. The squared distance of a vertex to a plane is given by
@@ -235,7 +235,7 @@ Hoppe based the simplification on the previous work \emph{Mesh Optimizaton} \cit
 
 \emph{Distance energy} $E_{dist}(M)$ measures the sum of the squared distances from the points to the mesh. \emph{Spring energy} $E_{spring}$ is used to regularize the optimization problem. \emph{Scalar energy} $E_{scalar}$ measures the accuracy of the scalar attributes of the mesh. The last term, $E_{disc}$ measures the geometric accuracy of the discontinuity curves (e.g creases). All legal edge collapses is placed in a priority queue where the edge collapse with lowest $\Delta E$ (estimated energy) is on the top of the queue. After a transformation is performed, the energy of the neighboring edges is updated.
 
-\subsection{Considering appearance attributes} \label{sec:texture_mapped_progressive_meshing}
+\subsection{Preserving appearance} \label{sec:texture_mapped_progressive_meshing}
 Given an arbitrary mesh, \emph{Sander et. al} \cite{sander2001texture} presents a method to construct a PM where a texture parametrization is shared between all meshes in the PM sequence. In order to create a texture mapping for a simplified mesh, the original mesh's attributes, e.g normals, is sampled. This method was developed with two goals taken into consideration:
 \begin{itemize}
 \item{Minimize \emph{texture stretch}:}~~~When a mesh is simplified the texture may be stretched in some areas which decrease the quality of the appearance. Since the texture parametrization determines the sampling density, a balanced parametrization is preferred over one that samples with different density in different areas. The balanced parametrization is obtained by minimizing the largest texture stretch over all points in the domain. No point in the domain will therefore be too stretched and thus making no point undersampled. 
@@ -251,14 +251,22 @@ In order to apply, for example, a texture to a mesh each vertex is given a textu
 \section{Multiple attributes for a vertex} \label{sec:vertex-with-}
 A vertex of mesh often have a property associated with it such as texture coordinates, color, and normal. A common way of texturing a model is to use a texture atlas where each triangle of the mesh is assigned a specific part of the texture. Since a texture is in a 2-dimensional domain a mesh parameterization needs to be performed. In many cases the mesh needs to be cut somewhere which will create seams. The vertices along this seam would require two sets of texture coordinates and this will create a discontinuity. In \cref{fig:cylinder_unwrap} a cylinder is unwrapped to 2D which creates a seam. All vertices along the seam will have two sets of texture coordinates $(s,t)$, one with $s=0$ and a second with $s=1$.
 
+
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{figures/cylinder_unwrap.eps}
+    \includegraphics[width=.8\textwidth]{figures/cylinder_unwrap.eps}
     \caption{Unwrapping a cylinder. Vertices along seam (red line) require two texture coordinates}
     \label{fig:cylinder_unwrap}
 \end{figure}
 
 Hugues Hoppe \cite{hoppe1998efficient} presents a mesh representation where each face adjacent to a vertex can have different appearance attributes. The attribute values is associated with the corners of the faces instead of the vertices. A \emph{corner} is defined by Hoppe as a tuple $<vertex,face>$. The attribute values at a corner defines the value that should be used for face $f$ at vertex $v$. Corners with the same attributes and adjacent vertex are stored in a \emph{wedge}. The wedge has one or more corners and each vertex will be divided into one or more wedges. This representation is useful for simplification of meshes with discontinuities in their attribute fields. Discontinuities could result in a simplified mesh where adjacent faces have been separated which introduces new holes in the mesh.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.49\textwidth]{figures/wedge.eps}
+    \caption{Vertex with wedges}
+    \label{fig:wedge}
+\end{figure}
 
 \section{Metrics for Appearance Preservation} \label{sec:metrics_for_appearance_preservation}
 Previously in \cref{sec:appearance-preserving_simplification,sec:texture_mapped_progressive_meshing}, the metrics texture deviation and texture stretch have been defined. But to measure more exactly how much the visual appearance of a simplified mesh deviate from the original mesh another metric would be better. \emph{Lindstrom and Turk} \cite{lindstrom2000image} defines \emph{image-driven simplification} which captures images from different angles of the mesh. The difference between the images of the original and simplified mesh are computed in order to measure how well the appearance is preserved. This metric is more general and can be applied to all simplification algorithms since it only compares the original mesh to the simplified mesh.
