@@ -31,9 +31,13 @@
 %%% Code:
 
 \chapter{Method} \label{cha:method}
+TODO: Overview of method chapter.
 
+\iffalse
 Now that the theoretical groundwork has been laid out, we describe in Section~\ref{sec:implementation} how the solution was implemented into Configura's graphics pipeline and then show how to evaluate it in Section~\ref{sec:evaluation} according to the posed research questions. In more detail, the implementation description shows how the different algorithms are implemented in practice and how these fit into Configura's pipeline. Moreover, we also show how the appearance evaluator has been implemented and integrated into the system, which provides a uniform way to simplify a mesh until a certain appearance threshold has been reached. In the evaluation part of the method, we describe how to measure the computation time, memory usage, polygon count and appearance preservation of a algorithm given a certain mesh and parameters. This method will thereafter be used to acquire the results needed to answer our research questions.
+\fi
 
+\iffalse
 \section{System Overview} \label{sec:system_overview}
 
 Before describing the system in detail, an overview is given in the Figure~\ref{fig:system_overview} below. In brief, the original mesh that is going to be simplified is given as input to the simplification algorithm, and as output comes a simpler mesh with less polygons. In order to provide a common interface to each of the algorithm's parameters, an appearance evaluator takes as input an appearance threshold (given as a RMS value) and the original and candidate meshes. This will provide the specific parameters to the algorithm in question, and incrementally reduce the quality measure (e.g. $|\mathcal{V}|$ or $\epsilon$) until the appearance threshold of a mesh candidate is satisfied.
@@ -44,9 +48,10 @@ Before describing the system in detail, an overview is given in the Figure~\ref{
   \caption{System Overview of a Simplifier Pipeline}
   \label{fig:system_overview}
 \end{figure}
+\fi
 
 \section{Implementation} \label{sec:implementation}
-
+\iffalse
 Before the chosen mesh simplification algorithm can be integrated into Configura's CET Designer, the three aforementioned different algorithms need to be implemented and evaluated. Only then can we make an informed decision on which of the algorithms are most suited for Configura, and thereafter integrate that solution into the CET Designer. In this section we describe how the three algorithms were implemented and the tools used to accomplish it. \textbf{Note:} for the course TDDD89 only a brief and preliminary overview is given over the implementation, since this part is best written after we've actually implemented some algorithms.
 
 The first step is to decide how and where to implement the simplification algorithms and the evaluation system. One possibility is to implement them directly in Configura's own language \emph{CM} (built in-house, a mix between C and Lisp). However, because we first only want to evaluate the algorithms without the overhead that may be introduced by CET Designer, this might not be the best idea. Therefore, we have decided to implement and evaluate the algorithms outside of CET Designer by building a simple testbed using C/C++ and the \emph{OpenGL} API (for evaluating the appearance and also to measure its rendering speed).
@@ -54,6 +59,7 @@ The first step is to decide how and where to implement the simplification algori
 To be able to change between the different algorithms, a common interface is implemented that can interact with the appearance evaluator. As can be seen in Figure~\ref{fig:system_overview}, the simplification algorithm takes a mesh and then gives a simplified mesh to the evaluator which will compare it to the original mesh. The simplification will be performed until a given appearance-threshold is reached (thus, giving all of the algorithms a universal stopping condition).
 
 A quick overview of how the algorithms work is explained in the theory chapter, and since the actual implementation is based on this description, only small details should deviate from the theory. But in order to give a more detailed description of how they are implemented, the practical details will also be described in the coming sections. However, as mentioned before, these sections will be mostly left empty at the moment since the implementations is not done yet for the scientific methods course. We then describe how to integrate the chosen solution.
+\fi
 
 % -------------------------------------------------------
 % IFFALSE
@@ -70,6 +76,7 @@ A vertex of mesh often have a property associated with it such as texture coordi
 \end{figure}
 \fi
 
+\iffalse
 \subsection{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric2}
 
 As a rule, the original mesh will be given as an ordinary triangle mesh (a so called ``triangle soup''), which is not suitable for applying the QEM algorithm (since the local neighborhood information isn't available). Instead, we convert this triangle soup to a half-edge mesh. This allows easy manipulation of the local neighborhood of the mesh, which is precisely what is needed when doing a edge collapse or when calculating the error quadrics of a given vertex.
@@ -83,15 +90,18 @@ After doing this, the implementation basically follows the theoretical framework
 \subsection{Integrating Solution into the Pipeline} \label{sec:integrating_solution_into_the_pipeline}
 
 When the candidate algorithm has been chosen, it has to be integrated into CET Designer. Since we've chosen to evaluate the solution in C/C++ in our own renderer, the algorithm needs to be ported to the Configura CM language. It also needs to interact with the existing file format of the models, which means that either an existing Configura library will be needed or a custom one will need to be written for our purposes. After that, the integration is mostly painless, because the algorithm doesn't depend that much on any of the other parts in CET Designer. It should just be a case of: \emph{original mesh} $\rightarrow$ \emph{mesh simplifier} $\rightarrow$ \emph{simplified mesh}.
+\fi
 
 \section{Evaluation} \label{sec:evaluation}
-
+\iffalse
 In order to determine which of these algorithms provide the best performance for a target appearance threshold, an evaluation of the polygon count, computation time, memory usage and rendering time of the simplified mesh is done for each of the implemented solutions. In the results from this step, a series of tables are generated to compare the performance between the algorithms by using a common comparison framework. In this section, we describe this common comparison framework and then show how we can measure each of the parameters.
 
 In essence, this is done by targeting a certain appearance threshold, tweaking the mesh simplification algorithm's parameters to achieve this threshold, and then measuring the given performance. This gives a universal measure of ``quality'' for all of the algorithms, which would otherwise have different error metrics used for applying the simplification. Since the performance measures are noisy, a total of \(n=20\) samples will be taken. According to \emph{David Lilja}~\cite[p.~50]{lilja2005measuring} the t-student distribution should be used when \(n < 30\), as shown in Section~\ref{sec:measuring_algorithmic_performance}.
 
 The pack of test meshes that are going to be used in the comparison are a combination of textured models provided by Configura and others taken from the public domain. The exact selection of these is still to be decided, but should include both low- \& high-polygon meshes.
+\fi
 
+\iffalse
 \subsection{Appearance Preservation} \label{sec:appearance_preservation}
 In order to compare the appearance preservation of the mesh simplification algorithms, the image-metric explained in section~\ref{sec:metrics_for_appearance_preservation} is used. It is useful since it can compare the difference of any two meshes, therefore, it does not depend on the algorithm used.
 
@@ -117,6 +127,7 @@ Another important performance property of the algorithm is the accumulated memor
 
 \subsection{Rendering Time} \label{sec:rendering_time}
 One main purpose of simplifying a mesh is to reduce the rendering time. Therefore, the frame rate is measured when rendering the original mesh and the simplified meshes. The simplified meshes comes from the previous steps where different appearance-thresholds was targeted. Frame rate is measured by counting how many frames that have been rendered during a period of one second. As with computation time, this measurement may have noise and therefore multiple samples needs to be obtained. The mean and confidence interval is obtained in the same way.
+\fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% method.tex ends here
