@@ -31,35 +31,14 @@
 %%% Code:
 
 \chapter{Method} \label{cha:method}
-TODO: Overview of method chapter.
+Now that the theoretical groundwork has been laid out, we describe in \cref{sec:implementation} how the solution was implemented into Configura's graphics pipeline and then show how to evaluate it in \cref{sec:evaluation}.
 
-\iffalse
-Now that the theoretical groundwork has been laid out, we describe in Section~\ref{sec:implementation} how the solution was implemented into Configura's graphics pipeline and then show how to evaluate it in Section~\ref{sec:evaluation} according to the posed research questions. In more detail, the implementation description shows how the different algorithms are implemented in practice and how these fit into Configura's pipeline. Moreover, we also show how the appearance evaluator has been implemented and integrated into the system, which provides a uniform way to simplify a mesh until a certain appearance threshold has been reached. In the evaluation part of the method, we describe how to measure the computation time, memory usage, polygon count and appearance preservation of a algorithm given a certain mesh and parameters. This method will thereafter be used to acquire the results needed to answer our research questions.
-\fi
-
-\iffalse
-\section{System Overview} \label{sec:system_overview}
-
-Before describing the system in detail, an overview is given in the Figure~\ref{fig:system_overview} below. In brief, the original mesh that is going to be simplified is given as input to the simplification algorithm, and as output comes a simpler mesh with less polygons. In order to provide a common interface to each of the algorithm's parameters, an appearance evaluator takes as input an appearance threshold (given as a RMS value) and the original and candidate meshes. This will provide the specific parameters to the algorithm in question, and incrementally reduce the quality measure (e.g. $|\mathcal{V}|$ or $\epsilon$) until the appearance threshold of a mesh candidate is satisfied.
-
-\begin{figure}[h]
-  \centering
-  \includegraphics[width=0.55\textwidth]{figures/system_overview.eps}
-  \caption{System Overview of a Simplifier Pipeline}
-  \label{fig:system_overview}
-\end{figure}
+\iffals
+In more detail, the implementation description shows how the different algorithms are implemented in practice and how these fit into Configura's pipeline. Moreover, we also show how the appearance evaluator has been implemented and integrated into the system. In the evaluation part of the method, we describe how to measure the computation time, memory usage, polygon count and appearance preservation of a algorithm given a certain mesh and parameters.
 \fi
 
 \section{Implementation} \label{sec:implementation}
-\iffalse
-Before the chosen mesh simplification algorithm can be integrated into Configura's CET Designer, the three aforementioned different algorithms need to be implemented and evaluated. Only then can we make an informed decision on which of the algorithms are most suited for Configura, and thereafter integrate that solution into the CET Designer. In this section we describe how the three algorithms were implemented and the tools used to accomplish it. \textbf{Note:} for the course TDDD89 only a brief and preliminary overview is given over the implementation, since this part is best written after we've actually implemented some algorithms.
-
-The first step is to decide how and where to implement the simplification algorithms and the evaluation system. One possibility is to implement them directly in Configura's own language \emph{CM} (built in-house, a mix between C and Lisp). However, because we first only want to evaluate the algorithms without the overhead that may be introduced by CET Designer, this might not be the best idea. Therefore, we have decided to implement and evaluate the algorithms outside of CET Designer by building a simple testbed using C/C++ and the \emph{OpenGL} API (for evaluating the appearance and also to measure its rendering speed).
-
-To be able to change between the different algorithms, a common interface is implemented that can interact with the appearance evaluator. As can be seen in Figure~\ref{fig:system_overview}, the simplification algorithm takes a mesh and then gives a simplified mesh to the evaluator which will compare it to the original mesh. The simplification will be performed until a given appearance-threshold is reached (thus, giving all of the algorithms a universal stopping condition).
-
-A quick overview of how the algorithms work is explained in the theory chapter, and since the actual implementation is based on this description, only small details should deviate from the theory. But in order to give a more detailed description of how they are implemented, the practical details will also be described in the coming sections. However, as mentioned before, these sections will be mostly left empty at the moment since the implementations is not done yet for the scientific methods course. We then describe how to integrate the chosen solution.
-\fi
+OVERVIEW
 
 \subsection{Handling seams}
 To be able to apply a texture to a mesh a mesh parameterization is needed that maps vertices to texture coordinates. If the mesh is not homeomorphic to a disk it is split into parts which will introduce seams. Vertices along these seams is duplicated which enable us to have multiple texture coordinates. However, this is a problem during simplification and will likely make the mesh tear in the seams. Welding duplicate vertices removes the seams and our tearing problem goes away. This, however, does not work good for textured meshes since we can no longer have discontinuities. Vertices that share the same attributes are safe to remove though.
@@ -81,9 +60,9 @@ The mesh representation by Hoppe \cite{hoppe1998efficient} allows vertices to ha
 \end{figure}
 
 \subsubsection{Finding duplicate vertices}
-A fast method to find vertices that occupy the same space in 3D is to use a hash map. It is an associative container that is organized into buckets that contains the elements. Search, insert, and removal of elements have on average constant time complexity but in the worst case linear. If a key maps to the same bucket as another key it will be put in a collision chain in the same bucket. The time complexity will in that case be linear on the elements in that bucket.
+A fast method to find vertices that occupy the same space in 3D is to use a hash map. It is an associative container that is organized into buckets that contains the elements. Search, insert, and removal of elements have on average constant time complexity but in the worst case linear. If a key maps to the same bucket as another key it will be put in a collision chain in the same bucket. The time complexity will in that case be linear on the number of elements in that bucket.
 
-To get fast search and insert a hash function with few collisions is important. The hash function that is used at Configura can be seen in \cref{lst:hash3D}. This hash of a 3-dimensional vector is a combination of the x, y, z coordinates. The hashes of x and y is also rotated i.e. bits are circular shifted. 
+To get fast search and insert a hash function with few collisions is important. The hash function that is used at Configura can be seen in \cref{lst:hash3D}. This hash of a 3-dimensional vector is a combination of the x, y, z coordinates. The hashes of x and y is also rotated i.e. bits are circular shifted, to get fewer collisions. 
 
 \lstset{
   language=C++,
@@ -204,12 +183,16 @@ Extracting all \emph{unique} vertices in a mesh can be done with the aformention
 \fi
 
 \subsubsection{Vertices with multiple attributes}
-To handle vertices with multiple unique attributes the \texttt{removeDuplicates} function need some modification. A simple solution is to associate each 3-dimensional vector with an array of indices. Thus, vertices can be associated with multiple texture coordinate indices. A vertex will only be removed if it is in the same place as another vertex with the same texture coordinates. However, if the texture coordinate is unique the vertex index will be added to the end of the list associated with the spatial coordinate.
+To handle vertices with multiple unique attributes the \texttt{removeDuplicates} function require some modification. A simple solution is to associate each 3-dimensional vector with an array of indices. Thus, vertices can be associated with multiple texture coordinate indices. A vertex will only be removed if it is in the same place as another vertex with the same texture coordinates. However, if the texture coordinate is unique the vertex index will be added to the end of the list associated with the spatial coordinate.
 
-This association can then be used to create vertices divided into one or more wedges. This kind of vertex will hereafter be called \emph{multi-vertex} to distinguish it from the real vertices. For each vertex a wedge will be created containing the vertex index and put in an array. A multi-vertex will contain indices to this array of wedges. 
+This association can then be used to create vertices divided into one or more wedges. This kind of vertex will hereafter be called \emph{multi-vertex} to distinguish it from the real vertices. For each vertex, a wedge will be created containing the vertex index and then put in an array. A multi-vertex will contain indices to this array of wedges. 
 
 \subsection{Solving linear equation systems}
+A very common task during the simplification is to find the optimal position for a vertex after an edge collapse. As mentioned in \cref{sec:quadric-based_error_metric}, this is done by solving the linear equation system \(A v_{min} = b\) where \(v_{min}\) is the optimal position. In the original version of the QEM the optimal solution is obtained by finding \(A^{-1}\). If the matrix \(A\) is not invertable one of the vertices on the end points of the edge is chosen to be the new position.
 
+In MixKit, the inverse of a matrix is found using Gaussian elimination with partial pivoting. The method is fast but it was noted that in many cases it fails to find the inverse of the matrix. This leads to many fallbacks to the endpoints which may give bad results for vertices with multiple attributes.
+
+In order to have a higher rate of found solutions to the linear equation systems the linear algebra library \emph{Eigen} \footnote{\href{http://eigen.tuxfamily.org}{eigen.tuxfamily.org}} was used. This library contains numerical solvers, some more accurate and some with higher speed. First, the solvers finds a decomposition of $A$ and then the decomposition is used to find a solution. The choice of a solver is a tradeoff between speed and accuracy. A fast but also with decent accuracy is a solver using LU decomposition with partial pivoting and is a good candidate for the optimization problem. 
 
 \subsection{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric2}
 
@@ -224,6 +207,8 @@ When the candidate algorithm has been chosen, it has to be integrated into CET D
 \fi
 
 \section{Evaluation} \label{sec:evaluation}
+OVERVIEW
+
 \iffalse
 In order to determine which of these algorithms provide the best performance for a target appearance threshold, an evaluation of the polygon count, computation time, memory usage and rendering time of the simplified mesh is done for each of the implemented solutions. In the results from this step, a series of tables are generated to compare the performance between the algorithms by using a common comparison framework. In this section, we describe this common comparison framework and then show how we can measure each of the parameters.
 

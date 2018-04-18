@@ -7,15 +7,19 @@ TEXMAINFILE = thesis.tex
 # Name that you would like for your resulting pdf file, without extension.
 # Defaults to $(TEXMAINFILE) with .pdf as extension
 PDFNAME = $(shell basename -s.tex $(TEXMAINFILE))
+PUBLISHNAME = AWESOME_THESIS_NAME
 #Location of latexmk binary
 MKLATEX = latexmk
 #Options to latexmk, should need to be changed
 MKLATEXOPTS = -pdf -pdflatex="xelatex -interaction=nonstopmode" -use-make -f
 
-all: $(PDFNAME).pdf clearwindow
+all: $(PDFNAME).pdf $(PUBLISHNAME).pdf clearwindow
 
 $(PDFNAME).pdf: $(TEXMAINFILE) *.tex
 	$(MKLATEX) $(MKLATEXOPTS) $<
+
+$(PUBLISHNAME).pdf: $(PDFNAME).pdf
+	cp $(PDFNAME).pdf ../$(PUBLISHNAME).pdf
 
 view: $(PDFNAME).pdf
 	$(PDFVIEWER) $(PDFNAME).pdf &
