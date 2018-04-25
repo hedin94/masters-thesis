@@ -27,7 +27,7 @@
 %% 
 %% RCS $Log$
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-% %
+%%
 %%% Code:
 
 
@@ -38,6 +38,11 @@ Afterwards, in \cref{sec:metrics_for_appearance_preservation}, the different met
 
 Finally, in \cref{sec:measuring_algorithmic_performance}, the methods and common practices for measuring performance of an algorithm are discussed. Based on existing industry practices, we show how to measure the computation time and memory usage of the algorithms. Since these measurements can be noisy, statistical methods will need to be used to truthfully answer our research questions.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%% Related Work
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Related Work} \label{sec:related_work}
 Some different approaches have been presented in the literature to solve the problem of simplifying a mesh. Early solutions focused on the geometrical error which is enough in many cases. But in the case of a mesh with appearance attributes this may give a poor result. Other solutions have been presented that takes the attributes into account to give a better appearance of the mesh. This section will give a brief overview of the simplification algorithms that can be found in the literature.
 
@@ -57,7 +62,7 @@ Besides \emph{decimation-based methods}, such as the aforementioned mesh decimat
 \emph{Quadric Error Metrics} (QEM), due to \emph{Garland and Heckbert} \cite{garland1997surface} performs edge collapses to provide a provably optimal simplification. In each iteration, an edge is collapsed \((v_j, v_i) \rightarrow \mathbf{v}\) and \(\mathbf{v}\) is re-positoned at the position which gives the lowest possible geometrical error. \emph{Hoppe} \cite{hoppe1996progressive} also perform edge collapses but he tries to minimize an energy function. The edge with the lowest estimated energy is chosen for the collapse. 
 
 
-\subsection{Preserving appearance}
+%\subsection{Preserving appearance}
 Focusing on minimizing the geometrical error during simplification works well for many meshes. But in the case of a mesh with appearance attributes such as color, normals, and texture coordinates the result may be poor. A common way to solve this is to use a metric which does not only take the geometry, but also the appearance attributes into account.
 
 \emph{Cohen et al.} \cite{cohen1998appearance} defines a new \emph{texture deviation metric} which takes three attributes into account: Surface position, surface curvature, and surface color. These attributes are sampled from the input surface and the simplification is done with edge collapses and vertex removals.
@@ -125,7 +130,11 @@ To increase the detail of the mesh an existing vertex can be split into two, i.e
 \end{figure}
 \fi %%%%%%%%%%%%%%%%%%%%%%%%%%
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%% Appearance-Preserving simplification
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Appearance-Preserving Simplification} \label{sec:appearance-preserving_simplification}
 In order to preserve the appearance of a model when it is simplified, \emph{Cohen et al.} \cite{cohen1998appearance} defines a \emph{texture deviation metric}. This metric takes three attributes into account: Surface position, surface curvature, and surface color. To properly sample these attributes from the input surface, the surface position is decoupled from the color and normals stored in texture and normal maps, respectively. The metric guarantees that the maps will not shift more than a user-specified number of pixels on the screen. This user-specified number is defined as $\epsilon$.
 
@@ -133,6 +142,11 @@ Approximation of the surface position is done offline with simplification operat
 
 Before any simplification can be made, a parametrization of the surface is required in order to store the color and normals in maps. If the input mesh does not have a parametrization, it is created and stored per-vertex in texture and normal maps. Next, the surface and maps are fed into the simplification algorithm which decides which simplification operations to use and in what order. The deviation caused by each operation is measured with the texture deviation metric. A \emph{progressive mesh} (PM) with error bounds for each operation is returned by the algorithm, which can then be used to create a set of LOD with error bounds. Using the error bounds, the tessellation of the model can be adjusted to meet the user-specified error $\epsilon$.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%% Quadric-Based Error Metric
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric}
 % Surface simplification using quadric error metric
 \iffalse %%%%%%%%
@@ -190,7 +204,7 @@ The results by \emph{Garland and Heckbert}~\cite{garland1997surface} show that Q
 \end{figure}
 
 %Simplifying surfaces with color and texture using quadric error metrics
-\subsection{Preserving appearance}
+%\subsection{Preserving appearance}
 A general version of QEM was later presented by Garland and Heckbert \cite{garland1998simplifying} where vertices can be placed in $n$-dimensional space. This makes it possible to, for example, include the color of the surface in the computation. Each vertex is treated as a vector \(v \subset \mathbb{R}^n\). Thus, when the color is considered each vertex will be represented by a 6-dimensional vector \(v = [x, y, z, r, g, b]^\intercal\). The first three values is the spatial coordinates and the last three values will be the color. The same thing can be done with for example texture coordinates where each vertex would be represented by a 5-dimensional vector \(v = [x, y, z, s, t]\) where $s, t$ is the 2D texture coordinates.
 
 The original version of QEM used a 4x4 homogeneous matrix $Q_i$ for the computations. A more convenient notation is used in the general version. A face in the original model defines a plane which satisfies the equation \(n^{\intercal}v + d = 0\) where $n$ is the face normal and $d$ is a scalar. The squared distance of a vertex to a plane is given by
@@ -215,6 +229,11 @@ Garland and Heckbert have assumed that the properties vary continiously over the
 %New quadric error metric
 Hugues Hoppe \cite{Hoppe:1999:NQM:319351.319357} also uses QEM for meshes with appearance attributes. Instead of calculating the distances to hyperplanes as Garland and Heckbert, Hoppe base the attribute error on geometric correspondance in 3D. A point p is projected onto a face in \(\mathbb{R}^3\) rather than a plane in a higher dimension and then both the geometric and attribute error is computed. According to the author this gives a better result compared to Garland and Heckberts general QEM.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%% Progressive Meshes
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Progressive Meshes} \label{sec:progressive_meshes}
 Hugues Hoppe \cite{hoppe1996progressive} introduced the \emph{Progressive Mesh} (PM) representation as a scheme for storing and transmitting arbitrary polygon meshes. An abitrary mesh $\hat{M}$ in PM form is defined by a sequence of meshes $M^0, M^1, ..., M^n$ with increasing accuracy of the original mesh $\hat{M} = M^n$. Only the most coarse mesh $M^0$ is stored together with records of \emph{vertex splits} that is used to refine $M^0$ into the more detailed meshes. A vertex split will transform $M^i$ the more detailed mesh $M^{i+1}$ and an edge collapse transforms $M^i$ to the coarser mesh $M^{i-1}$.
 
@@ -227,7 +246,7 @@ Hoppe based the simplification on the previous work \emph{Mesh Optimizaton} \cit
 
 \emph{Distance energy} $E_{dist}(M)$ measures the sum of the squared distances from the points to the mesh. \emph{Spring energy} $E_{spring}$ is used to regularize the optimization problem. \emph{Scalar energy} $E_{scalar}$ measures the accuracy of the scalar attributes of the mesh. The last term, $E_{disc}$ measures the geometric accuracy of the discontinuity curves (e.g creases). All legal edge collapses is placed in a priority queue where the edge collapse with lowest $\Delta E$ (estimated energy) is on the top of the queue. After a transformation is performed, the energy of the neighboring edges is updated.
 
-\subsection{Preserving appearance} \label{sec:texture_mapped_progressive_meshing}
+%\subsection{Preserving appearance} \label{sec:texture_mapped_progressive_meshing}
 Given an arbitrary mesh, \emph{Sander et. al} \cite{sander2001texture} presents a method to construct a PM where a texture parametrization is shared between all meshes in the PM sequence. In order to create a texture mapping for a simplified mesh, the original mesh's attributes, e.g normals, is sampled. This method was developed with two goals taken into consideration:
 \begin{itemize}
 \item{Minimize \emph{texture stretch}:}~~~When a mesh is simplified the texture may be stretched in some areas which decrease the quality of the appearance. Since the texture parametrization determines the sampling density, a balanced parametrization is preferred over one that samples with different density in different areas. The balanced parametrization is obtained by minimizing the largest texture stretch over all points in the domain. No point in the domain will therefore be too stretched and thus making no point undersampled. 
@@ -236,10 +255,19 @@ Given an arbitrary mesh, \emph{Sander et. al} \cite{sander2001texture} presents 
 
 \emph{Cohen et al.} \cite{cohen1998appearance} stored an error bound for each vertex in a PM. \emph{Sander et al.} \cite{sander2001texture} instead tries to find an atlas parametrization that minimizes both texture deviation and texture stretch for all meshes in the PM.
 
-
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%% Mesh parameterization
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Mesh parametrerization} \label{sec:mesh_parametrization}
 In order to apply, for example, a texture to a mesh each vertex is given a texture coordinate. This problem of finding a mapping between a surface (mesh)and a parameter domain (texture map) is called parameterization. Given a triangular mesh Hormann et al. \cite{hormann2007mesh} refers to the mapping problem as mesh parameterization. According to Hormann et al. there exists a one-to-one mapping between two surfaces with similar topology. Thus, a surface that is homeomorphic to a disk can be mapped onto a plane, i.e. a texture. If a mesh is not homeomorphic to a disk it has to be split into parts which are homeomorphic to a disk. These parts can then be put onto the same plane and only one texture is needed.
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%%% Multiple attributes for a vertex
+%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Multiple attributes for a vertex} \label{sec:vertex_with_multi_attributes}
 A vertex of mesh often have a property associated with it such as texture coordinates, color, and normal. A common way of texturing a model is to use a texture atlas where each triangle of the mesh is assigned a specific part of the texture. Since a texture is in a 2-dimensional domain a mesh parameterization needs to be performed. In many cases the mesh needs to be cut somewhere which will create seams. The vertices along this seam would require two sets of texture coordinates and this will create a discontinuity. In \cref{fig:cylinder_unwrap} a cylinder is unwrapped to 2D which creates a seam. All vertices along the seam will have two sets of texture coordinates $(s,t)$, one with $s=0$ and a second with $s=1$.
 

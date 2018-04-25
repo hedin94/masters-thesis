@@ -40,12 +40,16 @@
 \usepackage[capitalize]{cleveref}
 \usepackage{listings}
 \usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{mathtools}
 \usepackage[dvipsnames]{xcolor}
 
 \definecolor{darkred}{rgb}{0.554, 0, 0}
 \definecolor{darkblue}{rgb}{0, 0, 0.554}
 \definecolor{darkgreen}{rgb}{0, 0.392, 0}
 \definecolor{goldenrod}{rgb}{0.855, 0.647, 0.125}
+\definecolor{cyan4}{RGB}{0, 139, 139}
+\definecolor{turquoise}{RGB}{64, 224, 208}
 
 \lstdefinestyle{customc++}{
   classoffset=0,
@@ -70,6 +74,12 @@
 
 % \usepackage{changebar}
 
+%\newcommand{\norm}[1]{\lvert #1 \rvert}
+%\newcommand{\dist}[1]{\lVert #1 \rVert}
+\newcommand{\dist}[1]{\left\lVert #1 \right\rVert}
+
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
+
 \crefname{lstlisting}{listing}{listings}
 \Crefname{lstlisting}{Listing}{Listings}
 
@@ -77,6 +87,7 @@
 \departmentenglish{Department of Electrical Engineering}
 \departmentshort{ISY}
 
+\externalsupervisor{Martin Olsson}
 \supervisor{Harald Nautsch}
 \examiner{Ingemar Ragnemalm}
 \titleenglish{Evaluation of an Appearance-Preserving Mesh Simplification Scheme for Configura AB}

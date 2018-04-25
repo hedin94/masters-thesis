@@ -7,7 +7,7 @@ TEXMAINFILE = thesis.tex
 # Name that you would like for your resulting pdf file, without extension.
 # Defaults to $(TEXMAINFILE) with .pdf as extension
 PDFNAME = $(shell basename -s.tex $(TEXMAINFILE))
-PUBLISHNAME = AWESOME_THESIS_NAME
+PUBLISHNAME = appearance_preserving_mesh_simplification
 #Location of latexmk binary
 MKLATEX = latexmk
 #Options to latexmk, should need to be changed
