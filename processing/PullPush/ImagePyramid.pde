@@ -1,4 +1,4 @@
-String toS(color c) {
+String toS(color c) { //<>//
   return "(" + ((c>>16) & 0xFF) + ", " + ((c>>8) & 0xFF) + ", " + (c & 0xFF) + ")";
 }
 
@@ -27,7 +27,7 @@ class ImagePyramid {
       for (int x=0; x<width(); x++) {
         if (bound.get(x, y) == color(0)) { 
           if (glowEffect)
-            setWeight(x, y, 0.0f);
+            setWeight(x, y, 0.01f);
           else
             setWeight(x, y, 0.0f);
           markInvalid(x, y);
@@ -44,15 +44,6 @@ class ImagePyramid {
     this.higher = higher;
     this.weights = weights;
     pixelFlags = new byte[width()*height()];
-
-    //for (int x=0; x<width(); x++) { 
-    //  int xOff = 2*x;
-
-    //if ((x>0 && higher.valid(xOff-1)) || higher.valid(xOff) || higher.valid(xOff+1) || (x<width()-1 && higher.valid(xOff+2))) 
-    //  markValid(x);
-    //else
-    //  markInvalid(x);
-    //}
   }
 
   ImagePyramid(Image image, ImagePyramid higher, float weights[]) {
@@ -60,15 +51,6 @@ class ImagePyramid {
     this.higher = higher;
     this.weights = weights;
     pixelFlags = new byte[width()*height()];
-
-    //for (int x=0; x<width(); x++) { 
-    //  int xOff = 2*x;
-
-    //  if ((x>0 && higher.valid(xOff-1)) || higher.valid(xOff) || higher.valid(xOff+1) || (x<width()-1 && higher.valid(xOff+2))) 
-    //    markValid(x);
-    //  else
-    //    markInvalid(x);
-    //}
   }
 
   int width() { 
@@ -80,7 +62,6 @@ class ImagePyramid {
   }
 
   float getWeight(int x, int y) {
-    //println("(" + x + ", " + y + ") " + width() + ", " + height());
     return weights[width()*y + x];
   }
 
@@ -116,16 +97,6 @@ class ImagePyramid {
         int yOff = 2*y;
 
         // Indices
-        //int ix0 = max(0, min(xOff-1, width()-4));
-        //int ix1 = min(ix0 + 1, width()-1);
-        //int ix2 = min(ix0 + 2, width()-1);
-        //int ix3 = min(ix0 + 3, width()-1);
-
-        //int iy0 = max(0, min(yOff-1, height()-4));
-        //int iy1 = min(iy0 + 1, height()-1);
-        //int iy2 = min(iy0 + 2, height()-1);
-        //int iy3 = min(iy0 + 3, height()-1);
-
         int ix0 = xOff-1;
         int ix1 = ix0 + 1;
         int ix2 = ix0 + 2;
@@ -136,41 +107,67 @@ class ImagePyramid {
         int iy2 = iy0 + 2;
         int iy3 = iy0 + 3;
 
-        // Colors
-        Color c10 = iy0 >= 0 ? new Color(image.get(ix1, iy0)) : new Color();
-        Color c20 = iy0 >= 0 ? new Color(image.get(ix2, iy0)) : new Color();
+        // Wrap indices 
+        if (ix0 < 0) ix0 = width() - 1;
+        if (iy0 < 0) iy0 = height() - 1; 
+        if (ix3 >= width()) ix3 = 0;
+        if (iy3 >= height()) iy3 = 0;
 
-        Color c01 = ix0 >=0 ? new Color(image.get(ix0, iy1)) : new Color();
+        // Colors
+        Color c00 = new Color(image.get(ix0, iy0));
+        Color c10 = new Color(image.get(ix1, iy0));
+        Color c20 = new Color(image.get(ix2, iy0));
+        Color c30 = new Color(image.get(ix3, iy0));
+
+        Color c01 = new Color(image.get(ix0, iy1));
         Color c11 = new Color(image.get(ix1, iy1));
         Color c21 = new Color(image.get(ix2, iy1));
-        Color c31 = ix3 < width() ? new Color(image.get(ix3, iy1)) : new Color();
+        Color c31 = new Color(image.get(ix3, iy1));
 
-        Color c02 = ix0 >= 0 ? new Color(image.get(ix0, iy2)) : new Color();
+        Color c02 = new Color(image.get(ix0, iy2));
         Color c12 = new Color(image.get(ix1, iy2));
         Color c22 = new Color(image.get(ix2, iy2));
-        Color c32 = ix3 < width() ? new Color(image.get(ix3, iy2)) : new Color();
+        Color c32 = new Color(image.get(ix3, iy2));
 
-        Color c13 = iy3 < height() ? new Color(image.get(ix1, iy3)) : new Color();
-        Color c23 = iy3 < height() ? new Color(image.get(ix2, iy3)) : new Color();
+        Color c03 = new Color(image.get(ix0, iy3));
+        Color c13 = new Color(image.get(ix1, iy3));
+        Color c23 = new Color(image.get(ix2, iy3));
+        Color c33 = new Color(image.get(ix3, iy3));
+
+        // -----------------
+        // | 0 | 1 | 1 | 0 |
+        // |----------------
+        // | 1 | 1 | 1 | 1 |
+        // |----------------
+        // | 1 | 1 | 1 | 1 |
+        // |----------------
+        // | 0 | 1 | 1 | 0 |
+        // |----------------
 
         // Weights
-        float w10 = iy0 >= 0 ? hPull[0]*min(getWeight(ix1, iy0), 1) : 0;
-        float w20 = iy0 >= 0 ? hPull[0]*min(getWeight(ix2, iy0), 1) : 0;
+        float w00 = hPull[4]*min(getWeight(ix0, iy0), 1.0f);
+        float w10 = hPull[0]*min(getWeight(ix1, iy0), 1.0f);
+        float w20 = hPull[0]*min(getWeight(ix2, iy0), 1.0f);
+        float w30 = hPull[4]*min(getWeight(ix3, iy0), 1.0f);
 
-        float w01 = ix0 >= 0 ? hPull[0]*min(getWeight(ix0, iy1), 1) : 0;
-        float w11 = hPull[1]*min(getWeight(ix1, iy1), 1);
-        float w21 = hPull[2]*min(getWeight(ix2, iy1), 1);
-        float w31 = ix3 < width() ? hPull[3]*min(getWeight(ix3, iy1), 1) : 0;
+        float w01 = hPull[0]*min(getWeight(ix0, iy1), 1.0f);
+        float w11 = hPull[1]*min(getWeight(ix1, iy1), 1.0f);
+        float w21 = hPull[2]*min(getWeight(ix2, iy1), 1.0f);
+        float w31 = hPull[3]*min(getWeight(ix3, iy1), 1.0f);
 
-        float w02 = ix0 >= 0 ? hPull[0]*min(getWeight(ix0, iy2), 1) : 0;
-        float w12 = hPull[1]*min(getWeight(ix1, iy2), 1);
-        float w22 = hPull[2]*min(getWeight(ix2, iy2), 1);
-        float w32 = ix3 < width() ? hPull[3]*min(getWeight(ix3, iy2), 1) : 0;
+        float w02 = hPull[0]*min(getWeight(ix0, iy2), 1.0f);
+        float w12 = hPull[1]*min(getWeight(ix1, iy2), 1.0f);
+        float w22 = hPull[2]*min(getWeight(ix2, iy2), 1.0f);
+        float w32 = hPull[3]*min(getWeight(ix3, iy2), 1.0f);
 
-        float w13 = iy3 < height() ? hPull[3]*min(getWeight(ix1, iy3), 1) : 0;
-        float w23 = iy3 < height() ? hPull[3]*min(getWeight(ix2, iy3), 1) : 0;
+        float w03 = hPull[4]*min(getWeight(ix0, iy3), 1.0f);
+        float w13 = hPull[3]*min(getWeight(ix1, iy3), 1.0f);
+        float w23 = hPull[3]*min(getWeight(ix2, iy3), 1.0f);
+        float w33 = hPull[4]*min(getWeight(ix3, iy3), 1.0f);
 
-        float wSum = w10 + w20 + w01 + w11 + w21 + w31 + w02 + w12 + w22 + w32 + w13 + w23;
+        //float wSum = w11 + w21 + w12 + w22;  
+        //float wSum = w10 + w20 + w01 + w11 + w21 + w31 + w02 + w12 + w22 + w32 + w13 + w23;
+        float wSum = w00 + w10 + w20 + w30 + w01 + w11 + w21 + w31 + w02 + w12 + w22 + w32 + w03 + w13 + w23 + w33;
         if (wSum == 0) {
           newImage.set(x, y, new Color());
           newWeights[(width()/2)*y + x] = 0.0f;
@@ -178,8 +175,10 @@ class ImagePyramid {
         }
 
         Color c = new Color();
+        c.addInto(c00.mult(w00)); 
         c.addInto(c10.mult(w10)); 
         c.addInto(c20.mult(w20));
+        c.addInto(c30.mult(w30)); 
 
         c.addInto(c01.mult(w01)); 
         c.addInto(c11.mult(w11));
@@ -191,8 +190,10 @@ class ImagePyramid {
         c.addInto(c22.mult(w22)); 
         c.addInto(c32.mult(w32));
 
+        c.addInto(c03.mult(w03));
         c.addInto(c13.mult(w13));
         c.addInto(c23.mult(w23));
+        c.addInto(c33.mult(w33));
 
         c.multInto(1.0f/wSum);
 
@@ -222,85 +223,33 @@ class ImagePyramid {
         int xOff = 2*x;
         int yOff = 2*y;
 
-        // Indices
-        //int ix0 = max(0, min(x-1, width()-3));
-        //int ix1 = min(ix0 + 1, width()-1);
-        //int ix2 = min(ix0 + 2, width()-1);
-
-        //int iy0 = max(0, min(y-1, height()-3));
-        //int iy1 = min(iy0 + 1, height()-1);
-        //int iy2 = min(iy0 + 2, height()-1);
-
-        //int ix0 = x-1;
-        //int ix1 = ix0 + 1;
-        //int ix2 = ix0 + 2;
-
-        //int iy0 = y-1;
-        //int iy1 = iy0 + 1;
-        //int iy2 = iy0 + 2;
-
-        //// Colors
-        //Color x10 = iy0 >= 0 ? new Color(image.get(ix1, iy0)) : new Color();
-        //Color x01 = ix0 >= 0 ? new Color(image.get(ix0, iy1)) : new Color();
-        //Color x11 = new Color(image.get(ix1, iy1));
-        //Color x21 = ix2 < width() ? new Color(image.get(ix2, iy1)) : new Color();
-        //Color x12 = iy2 < height() ? new Color(image.get(ix1, iy2)) : new Color();
-
-        //// Weights
-        //float tw10 = iy0 >= 0 ? hPush[0]*min(getWeight(ix1, iy0), 1) : 0;
-        //float tw01 = ix0 >= 0 ? hPush[0]*min(getWeight(ix0, iy1), 1) : 0;
-        //float tw11 = hPush[1]*min(getWeight(ix1, iy1), 1);
-        //float tw21 = ix2 < width() ? hPush[2]*min(getWeight(ix2, iy1), 1) : 0;
-        //float tw12 = iy2 < height() ? hPush[2]*min(getWeight(ix1, iy2), 1) : 0;
-
-        //float tw = tw10 + tw01 + tw11 + tw21 + tw12;
-
-        //Color tx = new Color();
-        //tx.addInto(x10.mult(tw10));
-        //tx.addInto(x01.mult(tw01));
-        //tx.addInto(x11.mult(tw11));
-        //tx.addInto(x21.mult(tw21));
-        //tx.addInto(x12.mult(tw12));
-        //tx.multInto(1.0f/tw);
         PushData data = getPushData(x, y);
 
-        float tw00 = hPush[0]*min(data.weight(1, 1), 1) + hPush[1]*min(data.weight(0, 1), 1) + hPush[2]*min(data.weight(1, 0), 1) + hPush[3]*min(data.weight(0, 0), 1);
-        float tw10 = hPush[0]*min(data.weight(1, 1), 1) + hPush[1]*min(data.weight(1, 0), 1) + hPush[2]*min(data.weight(2, 1), 1) + hPush[3]*min(data.weight(2, 0), 1);
-        float tw01 = hPush[0]*min(data.weight(1, 1), 1) + hPush[1]*min(data.weight(0, 1), 1) + hPush[2]*min(data.weight(1, 2), 1) + hPush[3]*min(data.weight(0, 2), 1);
-        float tw11 = hPush[0]*min(data.weight(1, 1), 1) + hPush[1]*min(data.weight(1, 2), 1) + hPush[2]*min(data.weight(2, 1), 1) + hPush[3]*min(data.weight(2, 2), 1);
+        float tw00 = data.weightSum(0, 0);
+        float tw10 = data.weightSum(1, 0);
+        float tw01 = data.weightSum(0, 1);
+        float tw11 = data.weightSum(1, 1);
 
-        Color tx00 = new Color();
-        tx00.addInto(data.getColor(1, 1).mult(hPush[0]*min(data.weight(1, 1), 1)));
-        tx00.addInto(data.getColor(0, 1).mult(hPush[1]*min(data.weight(0, 1), 1)));
-        tx00.addInto(data.getColor(1, 0).mult(hPush[2]*min(data.weight(1, 0), 1)));
-        tx00.addInto(data.getColor(0, 0).mult(hPush[3]*min(data.weight(0, 0), 1)));
+        // Up-Left
+        Color tx00 = data.colorSum(0, 0);
         tx00.multInto(1.0f/tw00);
 
-        Color tx10 = new Color();
-        tx10.addInto(data.getColor(1, 1).mult(hPush[0]*min(data.weight(1, 1), 1)));
-        tx10.addInto(data.getColor(1, 0).mult(hPush[1]*min(data.weight(1, 0), 1)));
-        tx10.addInto(data.getColor(2, 1).mult(hPush[2]*min(data.weight(2, 1), 1)));
-        tx10.addInto(data.getColor(2, 0).mult(hPush[3]*min(data.weight(2, 0), 1)));
+        // Up-Right
+        Color tx10 = data.colorSum(1, 0);
         tx10.multInto(1.0f/tw10);
 
-        Color tx01 = new Color();
-        tx01.addInto(data.getColor(1, 1).mult(hPush[0]*min(data.weight(1, 1), 1)));
-        tx01.addInto(data.getColor(0, 1).mult(hPush[1]*min(data.weight(0, 1), 1)));
-        tx01.addInto(data.getColor(1, 2).mult(hPush[2]*min(data.weight(1, 2), 1)));
-        tx01.addInto(data.getColor(0, 2).mult(hPush[3]*min(data.weight(0, 2), 1)));
+        // Down-Left
+        Color tx01 = data.colorSum(0, 1);
         tx01.multInto(1.0f/tw01);
 
-        Color tx11 = new Color();
-        tx11.addInto(data.getColor(1, 1).mult(hPush[0]*min(data.weight(1, 1), 1)));
-        tx11.addInto(data.getColor(1, 2).mult(hPush[1]*min(data.weight(1, 2), 1)));
-        tx11.addInto(data.getColor(2, 1).mult(hPush[2]*min(data.weight(2, 1), 1)));
-        tx11.addInto(data.getColor(2, 2).mult(hPush[3]*min(data.weight(2, 2), 1)));
+        // Down-Right
+        Color tx11 = data.colorSum(1, 1);
         tx11.multInto(1.0f/tw11);
 
-        float w00 = min(higher.getWeight(xOff, yOff), 1);
-        float w10 = min(higher.getWeight(xOff+1, yOff), 1);
-        float w01 = min(higher.getWeight(xOff, yOff+1), 1);
-        float w11 = min(higher.getWeight(xOff+1, yOff+1), 1);
+        float w00 = min(higher.getWeight(xOff, yOff), 1.0f);
+        float w10 = min(higher.getWeight(xOff+1, yOff), 1.0f);
+        float w01 = min(higher.getWeight(xOff, yOff+1), 1.0f);
+        float w11 = min(higher.getWeight(xOff+1, yOff+1), 1.0f);
 
         Color c00 = new Color(higher.image.get(xOff, yOff));
         Color c10 = new Color(higher.image.get(xOff+1, yOff));
@@ -328,6 +277,7 @@ class ImagePyramid {
   }
 
   PushData getPushData(int x, int y) {
+    // Indices
     int ix0 = x-1;
     int ix1 = ix0 + 1;
     int ix2 = ix0 + 2;
@@ -336,48 +286,38 @@ class ImagePyramid {
     int iy1 = iy0 + 1;
     int iy2 = iy0 + 2;
 
+    // Wrap indices
+    if (ix0 < 0) ix0 = width() - 1;
+    if (iy0 < 0) iy0 = height() - 1;
+    if (ix2 >= width()) ix2 = 0;
+    if (iy2 >= height()) iy2 = 0;
+
     // Colors
-    Color x00 = ix0 >= 0 && iy0 >= 0 ? new Color(image.get(ix0, iy0)) : new Color();
-    Color x10 = iy0 >= 0 ? new Color(image.get(ix1, iy0)) : new Color();
-    Color x20 = ix2 < width() && iy0 >= 0 ? new Color(image.get(ix2, iy0)) : new Color();
+    Color x00 = new Color(image.get(ix0, iy0));
+    Color x10 = new Color(image.get(ix1, iy0));
+    Color x20 = new Color(image.get(ix2, iy0));
 
-    Color x01 = ix0 >= 0 ? new Color(image.get(ix0, iy1)) : new Color();
+    Color x01 = new Color(image.get(ix0, iy1));
     Color x11 = new Color(image.get(ix1, iy1));
-    Color x21 = ix2 < width() ? new Color(image.get(ix2, iy1)) : new Color();
+    Color x21 = new Color(image.get(ix2, iy1));
 
-    Color x02 = ix0 >= 0 && iy2 < height() ? new Color(image.get(ix0, iy2)) : new Color();
-    Color x12 = iy2 < height() ? new Color(image.get(ix1, iy2)) : new Color();
-    Color x22 = ix2 < width() && iy2 < height() ? new Color(image.get(ix2, iy2)) : new Color();
+    Color x02 = new Color(image.get(ix0, iy2));
+    Color x12 = new Color(image.get(ix1, iy2));
+    Color x22 = new Color(image.get(ix2, iy2));
 
     // Weights
-    float tw00 = ix0 >= 0 && iy0 >= 0 ? hPull[0]*min(getWeight(ix0, iy0), 1) : 0;
-    float tw10 = iy0 >= 0 ? hPull[0]*min(getWeight(ix1, iy0), 1) : 0;
-    float tw20 = ix2 < width() && iy0 >= 0 ? hPull[0]*min(getWeight(ix2, iy0), 1) : 0;
+    float tw00 = hPull[0]*min(getWeight(ix0, iy0), 1.0f);
+    float tw10 = hPull[0]*min(getWeight(ix1, iy0), 1.0f);
+    float tw20 = hPull[0]*min(getWeight(ix2, iy0), 1.0f);
 
-    float tw01 = ix0 >= 0 ? hPull[0]*min(getWeight(ix0, iy1), 1) : 0;
-    float tw11 = hPull[1]*min(getWeight(ix1, iy1), 1);
-    float tw21 = ix2 < width() ? hPull[2]*min(getWeight(ix2, iy1), 1) : 0;
+    float tw01 = hPull[0]*min(getWeight(ix0, iy1), 1.0f);
+    float tw11 = hPull[1]*min(getWeight(ix1, iy1), 1.0f);
+    float tw21 = hPull[2]*min(getWeight(ix2, iy1), 1.0f);
 
-    float tw02 = ix0 >= 0 && iy2 < height() ? hPull[0]*min(getWeight(ix0, iy2), 1) : 0;
-    float tw12 = iy2 < height() ? hPull[2]*min(getWeight(ix1, iy2), 1) : 0;
-    float tw22 = ix2 < width() && iy2 < height() ? hPull[0]*min(getWeight(ix2, iy2), 1) : 0;
+    float tw02 = hPull[0]*min(getWeight(ix0, iy2), 1.0f);
+    float tw12 = hPull[2]*min(getWeight(ix1, iy2), 1.0f);
+    float tw22 = hPull[0]*min(getWeight(ix2, iy2), 1.0f);
 
-    //float tw = tw00+tw10+tw20 + tw01+tw11+tw21 + tw02+tw12+tw22;
-
-    //Color tx = new Color();
-    //tx.addInto(x00.mult(tw00));
-    //tx.addInto(x10.mult(tw10));
-    //tx.addInto(x20.mult(tw20));
-    //tx.addInto(x01.mult(tw01));
-    //tx.addInto(x11.mult(tw11));
-    //tx.addInto(x21.mult(tw21));
-    //tx.addInto(x02.mult(tw02));
-    //tx.addInto(x12.mult(tw12));
-    //tx.addInto(x22.mult(tw22));
-
-    //tx.multInto(1.0f/tw);
-
-    return new PushData(new Color[]{x00, x10, x20, x01, x11, x21, x02, x12, x22}, 
-      new float[]{tw00, tw10, tw20, tw01, tw11, tw21, tw02, tw12, tw22});
+    return new PushData(new Color[]{x00, x10, x20, x01, x11, x21, x02, x12, x22}, new float[]{tw00, tw10, tw20, tw01, tw11, tw21, tw02, tw12, tw22});
   }
 }

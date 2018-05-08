@@ -77,10 +77,10 @@ To get fast search and insert a hash function with few collisions is important. 
   commentstyle=\itshape\color{darkgreen},
   morecomment=[l][\bfseries\color{cyan4}]{\#},
   classoffset=1,
-  morekeywords={hash,floor,rotateRight,eq,abs,removeDuplicates,quadric,compute_face_quadric},
+  morekeywords={hash,floor,rotateRight,eq,abs,removeDuplicates,quadric,compute_face_quadric,random},
   keywordstyle=\bfseries\color{darkblue},
   classoffset=2,
-  emph={int,float,vec2,vec3,bool,double,vector,void,Face,Quadric},
+  emph={int,float,vec2,vec3,bool,double,vector,void,Face,Quadric,point},
   emphstyle={\bfseries\color{darkred}},
   classoffset=3,
   emph={V,U},
@@ -274,6 +274,62 @@ where $A$ is the area of face $(v_0, v_1, v_2)$, $n^\intercal$ is the face norma
 \end{equation}
 
 
+\subsection{Improving Texture Atlas}
+Trying to keep the seam during simplification improves the quality of the resulting mesh. However, when a mesh is heavily simplified it is hard to keep the geometry and often gives a bad result. Removing the seam constraint gives a better geometry but now there is another problem. Since the seam is not kept we could get texture coordinates that lies outside the defined areas of the texture atlas. A common color in this area is black but it depends on what the texture artist chose.
+
+One way of finding valid pixels is to first create a mesh where vertices are defined by the texture coordinates, i.e. $v = (s, t, 0)$ where $s$, and $t$ are the texture coordinates. This creates sheets lying in the same plane where empty areas will be locations that are not defined in the texture atlas. By casting rays towards the cheats the empty areas can be detected. The origin of the rays will be based on the pixel locations but translated in the direction of the normal to the plane. They will then be casted straight down towards the sheets and if they hit anything we have found a valid pixel.
+
+Given some scattered data, Gortler et al. \cite{Gortler96thelumigraph} present a way of filling in the empty areas based on the given data. This is done by using a image pyramid containing images of decreasing resolution. The lower resolution images is used to fill in the empty areas of the higher resolution images. The algorithm works in the two phases \emph{pull} and \emph{push} hence it is given the name \emph{pull-push}.
+
+\subsubsection{Pull}
+The first level $r = 0$ of the pyramid is the input image and level $r + 1$ have half the size of level $r$ in each dimension. Each pixel have a data value $x^r_i$ and weight $w^r_i$. The pull phase starts at level 0 and recursively computes the values of the next level according to \cref{eq:pull_x,eq:pull_w} where $\tilde{h}$ is a gaussian filter. $\tilde{h}$ blends the neighboring pixels with an applied weight according to \cref{fig:pull_filter} which will give a blurred image. At the first level valid pixels is assigned a weight of $1$ and invalid pixels a weight of $0$. This will make sure that the valid pixels will not be changed.
+
+\begin{align}
+  w^{r+1}_i &= \sum_k {\tilde{h}_k \min(w^r_k,1)} \label{eq:pull_x}\\
+  x^{r+1}_i &= \frac{1}{w^{r+1}_i} \sum_k {\tilde{h}_k \min(w^r_k,1) x^r_i} \label{eq:pull_w}
+\end{align}
+
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.3\textwidth]{figures/pull_filter.eps}
+    \caption{Interpolation of pixel values in pull phase}
+    \label{fig:pull_filter}
+\end{figure}
+
+
+\subsubsection{Push}
+The lower resolution images generated in the pull phase are used in the push phase to fill in empty pixels in the higher resolution images. The weights that was computed for each pixel in the pull phase are used to determine how the pixel values will be blended. A lower weight means that the color will mostly be influenced by the lower resolution pixels. Higher weights means that the current pixel color will influence the most.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/push_filter_color.eps}
+    \caption{Interpolation of pixel values in push phase}
+    \label{fig:push_filter}
+\end{figure}
+
+The first step is to calculate temporay values $tx$ and $tw$ according to
+\begin{align}
+  tw^{r}_i &= \sum_k {h_k \min(w^{r+1}_k,1)} \label{eq:push_tw}\\
+  tx^{r}_i &= \frac{1}{tw^{r}_i} \sum_k {h_k \min(w^{r+1}_k,1) x^{r+1}_i} \label{eq:push_tx}
+\end{align}
+
+The current values $x^r$ and $w^r$ are then blended with the temporary values according to
+\begin{align}
+  x^r_i &= tx^r_i (1 - w^r_i) + w^r x^r_i \label{eq:push_x}\\
+  w^r_i &= tw^r_i (1 - w^r_i) + w^r \label{eq:push_w}
+\end{align}
+
+ What neighboring pixels to blend with is determined by the pixel's location within its superpixel. For example, the top-left pixel (higher resolution) is blended with the top-left, top and left pixels (lower resolution) as can be seen in \cref{fig:push_filter}. These pixel values are weighted by $1$, $3$, or $9$,  depending on their location. $\dfrac{1}{16}$, $\dfrac{3}{16}$, or $\dfrac{9}{16}$
+
+ Pixels at the edges of the texture needs special treatment since there is not neighbors at all sides. There exist multiple solutions to this problem such as ignoring pixels, using the closest value, mirroring values, or wrapping around to the other side. Textures are often wrapped when used and therefore the wrapping seams like a good solution.
+ 
+\clearpage
+
+%\begin{equation}
+  
+%\end{equation}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -287,6 +343,8 @@ OVERVIEW
 \subsection{Appearance Preservation}
 In order to compare how well the appearance is preserved for different LoDs the image metric described in \cref{sec:metrics_for_appearance_preservation} can be used. The main idea is to render multiple images of both the original and simplified mesh from a set of camera positions. A RMS of all the pixel values of the images is then simply the error that the simplification introduced. The authors \cite{lindstrom2000image} measured difference in luminance but other metrics, such as Euclidean distance of the RGB colors, can be used.
 
+
+
 Another common approach for measuring the difference between two meshes is to use the \emph{Hausdorff distance}. Cignoni et al. \cite{cignoni1998metro} first defines the distance between a point $p$ and a surface $S$ as
 
 \[e(p, S) = \min_{p' \in S} \norm*{p' - p}\]
@@ -295,7 +353,20 @@ A one-sided distance between two surfaces \(S, S'\) is then defined as
 
 \[E(S, S') = \max_{p \in S} e(p, S')\]
 
-This distance is not symmetric and depends on which surface you start the measurement from, meaning that \(E(S, S') \neq E(S', S)\) in some cases. Finally, the Hausdorff distance can be obtained by taking the maximum of the distances in both directions. A mean distance between the surfaces can be obtained by uniformly sample points on both surfaces, measuring their Hausdorff distance, and then dividing by the number of sampled points.
+This distance is not symmetric and depends on which surface you start the measurement from, meaning that \(E(S, S') \neq E(S', S)\) in some cases. Finally, the Hausdorff distance can be obtained by taking the maximum of the distances in both directions. A mean distance between the surfaces can be obtained by uniformly sample points on both surfaces, measuring their Hausdorff distance, and then dividing by the number of sampled points. How many points to sampled depends on the size and shape of the meshes being compared. For the meshes used in the evaluation 10000 points on each mesh seamed to give a stable estimate of the error introduced by the simplification.
+
+The sampling of a point on a mesh can be done in two steps: First, randomly pick a triangle of the mesh, then pick a random point on the chosen triangle. A triangle can simply be picked by randomizing a triangle index. A random point on a triangle can be picked by using barycentric coordinates. As can be seen in \cref{lst:sample_point}, two random numbers \(s, t\) between 0 and 1 are chosen. The sampled point is then a convex combination of the vertices of the triangle. Since \(s + t \leq 1\) they are randomized until the condition is fulfilled.  
+
+\begin{minipage}{\linewidth}
+  \begin{lstlisting}[caption={Sampling point on triangle by using barycentric coordinates}, label={lst:sample_point}]
+    do {
+      float s = random(0,1);
+      float t = random(0,1);
+    } while (s + t > 1)
+
+    point v = (1 - s - t)*v0 + s*v1 + t*v2;
+  \end{lstlisting}
+\end{minipage}
 
 \subsection{Models}
 Four LoD:s are usually used by Configura and they are defined by triangle density ($\#triangles/area$). The four levels are super (5000 $tri/m^2$), high (1000 $tri/m^2$), medium (200 $tri/m^2$), and low  (50 $tri/m^2$) and these will be used for the evaluation.

@@ -18,7 +18,7 @@ ImagePyramid pyramid;
 boolean glowEffect = false;
 
 void settings() {
-  input = loadImage("woman.jpg");
+  input = loadImage("woman_input.jpg");
   size(2*input.width, input.height);
 }
 
@@ -30,20 +30,20 @@ void setup() {
     f.delete();
   }
 
-  bound = loadImage("bound.png");
+  bound = loadImage("woman_bound.png");
+  //bound = input.copy();
+  //bound.filter(THRESHOLD, 0.01);
 
   //surface.setResizable(true);
   //surface.setSize(width=input.width*2, height=input.height);
 
-  hPull = new float[4];
-  hPull[0] = hPull[3] = 1.0f/8.0f;
-  hPull[1] = hPull[2] = 3.0f/8.0f; 
+  gaussPullFilter();
 
   hPush = new float[4];
-  hPush[0] = 9.0f/16.0f;
-  hPush[1] = 3.0f/16.0f;
-  hPush[2] = 3.0f/16.0f;
-  hPush[3] = 1.0f/16.0f; 
+  hPush[0] = 9.0f;
+  hPush[1] = 3.0f;
+  hPush[2] = 3.0f;
+  hPush[3] = 1.0f; 
 
   pyramid = new ImagePyramid(input, null);
   pyramid.pull();
@@ -60,16 +60,16 @@ void setup() {
   pyramid.push();
   cur = pyramid;
 
-  i=0;
+  i--;
   while (true) {
-    cur.image.save(datadir + "push" + i++ + ".png");
+    cur.image.save(datadir + "push" + i-- + ".png");
     if (cur.lower == null) break;
     cur = cur.lower;
   }
 
   PImage res = pyramid.image.image();
   if (glowEffect) res.filter(DILATE);
-  res.save("result.png");
+  res.save("output.png");
   println("DONE");
   noLoop();
 }
@@ -106,4 +106,16 @@ PImage combine(PImage a, PImage b) {
       image.set(x, a.height+y, b.get(x, y));
 
   return image;
+}
+
+void boxPullFilter() {
+  hPull = new float[5];
+  hPull[0] = hPull[3] = hPull[1] = hPull[2] = hPull[4] = 1.0f;
+}
+
+void gaussPullFilter() {
+  hPull = new float[5];
+  hPull[0] = hPull[3] = 2.0f;
+  hPull[1] = hPull[2] = 4.0f; 
+  hPull[4] = 1.0f;
 }

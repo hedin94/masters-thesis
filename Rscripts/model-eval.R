@@ -298,11 +298,11 @@ mk2_hausdorff_800 <- importData("mk2-hausdorff-800.csv")
 
 df <- mk2_hausdorff_800[as.character(mk2_hausdorff_800$Detail) != " base",]
 df <- mk2_hausdorff_800
-df <- comb[as.character(comb$Detail) != "base",]
+df <- comb[as.character(comb$Detail) != " base",]
 
 Summary <- df %>%
   group_by(Reducer, Detail) %>%
-  summarise(Mean = mean(GeoError), SD = sd(GeoError))
+  summarise(Mean = mean(sqrt(Error)), SD = sd(sqrt)Error)))
 
 ggplot(Summary, aes(x=Detail, y=Mean, colour=Reducer, group=Reducer, shape=Reducer)) + 
   geom_errorbar(aes(ymin=Mean-SD, ymax=Mean+SD), width=.3, position=pd) +
