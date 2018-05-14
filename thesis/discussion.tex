@@ -1,3 +1,37 @@
 \chapter{Discussion} \label{cha:discussion}
-TODO: Overview of discussion chapter
+This chapter provides a discussion on the work. First, a discussion of the results is given in \cref{sec:discussion_results}. Afterwards, in \cref{sec:discussion_method} the used method is discussed.
 
+\section{Results} \label{sec:discussion_results}
+
+\subsection{Luminance Error} \label{sec:discussion_luminance}
+When simplifying a mesh to be used for LoD super and high, considering the seam or the volume does not affect the rms luminance error much as can be seen in \cref{fig:mean_luminance_error}. At the high level the graphs start to diverge but the confidence intervals overlap which means that we can not say with any significance that any setting is better than another. However, for medium and low, considering the seam gives a worse result than not considering it.
+
+Not allowing all edge removals in the seam constrains the simplification and this affects the final geometry. Geometry that differs a lot from the original will give a high luminance error. This occurs since in some areas of the rendered images the background is rendered where the mesh used to be. In this case the background was white leading to a high difference of the images.
+
+Ignoring the seam for now, if the volume is considered the error becomes slightly larger but not with any significance. Not considering the volume may be a better choice since the optimization problem would be less constrained and could be solved faster.
+
+\subsection{Color and Geometric Error} \label{sec:discussion_color_geom}
+To further investigate when the seam and volume should be considered points was sampled on the surfaces of the mesh. A comparison of this can be seen in \cref{fig:geo_col_error}.
+
+If we first look at the geometric error the two highest LoD:s have a geometric error close to zero for all settings. For the other two lower levels we can see, just as discussed in \cref{sec:discussion_luminance}, that the seam preservation give a worse result. According the graphs of the geometric error the best setting would be to only consider the texture.
+
+When looking at the color error the difference is small between the settings. However, the rms color error for the super LoD is lower when the seam is considered. Therefore, considering the seam may give a better result for the super and high LoD since the geometric error was small.
+
+
+
+\subsection{Volume Preservation} \label{sec:discussion_volume}
+\cref{fig:volume_diff} shows how the volume of meshes is affected by different configurations of texture, seam and volume preservation. Just as discussed in previous sections the configuration affect the result for the two highest LoD:s very little. By looking at the figure we can see that the volume constraint indeed keep the volume better. Considering the seam gives a larger difference in volume but it is kept better if the volume is also consider. The best configuration if one wants to keep the volume is to only consider the texture and the volume.
+
+
+\subsection{Improved Texture Atlas} \label{sec:discussion_texture}
+
+
+\subsection{Comparison of LoD:s} \label{sec:discussion_lod}
+
+\section{Method} \label{sec:discussion_method}
+
+  
+  %%%
+  % N/A for this work
+  %%%
+%\section{The work in a wider context} \label{sec:work_in_a_wider_context}

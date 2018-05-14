@@ -115,17 +115,36 @@ mk2_luminance_tex$Reducer <- rep("mk2 - texture", nrow(mk2_luminance_volA_tex_bo
 
 mk2_hausdorff_giraffe <- importData("mk2-hausdorff-giraffe.csv")
 
-mk2_hausdorff_200 <- importData("mk2-hausdorff-200.csv")
-mk2_hausdorff_600 <- importData("mk2-hausdorff-600.csv")
-mk2_hausdorff_610 <- importData("mk2-hausdorff-610.csv")
-mk2_hausdorff_700 <- importData("mk2-hausdorff-700.csv")
-mk2_hausdorff_710 <- importData("mk2-hausdorff-710.csv")
-mk2_hausdorff_800 <- importData("mk2-hausdorff-800.csv")
-mk2_hausdorff_810 <- importData("mk2-hausdorff-810.csv")
-mk2_hausdorff_900 <- importData("mk2-hausdorff-900.csv")
-mk2_hausdorff_910 <- importData("mk2-hausdorff-910.csv")
-mk2_hausdorff_1000 <- importData("mk2-hausdorff-1000.csv")
+#######################
+mk2_hausdorff_200 <- importData("Backup/mk2-hausdorff-200.csv")
+mk2_hausdorff_600 <- importData("Backup/mk2-hausdorff-600.csv")
+mk2_hausdorff_610 <- importData("Backup/mk2-hausdorff-610.csv")
+mk2_hausdorff_700 <- importData("Backup/mk2-hausdorff-700.csv")
+mk2_hausdorff_710 <- importData("Backup/mk2-hausdorff-710.csv")
+mk2_hausdorff_800 <- importData("Backup/mk2-hausdorff-800.csv")
+mk2_hausdorff_810 <- importData("Backup/mk2-hausdorff-810.csv")
+mk2_hausdorff_900 <- importData("Backup/mk2-hausdorff-900.csv")
+mk2_hausdorff_910 <- importData("Backup/mk2-hausdorff-910.csv")
+mk2_hausdorff_1000 <- importData("Backup/mk2-hausdorff-1000.csv")
+#######################
+mk2_volume_0200 <- importData("mk2-volume-0200.csv")
+mk2_volume_0600 <- importData("mk2-volume-0600.csv")
+mk2_volume_0610 <- importData("mk2-volume-0610.csv")
+mk2_volume_0700 <- importData("mk2-volume-0700.csv")
+mk2_volume_0710 <- importData("mk2-volume-0710.csv")
+mk2_volume_0800 <- importData("mk2-volume-0800.csv")
+mk2_volume_0810 <- importData("mk2-volume-0810.csv")
+mk2_volume_0900 <- importData("mk2-volume-0900.csv")
+mk2_volume_0910 <- importData("mk2-volume-0910.csv")
+mk2_volume_1000 <- importData("mk2-volume-1000.csv")
+#######################
+time_0800 <- read.csv(file="c:/CetDev/version9.0/write/t/texture-time.csv")
+time_0800$Detail <- factor(time_0800$Detail, as.character(time_0800$Detail[1:4]))
+time_0800$Detail <- factor(rep(c("super", "high", "medium", "low"), nrow(time_0800)/4), c("super", "high", "medium", "low"))
+time_0800$Triangles <- factor(time_0800$Triangles, c("super", "high", "medium", "low"))
 
+volume <- read.csv(file="c:/Users/rashe/exjobb-master/thesis/volume.csv")
+volume$Detail <- factor(volume$Detail, as.character(volume$Detail[1:5]))
 
 
 volume <- data.frame(Detail=factor(c(" base", " super", " high", " medium", " low"), 
@@ -292,6 +311,17 @@ comb <- insert(comb, mk2_hausdorff_810, 1, 4)
 comb <- insert(comb, mk2_hausdorff_900, 1, 4)
 comb <- insert(comb, mk2_hausdorff_910, 1, 4)
 
+comb <- create_header(colnames(mk2_volume_0200))
+comb <- insert(comb, mk2_volume_0200, 1, 4)
+comb <- insert(comb, mk2_volume_0600, 1, 4)
+comb <- insert(comb, mk2_volume_0610, 1, 4)
+comb <- insert(comb, mk2_volume_0700, 1, 4)
+comb <- insert(comb, mk2_volume_0710, 1, 4)
+comb <- insert(comb, mk2_volume_0800, 1, 4)
+comb <- insert(comb, mk2_volume_0810, 1, 4)
+comb <- insert(comb, mk2_volume_0900, 1, 4)
+comb <- insert(comb, mk2_volume_0910, 1, 4)
+
 pd <- position_dodge(0.1)
 
 mk2_hausdorff_800 <- importData("mk2-hausdorff-800.csv")
@@ -302,16 +332,77 @@ df <- comb[as.character(comb$Detail) != " base",]
 
 Summary <- df %>%
   group_by(Reducer, Detail) %>%
-  summarise(Mean = mean(sqrt(Error)), SD = sd(sqrt)Error)))
+  summarise(Mean = mean(Error), SD = sd(Error), Q = qt(0.975,df=length(Error)-1)*sd(Error)/sqrt(length(Error)), N=length(Error))
 
 ggplot(Summary, aes(x=Detail, y=Mean, colour=Reducer, group=Reducer, shape=Reducer)) + 
+  geom_errorbar(aes(ymin=Mean-Q, ymax=Mean+Q), width=.3, position=pd) +
+  geom_line(position=pd) +
+  scale_shape_manual(values=c(19, 18, 17, 15)) +
+  geom_point(position=pd, size=3) +
+  ylab("Volume difference") +
+  annotation_logticks(base=10, sides="l") +
+  #scale_y_log10() +
+  #scale_x_log10() +
+  theme(legend.justification=c(0,1), legend.position=c(.04,.99),
+        legend.text = element_text(size=16),
+        legend.title = element_text(size=16),
+        axis.title = element_text(size=16),
+        axis.text = element_text(size=14))
+
+
+Summary <- time_0800 %>%
+  group_by(Threads, Detail) %>%
+  summarise(Mean = mean(Time/1000), SD = sd(Time/1000))
+
+ggplot(Summary, aes(x=Threads, y=Mean, colour=Detail, group=Detail)) + 
   geom_errorbar(aes(ymin=Mean-SD, ymax=Mean+SD), width=.3, position=pd) +
   geom_line(position=pd) +
   scale_shape_manual(values=c(19, 18, 17, 15)) +
   geom_point(position=pd, size=3) +
-  ylab("Rms luminance error") +
-  scale_y_log10() +
-  annotation_logticks()
+  ylab("Time (ms)") #+
+  #annotation_logticks(base=10, sides="l") +
+  #scale_y_log10() +
+  #scale_x_log10() +
+  #theme(legend.justification=c(0,1), legend.position=c(.04,.99),
+   #     legend.text = element_text(size=16),
+    #    legend.title = element_text(size=16),
+     #   axis.title = element_text(size=16),
+      #  axis.text = element_text(size=14))
+
+time_0800 <- read.csv(file="c:/CetDev/version9.0/write/t/Backup/texture-time.csv")
+time_0800 <- read.csv(file="c:/CetDev/version9.0/write/t/texture-time.csv")
+time_0800$Detail <- factor(time_0800$Detail, as.character(time_0800$Detail[1:4]))
+time_0800 <- time_0800[time_0800$Time != max(time_0800$Time),]
+
+t <- time_0800[time_0800$Detail == "low",]
+t$g <- interaction(t$Threads, t$Detail)
+
+ggplot(t, aes(x=g, y=Time/1000)) + 
+  geom_boxplot() +
+  ylab("Time (ms)") +
+  xlab("Threads")
+
+ggplot(t, aes(x=g, y=Time/1000)) + 
+  geom_point()
+
+t <- comb[comb$Detail != " base",]
+t$g <- interaction(t$Reducer, t$Detail)
+
+Summary <- t %>%
+  group_by(Reducer, Detail) %>%
+  summarise(Mean = mean(Error), Q = qt(0.975,df=length(Error)-1)*sd(Error)/sqrt(length(Error)), SD = sd(Error))
+
+ggplot(Summary, aes(x=Detail, y=Mean, colour=Reducer, group=Reducer, shape=Reducer)) + 
+  geom_errorbar(aes(ymin=Mean-Q, ymax=Mean+Q), width=.3, position=pd) +
+  geom_line(position=pd) +
+  scale_shape_manual(values=c(19, 18, 17, 15)) +
+  geom_point(position=pd, size=3) 
+
+error <- qt(0.975,df=length(t$Error)-1)*sd(t$Error)/sqrt(length(t$Error))
+
+
+ggplot(t, aes(x=g, y=Error, color=Reducer)) + 
+  geom_boxplot()
 
 ggplot(comb, aes(x=Detail, y=ColError, colour=Reducer, group=Reducer, shape=Model)) + 
   scale_shape_manual(values=c(15, 16, 17, 0, 1, 2, 6, 7, 8)) +
@@ -325,4 +416,5 @@ ggplot(rms, aes(x=Detail, y=Error/9, colour=Reducer, group=Reducer, shape=Reduce
   scale_shape_manual(values=c(19, 18, 17, 15)) +
   geom_point(size=4) +
   geom_line()
+
 

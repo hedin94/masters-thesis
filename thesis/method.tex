@@ -30,11 +30,12 @@
 %% 
 %%% Code:
 
-\chapter{Method} \label{cha:method}
-Now that the theoretical groundwork has been laid out, we describe in \cref{sec:implementation} how the solution was implemented into Configura's graphics pipeline and then show how to evaluate it in \cref{sec:evaluation}.
 
-\iffals
-In more detail, the implementation description shows how the different algorithms are implemented in practice and how these fit into Configura's pipeline. Moreover, we also show how the appearance evaluator has been implemented and integrated into the system. In the evaluation part of the method, we describe how to measure the computation time, memory usage, polygon count and appearance preservation of a algorithm given a certain mesh and parameters.
+\chapter{Method} \label{cha:method}
+  Now that the theoretical groundwork has been laid out, we describe in \cref{sec:implementation} how the solution was implemented into Configura's graphics pipeline and then show how to evaluate it in \cref{sec:evaluation}.
+  
+\iffalse
+ In more detail, the implementation description shows how the different algorithms are implemented in practice and how these fit into Configura's pipeline. Moreover, we also show how the appearance evaluator has been implemented and integrated into the system. In the evaluation part of the method, we describe how to measure the computation time, memory usage, polygon count and appearance preservation of a algorithm given a certain mesh and parameters.
 \fi
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -64,11 +65,6 @@ The mesh representation by Hoppe \cite{hoppe1998efficient} allows vertices to ha
     \label{fig:vertex_wedge_corner}
 \end{figure}
 
-\subsubsection{Finding duplicate vertices}
-A fast method to find vertices that occupy the same space in 3D is to use a hash map. It is an associative container that is organized into buckets that contains the elements. Search, insert, and removal of elements have on average constant time complexity but in the worst case linear. If a key maps to the same bucket as another key it will be put in a collision chain in the same bucket. The time complexity will in that case be linear on the number of elements in that bucket.
-
-To get fast search and insert a hash function with few collisions is important. The hash function that is used at Configura can be seen in \cref{lst:hash3D}. This hash of a 3-dimensional vector is a combination of the x, y, z coordinates. The hashes of x and y is also rotated i.e. bits are circular shifted, to get fewer collisions. 
-
 \lstset{
   language=C++,
   classoffset=0,
@@ -87,6 +83,14 @@ To get fast search and insert a hash function with few collisions is important. 
   emphstyle={\bfseries\color{black}},
   classoffset=0,
   captionpos=b}
+
+\begin{subs}
+\subsubsection{Finding duplicate vertices}
+A fast method to find vertices that occupy the same space in 3D is to use a hash map. It is an associative container that is organized into buckets that contains the elements. Search, insert, and removal of elements have on average constant time complexity but in the worst case linear. If a key maps to the same bucket as another key it will be put in a collision chain in the same bucket. The time complexity will in that case be linear on the number of elements in that bucket.
+
+To get fast search and insert a hash function with few collisions is important. The hash function that is used at Configura can be seen in \cref{lst:hash3D}. This hash of a 3-dimensional vector is a combination of the x, y, z coordinates. The hashes of x and y is also rotated i.e. bits are circular shifted, to get fewer collisions. 
+
+
 \begin{minipage}{\linewidth}
 \begin{lstlisting}[caption={Hashing 3D point}, label={lst:hash3D}]
   bool eq(float a, float b) {
@@ -187,11 +191,14 @@ Extracting all \emph{unique} vertices in a mesh can be done with the aformention
 \end{lstlisting}
 \end{minipage}
 \fi
+\end{subs}
 
+\begin{subs}
 \subsubsection{Vertices with multiple attributes}
 To handle vertices with multiple unique attributes the \texttt{removeDuplicates} \cref{lst:remove_duplicates} function require some modification. A simple solution is to associate each 3-dimensional vector with an array of indices. Thus, vertices can be associated with multiple texture coordinate indices. A vertex will only be removed if it is in the same place as another vertex with the same texture coordinates. However, if the texture coordinate is unique the vertex index will be added to the end of the list associated with the spatial coordinate.
 
 This association can then be used to create vertices divided into one or more wedges. This kind of vertex will hereafter be called \emph{multi-vertex} to distinguish it from the real vertices. For each vertex, a wedge will be created containing the vertex index and then put in an array. A multi-vertex will contain indices to this array of wedges. 
+\end{subs}
 
 \subsection{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric2}
 As a rule, the original mesh will be given as an ordinary triangle mesh (a so called ``triangle soup''), which is not suitable for applying the QEM algorithm (since the local neighborhood information isn't available). Instead, we convert this triangle soup to a half-edge mesh. This allows easy manipulation of the local neighborhood of the mesh, which is precisely what is needed when doing an edge collapse or when calculating the error quadrics of a given vertex.
@@ -232,7 +239,7 @@ Parallelization during the simplification is not as easy since the edge collapse
 
 However, after a collapse the costs of the edges in the local neighborhood need to be updated, i.e. update cost and compute optimal position. These edges do not depend on each other and therefore the computations can be done in parallel.
 
-\subsection{Preserving volume}
+\subsection{Volume preservation} \label{sec:volume_preservation}
 Collapsing edges and moving vertices may change the local shape of the mesh being simplified. This can result in a loss of volume and will affect the appearance. According to Lindstrom and Turk \cite{lindstrom1998fast} , moving a vertex $v_0$ to $v$ sweeps out a volume which can be described as a tetrahedron with vertices $(v, v_0, v_1, v_2)$ as seen in \cref{fig:tetrahedron}. The volume of this tetrahedon is the change in volume that the new vertex position $v$ would give. 
 
 \begin{figure}[h]
@@ -250,12 +257,12 @@ Given four vertices $(v, v_0, v_1, v_2)$ of a tetrahedron the volume can be calc
 
 \cref{eq:tetrahedron_volume} can be rewritten as 
 
-\begin{equation} \label{eq:volume_constraint}
-\frac{A}{3} \mathbf{n}^\intercal \mathbf{v} - \frac{A}{3} \mathbf{n}^\intercal \mathbf{v}_0 = \mathbf{g}_{vol}^\intercal \mathbf{v} + d_{vol} = 0
+\begin{equation} \label{eq:tetrahedron_volume_rewritten}
+\frac{area}{3} \mathbf{n}^\intercal \mathbf{v} - \frac{area}{3} \mathbf{n}^\intercal \mathbf{v}_0 = \mathbf{g}_{vol}^\intercal \mathbf{v} + d_{vol} = 0
 \end{equation}
 
 
-where $A$ is the area of face $(v_0, v_1, v_2)$, $n^\intercal$ is the face normal, and $v$ is the new vertex position. This will give a linear constraint that can easily be added to the system of linear equations, thus, increasing its dimension by one.
+where $v_0$ is a vertex of face $(v_0, v_1, v_2)$, $n^\intercal$ is the face normal, and $v$ is the new vertex position. This will give a linear constraint that can easily be added to the system of linear equations, thus, increasing its dimension by one.
 
 \begin{equation} \label{eq:volume_constraint}
   \begin{bmatrix}
@@ -281,6 +288,7 @@ One way of finding valid pixels is to first create a mesh where vertices are def
 
 Given some scattered data, Gortler et al. \cite{Gortler96thelumigraph} present a way of filling in the empty areas based on the given data. This is done by using a image pyramid containing images of decreasing resolution. The lower resolution images is used to fill in the empty areas of the higher resolution images. The algorithm works in the two phases \emph{pull} and \emph{push} hence it is given the name \emph{pull-push}.
 
+\begin{subs}
 \subsubsection{Pull}
 The first level $r = 0$ of the pyramid is the input image and level $r + 1$ have half the size of level $r$ in each dimension. Each pixel have a data value $x^r_i$ and weight $w^r_i$. The pull phase starts at level 0 and recursively computes the values of the next level according to \cref{eq:pull_x,eq:pull_w} where $\tilde{h}$ is a gaussian filter. $\tilde{h}$ blends the neighboring pixels with an applied weight according to \cref{fig:pull_filter} which will give a blurred image. At the first level valid pixels is assigned a weight of $1$ and invalid pixels a weight of $0$. This will make sure that the valid pixels will not be changed.
 
@@ -297,17 +305,11 @@ The first level $r = 0$ of the pyramid is the input image and level $r + 1$ have
     \caption{Interpolation of pixel values in pull phase}
     \label{fig:pull_filter}
 \end{figure}
+\end{subs}
 
-
+\begin{subs}
 \subsubsection{Push}
 The lower resolution images generated in the pull phase are used in the push phase to fill in empty pixels in the higher resolution images. The weights that was computed for each pixel in the pull phase are used to determine how the pixel values will be blended. A lower weight means that the color will mostly be influenced by the lower resolution pixels. Higher weights means that the current pixel color will influence the most.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=.5\textwidth]{figures/push_filter_color.eps}
-    \caption{Interpolation of pixel values in push phase}
-    \label{fig:push_filter}
-\end{figure}
 
 The first step is to calculate temporay values $tx$ and $tw$ according to
 \begin{align}
@@ -321,9 +323,19 @@ The current values $x^r$ and $w^r$ are then blended with the temporary values ac
   w^r_i &= tw^r_i (1 - w^r_i) + w^r \label{eq:push_w}
 \end{align}
 
- What neighboring pixels to blend with is determined by the pixel's location within its superpixel. For example, the top-left pixel (higher resolution) is blended with the top-left, top and left pixels (lower resolution) as can be seen in \cref{fig:push_filter}. These pixel values are weighted by $1$, $3$, or $9$,  depending on their location. $\dfrac{1}{16}$, $\dfrac{3}{16}$, or $\dfrac{9}{16}$
+What neighboring pixels to blend with is determined by the pixel's location within its superpixel. For example, the top-left subpixel of the middle pixel is blended with the top-left, top, middle, and left pixel as can be seen in \cref{fig:push_filter}. These pixel values are weighted by $1$, $3$, or $9$,  depending on their location.
 
- Pixels at the edges of the texture needs special treatment since there is not neighbors at all sides. There exist multiple solutions to this problem such as ignoring pixels, using the closest value, mirroring values, or wrapping around to the other side. Textures are often wrapped when used and therefore the wrapping seams like a good solution.
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=.5\textwidth]{figures/push_filter_color.eps}
+    \caption{Interpolation of pixel values in push phase}
+    \label{fig:push_filter}
+\end{figure}
+
+\end{subs}
+
+ Pixels at the edges of the texture needs special treatment since some neighboring pixels are missing. There exist multiple solutions to this problem such as ignoring pixels, using the value of the closest pixel, mirroring values, or wrapping around to the opposite side. Textures are often wrapped when used and therefore the wrapping seams like a good solution.
+
  
 \clearpage
 
@@ -340,8 +352,11 @@ The current values $x^r$ and $w^r$ are then blended with the temporary values ac
 \section{Evaluation} \label{sec:evaluation}
 OVERVIEW
 
+\subsection{Models}
+Four LoD:s are usually used by Configura and they are defined by triangle density ($\#triangles/area$). The four levels are super (5000 $triangles/m^2$), high (1000 $triangles/m^2$), medium (200 $triangles/m^2$), and low  (50 $triangles/m^2$) and these will be used for the evaluation. Configura have textured models of humans and a subset of them have been selected to be used in the evaluation. The triangle counts lies around 15000 but smaller models with about 10000 and larger models with about 30000 triangles are also included. 
+
 \subsection{Appearance Preservation}
-In order to compare how well the appearance is preserved for different LoDs the image metric described in \cref{sec:metrics_for_appearance_preservation} can be used. The main idea is to render multiple images of both the original and simplified mesh from a set of camera positions. A RMS of all the pixel values of the images is then simply the error that the simplification introduced. The authors \cite{lindstrom2000image} measured difference in luminance but other metrics, such as Euclidean distance of the RGB colors, can be used.
+In order to compare how well the appearance is preserved for different LoDs the image metric described in \cref{sec:metrics_for_appearance_preservation} can be used. The main idea is to render multiple images of both the original and simplified mesh from a set of camera positions defined by the vertices of a rhombicuboctahedron (\cref{fig:rhombicuboctahedron}). A RMS of all the pixel values of the images is then simply the error that the simplification introduced. The authors \cite{lindstrom2000image} measured difference in luminance but other metrics, such as Euclidean distance of the RGB colors, can be used.
 
 
 
@@ -353,9 +368,11 @@ A one-sided distance between two surfaces \(S, S'\) is then defined as
 
 \[E(S, S') = \max_{p \in S} e(p, S')\]
 
-This distance is not symmetric and depends on which surface you start the measurement from, meaning that \(E(S, S') \neq E(S', S)\) in some cases. Finally, the Hausdorff distance can be obtained by taking the maximum of the distances in both directions. A mean distance between the surfaces can be obtained by uniformly sample points on both surfaces, measuring their Hausdorff distance, and then dividing by the number of sampled points. How many points to sampled depends on the size and shape of the meshes being compared. For the meshes used in the evaluation 10000 points on each mesh seamed to give a stable estimate of the error introduced by the simplification.
+This distance is not symmetric and depends on which surface you start the measurement from, meaning that \(E(S, S') \neq E(S', S)\) in some cases. Finally, the Hausdorff distance can be obtained by taking the maximum of the distances in both directions. A mean distance between the surfaces can be obtained by uniformly sample points on both surfaces, measuring their Hausdorff distance, and then dividing by the number of sampled points.
 
-The sampling of a point on a mesh can be done in two steps: First, randomly pick a triangle of the mesh, then pick a random point on the chosen triangle. A triangle can simply be picked by randomizing a triangle index. A random point on a triangle can be picked by using barycentric coordinates. As can be seen in \cref{lst:sample_point}, two random numbers \(s, t\) between 0 and 1 are chosen. The sampled point is then a convex combination of the vertices of the triangle. Since \(s + t \leq 1\) they are randomized until the condition is fulfilled.  
+How many points to sample depends on the size and shape of the meshes being compared. For the meshes used in the evaluation 10000 points on each mesh seamed to give a stable estimate of the error introduced by the simplification.
+
+The sampling of a point on a mesh can be done in two steps: First, randomly pick a triangle of the mesh, then pick a random point on the chosen triangle. A triangle can simply be picked by uniformly choose a random triangle index. A random point on a triangle can be picked by using barycentric coordinates. As can be seen in \cref{lst:sample_point}, two random numbers \(s, t\) between 0 and 1 are chosen. The sampled point is then a convex combination of the vertices \((v_0, v_1, v_2)\) of the triangle. The condition \(s + t \leq 1\) must be fulfilled, therefore, $s$ and $t$ are randomized until the condition is met.  
 
 \begin{minipage}{\linewidth}
   \begin{lstlisting}[caption={Sampling point on triangle by using barycentric coordinates}, label={lst:sample_point}]
@@ -368,10 +385,22 @@ The sampling of a point on a mesh can be done in two steps: First, randomly pick
   \end{lstlisting}
 \end{minipage}
 
-\subsection{Models}
-Four LoD:s are usually used by Configura and they are defined by triangle density ($\#triangles/area$). The four levels are super (5000 $tri/m^2$), high (1000 $tri/m^2$), medium (200 $tri/m^2$), and low  (50 $tri/m^2$) and these will be used for the evaluation.
+\subsection{Computing Volume} \label{sec:computing_volume}
+Since the volume of a mesh is affected by simplification a way to measure the volume is needed. \emph{Zhang and Chen} \cite{zhang2001efficient} introduce a way of measuring the volume of a manifold mesh using tetrahedrons. A tetrahedron have 4 vertices, therefore, they can be created by using the vertices of a triangle and the origin. As explained in \cref{sec:volume_preservation} the volume of a tetrahedron can be calculated with \cref{eq:tetrahedron_volume}. Not taking the absolute value of the equation gives the \emph{signed volume} which is used by Zhang and Chen. As can be seen in \cref{fig:mesh_volume} triangles with a normal facing the origin gets a negative volume and triangles facing away from the origin get a positive volume. By taking the sum of all the tetrahedrons, constructed from the triangles and the origin, the volume contained within the triangles is obtained. As said before this only works if the mesh is manifold.
 
-\subsection{Computation Time}
+\begin{align}
+  V_i &= \frac{v_0 \cdot (v_1 \times v_2)}{6}\\
+  V_{total} &= \sum_i{V_i}
+\end{align}
+
+\begin{figure}[h]
+  \centering
+  \includegraphics[width=\textwidth]{mesh_volume.eps}
+  \caption{Calculation of mesh volume}
+  \label{fig:mesh_volume}
+  \end{figure}
+
+%\subsection{Computation Time}
 %\subsection{Memory Usage}
 %\subsection{Rendering Time}
 

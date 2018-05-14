@@ -50,12 +50,18 @@
 
 \newcolumntype{C}{>{$}c<{$}}
 
+\graphicspath{{figures/}}
+
 \definecolor{darkred}{rgb}{0.554, 0, 0}
 \definecolor{darkblue}{rgb}{0, 0, 0.554}
 \definecolor{darkgreen}{rgb}{0, 0.392, 0}
 \definecolor{goldenrod}{rgb}{0.855, 0.647, 0.125}
 \definecolor{cyan4}{RGB}{0, 139, 139}
 \definecolor{turquoise}{RGB}{64, 224, 208}
+
+\newenvironment{subs}
+  {\adjustwidth{3em}{0pt}}
+  {\endadjustwidth}
 
 \lstdefinestyle{customc++}{
   classoffset=0,

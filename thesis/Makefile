@@ -13,7 +13,7 @@ MKLATEX = latexmk
 #Options to latexmk, should need to be changed
 MKLATEXOPTS = -pdf -pdflatex="xelatex -interaction=nonstopmode" -use-make -f
 
-all: $(PDFNAME).pdf $(PUBLISHNAME).pdf clearwindow
+all: $(PDFNAME).pdf $(PUBLISHNAME).pdf
 
 $(PDFNAME).pdf: $(TEXMAINFILE) *.tex
 	$(MKLATEX) $(MKLATEXOPTS) $<

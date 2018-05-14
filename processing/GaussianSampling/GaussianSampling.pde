@@ -1,9 +1,16 @@
+enum SamplingType {
+  GAUSSIAN, 
+    UNIFORM
+};
+
 PImage input;
 PImage output;
 PVector center;
 PVector[] samples;
-int N = 80000;
-String filename = "lena.png";
+int N = 40000;
+String filename = "gradient.png";
+
+SamplingType samplingType = SamplingType.GAUSSIAN;
 
 void settings() {
   input = loadImage(filename);
@@ -23,10 +30,10 @@ void setup() {
     samples[i] = generate();
 
   for (PVector p : samples) {
-    color c = input.get(int(p.x) + input.width/2, int(p.y) + input.height/2);
-    output.set(int(p.x) + input.width/2, int(p.y) + input.height/2, c);
+    color c = input.get(int(p.x), int(p.y));
+    output.set(int(p.x), int(p.y), c);
   }
-  
+
   output.updatePixels();
   output.save("sampled.png");
 }
@@ -38,10 +45,17 @@ void draw() {
 }
 
 PVector generate() {
-  float r = abs(randomGaussian()) * 0.15625f*input.width;
-  float a = random(360);
-  int x = constrain(round(r*cos(a)), -input.width, input.width);
-  int y = constrain(round(r*sin(a)), -input.height, input.height);
+  int x = 0;
+  int y = 0;
 
+  if (samplingType == SamplingType.GAUSSIAN) {
+    float r = abs(randomGaussian()) * 0.15625f*input.width;
+    float a = random(360);
+    x = constrain(round(r*cos(a)), -input.width, input.width) + input.width/2;
+    y = constrain(round(r*sin(a)), -input.height, input.height) + input.height/2;
+  } else if (samplingType == SamplingType.UNIFORM) {
+    x = floor(random(input.width));
+    y = floor(random(input.height));
+  }
   return new PVector(x, y);
 }
