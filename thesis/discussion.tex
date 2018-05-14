@@ -24,9 +24,14 @@ When looking at the color error the difference is small between the settings. Ho
 
 
 \subsection{Improved Texture Atlas} \label{sec:discussion_texture}
+As we have seen from the graphs the seam gives a bad result in terms of luminance error and geometric error. But, when the seam is not considered undefined areas of the texture may appear just at the seam. This can be seen in \cref{fig:using_original_texture} where where black areas have appeared on the legs of the model.
 
+Using the pull-push algorithm to fill in missing pixel values results in a new texture that gives a better result in the seams. As can be seen in \cref{fig:using_improved_texture} almost all the black areas have disappeared from the legs. However, on the left leg a small hint of black can be seen. By looking at the new texture we can see that there still remains some black areas just at the seam bound.
 
 \subsection{Comparison of LoD:s} \label{sec:discussion_lod}
+Looking at the four LoD:s of the office woman model in \cref{fig:woman_lodeq} we can see how the different levels are affected by simplification. The super and high have not changed very much the the appearance is still good. One can see that the silhouette of the high LoD is not as round as the super LoD. For medium the effect of the simplification is clear and even more for the low LoD where we can clearly see the triangles.
+
+When looking at the LoD:s from the distance where they would actually be used the edgy silhouette is harder to distinguish. 
 
 \section{Method} \label{sec:discussion_method}
 

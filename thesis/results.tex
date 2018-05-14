@@ -95,7 +95,7 @@ When simplification is performed the volume of the mesh may be reduced. How much
 
 \clearpage
 
-\section{Improved Texture}
+\section{Improved Texture Atlas}
 A pull-push algorithm was implemented in order to improve the texture that is used by a mesh since undefined areas may be seen when applied to a simplified model. Given a texture (\cref{fig:original_texture_atlas}), rays are casted for each pixel in order to generate a black and white image that distinguish valid pixels from invalid pixels. Valid pixels get a white color and invalid pixels a black color as seen in \cref{fig:valid_pixels}. Pixels with a corresponding black pixel will be filled in by the pull-push algorithm. This will result in the texture seen in \cref{fig:improved_texture} where all the empty pixels have been filled in.
 
 \begin{figure}[ht]
