@@ -328,11 +328,11 @@ mk2_hausdorff_800 <- importData("mk2-hausdorff-800.csv")
 
 df <- mk2_hausdorff_800[as.character(mk2_hausdorff_800$Detail) != " base",]
 df <- mk2_hausdorff_800
-df <- comb[as.character(comb$Detail) != " base",]
+df <- comb[as.character(comb$Detail) != "base",]
 
 Summary <- df %>%
   group_by(Reducer, Detail) %>%
-  summarise(Mean = mean(Error), SD = sd(Error), Q = qt(0.975,df=length(Error)-1)*sd(Error)/sqrt(length(Error)), N=length(Error))
+  summarise(Mean = mean(VolumeDiff), SD = sd(VolumeDiff), Q = qt(0.975,df=length(VolumeDiff)-1)*sd(VolumeDiff)/sqrt(length(VolumeDiff)), N=length(VolumeDiff))
 
 ggplot(Summary, aes(x=Detail, y=Mean, colour=Reducer, group=Reducer, shape=Reducer)) + 
   geom_errorbar(aes(ymin=Mean-Q, ymax=Mean+Q), width=.3, position=pd) +
@@ -374,10 +374,11 @@ time_0800 <- read.csv(file="c:/CetDev/version9.0/write/t/texture-time.csv")
 time_0800$Detail <- factor(time_0800$Detail, as.character(time_0800$Detail[1:4]))
 time_0800 <- time_0800[time_0800$Time != max(time_0800$Time),]
 
+t <- time_0800
 t <- time_0800[time_0800$Detail == "low",]
 t$g <- interaction(t$Threads, t$Detail)
 
-ggplot(t, aes(x=g, y=Time/1000)) + 
+ggplot(t, aes(x=g, y=Time/1000, color=Detail)) + 
   geom_boxplot() +
   ylab("Time (ms)") +
   xlab("Threads")
@@ -389,14 +390,20 @@ t <- comb[comb$Detail != " base",]
 t$g <- interaction(t$Reducer, t$Detail)
 
 Summary <- t %>%
-  group_by(Reducer, Detail) %>%
-  summarise(Mean = mean(Error), Q = qt(0.975,df=length(Error)-1)*sd(Error)/sqrt(length(Error)), SD = sd(Error))
+  group_by(Threads, Detail) %>%
+  summarise(Mean = mean(Time/1000), Q = qt(0.975,df=length(Time)-1)*sd(Time/1000)/sqrt(length(Time)), SD = sd(Time/1000))
 
-ggplot(Summary, aes(x=Detail, y=Mean, colour=Reducer, group=Reducer, shape=Reducer)) + 
+ggplot(Summary, aes(x=Threads, y=Mean, colour=Detail, group=Detail, shape=Detail)) + 
   geom_errorbar(aes(ymin=Mean-Q, ymax=Mean+Q), width=.3, position=pd) +
   geom_line(position=pd) +
   scale_shape_manual(values=c(19, 18, 17, 15)) +
-  geom_point(position=pd, size=3) 
+  geom_point(position=pd, size=3) +
+  theme(legend.text = element_text(size=16),
+        legend.title = element_text(size=16),
+        axis.title = element_text(size=16),
+        axis.text = element_text(size=14)) +
+  ylab("Execution time (ms)")
+  
 
 error <- qt(0.975,df=length(t$Error)-1)*sd(t$Error)/sqrt(length(t$Error))
 
