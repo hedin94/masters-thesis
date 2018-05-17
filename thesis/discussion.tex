@@ -1,7 +1,8 @@
 \chapter{Discussion} \label{cha:discussion}
-This chapter provides a discussion on the work. First, a discussion of the results is given in \cref{sec:discussion_results}. Afterwards, in \cref{sec:discussion_method} the used method is discussed.
+This chapter provides a discussion on the work. First, a discussion of the results is given in \cref{sec:discussion_result}. Afterwards, in \cref{sec:discussion_method} the used method is discussed.
 
-\section{Results} \label{sec:discussion_results}
+\section{Result} \label{sec:discussion_result}
+
 
 \subsection{Luminance Error} \label{sec:discussion_luminance}
 When simplifying a mesh to be used for LoD super and high, considering the seam or the volume does not affect the rms luminance error much as can be seen in \cref{fig:mean_luminance_error}. At the high level the graphs start to diverge but the confidence intervals overlap which means that we can not say with any significance that any setting is better than another. However, for medium and low, considering the seam gives a worse result than not considering it.
@@ -17,10 +18,15 @@ If we first look at the geometric error the two highest LoD:s have a geometric e
 
 When looking at the color error the difference is small between the settings. However, the rms color error for the super LoD is lower when the seam is considered. Therefore, considering the seam may give a better result for the super and high LoD since the geometric error was small.
 
-
-
 \subsection{Volume Preservation} \label{sec:discussion_volume}
 \cref{fig:volume_diff} shows how the volume of meshes is affected by different configurations of texture, seam and volume preservation. Just as discussed in previous sections the configuration affect the result for the two highest LoD:s very little. By looking at the figure we can see that the volume constraint indeed keep the volume better. Considering the seam gives a larger difference in volume but it is kept better if the volume is also consider. The best configuration if one wants to keep the volume is to only consider the texture and the volume.
+
+\subsection{Execution Time} \label{sec:discussion_time}
+By looking at \cref{fig:execution_time} we can see the difference when using multiple threads. Parallelization was only added to the initialization phase of the simplification since it did not have that many dependent operations. A gain in speed can be noticed by just using one more thread. The total execution time is only decreased by about 30 ms which is only a decrease of 12\%.
+
+For all four LoD:s the curves are similar. The similarity is expected since the same initial computations is performed for all levels and no parallelization is perfomed during the simplification phase.
+
+The fastest execution time is obtained when using between 2 to 4 threads. Using more threads seem to increase the execution time. This could be because the threads have to wait for each other to write to the quadric matrices. In the implementation only one thread at a time can write which is not desireable.
 
 
 \subsection{Improved Texture Atlas} \label{sec:discussion_texture}
@@ -28,15 +34,27 @@ As we have seen from the graphs the seam gives a bad result in terms of luminanc
 
 Using the pull-push algorithm to fill in missing pixel values results in a new texture that gives a better result in the seams. As can be seen in \cref{fig:using_improved_texture} almost all the black areas have disappeared from the legs. However, on the left leg a small hint of black can be seen. By looking at the new texture we can see that there still remains some black areas just at the seam bound.
 
+
 \subsection{Comparison of LoD:s} \label{sec:discussion_lod}
 Looking at the four LoD:s of the office woman model in \cref{fig:woman_lodeq} we can see how the different levels are affected by simplification. The super and high have not changed very much the the appearance is still good. One can see that the silhouette of the high LoD is not as round as the super LoD. For medium the effect of the simplification is clear and even more for the low LoD where we can clearly see the triangles.
 
 When looking at the LoD:s from the distance where they would actually be used the edgy silhouette is harder to distinguish. 
 
-\section{Method} \label{sec:discussion_method}
+\clearpage
 
+\section{Method} \label{sec:discussion_method}
+\subsection{Implementation}
+%% OMP parallelization
+A very simple parallelization of the initial phase of the simplification was implemented with OpenMP, but as discussed in \cref{sec:discussion_time} only a small speedup was gained. When using more than 4 threads only increase the execution time since only one thread can write at a time. In order to reduce the time waiting for write access a solution could be to make it possible for the threads to have there own private set of quadric matrices. When all threads have finished their computations, a reduction operation could be performed that combine all versions of the matrices. This would let the threads write freely without having to wait for another thread to finish writing.
+
+\subsection{Evaluation}
+%% Models in evaluation
+The models that was used in the evaluation all had approximately the same number of triangles. Since all the meshes were textured models of humans their shape were also similar, meaning that only a small portion of modeltypes are covered by the evaluation. It would be interesting to see how the simplification scheme performs on other models, especially larger models with more triangles.
+
+%% Execution time sample size
+When comparing the execution time of using different number of threads a mean execution time was computed. The number of samples collected per thread and detail pair was 120. Since the confidence intervals are narrow we can be confident that the sampled mean exectution time is close to the real mean exectution time. Therefore, the sample size seem to be large enough. 
   
-  %%%
-  % N/A for this work
-  %%%
+%%%
+% Not applicable for this work
+%%%
 %\section{The work in a wider context} \label{sec:work_in_a_wider_context}

@@ -44,26 +44,38 @@
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implementation} \label{sec:implementation}
-OVERVIEW
+In this section an explanation of how the mesh simplification scheme was implemented is given. Some problems that were encountered during the implementation is also presented as well as how they were solved.
 
 \subsection{Handling seams}
-To be able to apply a texture to a mesh a mesh parameterization is needed that maps vertices to texture coordinates. If the mesh is not homeomorphic to a disk it is split into parts which will introduce seams. Vertices along these seams is duplicated which enable us to have multiple texture coordinates. However, this is a problem during simplification and will likely make the mesh tear in the seams. Welding duplicate vertices removes the seams and our tearing problem goes away. This, however, does not work good for textured meshes since we can no longer have discontinuities. Vertices that share the same attributes are safe to remove though.
+To be able to apply a texture to a mesh a mesh parameterization is needed that maps vertices to texture coordinates. If the mesh is not homeomorphic to a disk it is split into parts which will introduce seams. Vertices along these seams is duplicated which enable us to have multiple texture coordinates. However, this is a problem during simplification and will likely make the mesh tear in the seams as seen in \cref{fig:mesh_tear}. Welding duplicate vertices removes the seams and our tearing problem goes away. This, however, does not work good for textured meshes since we can no longer have discontinuities which results in the seam shown in \cref{fig:mesh_discontinuity}. Vertices that share the same attributes are safe to remove though.
 
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=.5\textwidth]{figures/mesh_tear.png}
+\begin{figure}[ht]
+  \centering
+  \begin{subfigure}[b]{.45\textwidth} 
+    \includegraphics[width=\textwidth]{mesh_tear.png}
     \caption{Mesh tear in seam}
     \label{fig:mesh_tear}
+  \end{subfigure}
+  ~
+  \begin{subfigure}[b]{.45\textwidth}
+    \includegraphics[width=\textwidth]{mesh_remove_duplicates.png}
+    \caption{Discontinuity destroyed}
+    \label{fig:mesh_discontinuity}
+  \end{subfigure}
+  \caption{Problems in the seams of a mesh}
+  \label{fig:mesh_seam_problems}
 \end{figure}
 
 The mesh representation by Hoppe \cite{hoppe1998efficient} allows vertices to have multiple attributes associated with it. As explained in \cref{sec:vertex_with_multi_attributes} the corners of a face defines the attribute value that should be used for that face.
 
-\begin{figure}[h]
+\iffalse
+\begin{figure}[ht]
     \centering
     \includegraphics[width=.5\textwidth]{figures/vertex_wedge_corner.eps}
     \caption{Multi-attribute vertex}
     \label{fig:vertex_wedge_corner}
 \end{figure}
+\fi
 
 \lstset{
   language=C++,
@@ -90,8 +102,7 @@ A fast method to find vertices that occupy the same space in 3D is to use a hash
 
 To get fast search and insert a hash function with few collisions is important. The hash function that is used at Configura can be seen in \cref{lst:hash3D}. This hash of a 3-dimensional vector is a combination of the x, y, z coordinates. The hashes of x and y is also rotated i.e. bits are circular shifted, to get fewer collisions. 
 
-
-\begin{minipage}{\linewidth}
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[caption={Hashing 3D point}, label={lst:hash3D}]
   bool eq(float a, float b) {
     return abs(a - b) < precision;
@@ -114,7 +125,7 @@ To get fast search and insert a hash function with few collisions is important. 
 
 Extracting all \emph{unique} vertices in a mesh can be done with the aformentioned hash map. This is done by iterating through all the vertices and inserting them into the hash map. If the map already contains a vertex we have found a duplicate and it will not be inserted. After the iterations the map will only contain unique vertices and the next step is to update the triangles to map to the new vertices. This is an easy task since when the vertices are inserted into the hash map they will be associated with an index. Therefore, we only have to iterate through the triangle indices and update them with the new indices. (See \cref{lst:remove_duplicates}).
 
-\begin{minipage}{\linewidth}
+\begin{minipage}{\textwidth}
   \begin{lstlisting}[caption={Removing duplicates}, label={lst:remove_duplicates}]
     void removeDuplicates(vector<vec3>& vertices,
                           vector<int>& triangles) {
@@ -143,7 +154,7 @@ Extracting all \emph{unique} vertices in a mesh can be done with the aformention
 
 \iffalse
 % Too long!? Move to appendix?
-\begin{minipage}{\linewidth}
+\begin{minipage}{\textwidth}
   \begin{lstlisting}[caption={Removing duplicates}, label={lst:remove_duplicates}]
     void removeDuplicates(vector<vec3>& vertices,
                           vector<vec2>& texCoords,
@@ -216,7 +227,7 @@ In order to have a higher rate of found solutions to the linear equation systems
 During initialization a quadric is created for each multi-vertex. The quadric for a face is then applied to the three corners of the face. The face quadric calculations are independent of each other and gives a good opportunity for parallelization. A relatively easy way to get parallelization on the CPU is to use \emph{OpenMP}. The simplicity can be seen in \cref{lst:parallel} where the iteration of faces have been made parallel. Now the work of computing face quadrics is shared between multiple threads which would increase the performance. Since the vertices belong to multiple faces multiple threads could try to modify the vertex quadric concurrently. Therefore, this section is made critical meaning that the code can only be executed by one thread at a time.
 
 
-\begin{minipage}{\linewidth}
+\begin{minipage}{\textwidth}
 \begin{lstlisting}[caption={Parallelization with OpenMP}, label={lst:parallel}]
   #pragma omp parallel for
   for (int i=0; i<face_count(); i++) {
@@ -350,7 +361,7 @@ What neighboring pixels to blend with is determined by the pixel's location with
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Evaluation} \label{sec:evaluation}
-OVERVIEW
+An evaluation of the appearance of meshes simplified by the implemented simplification scheme was performed. In this section the the models and metrics used for the evaluation is presented.
 
 \subsection{Models}
 Four LoD:s are usually used by Configura and they are defined by triangle density ($\#triangles/area$). The four levels are super (5000 $triangles/m^2$), high (1000 $triangles/m^2$), medium (200 $triangles/m^2$), and low  (50 $triangles/m^2$) and these will be used for the evaluation. Configura have textured models of humans and a subset of them have been selected to be used in the evaluation. The triangle counts lies around 15000 but smaller models with about 10000 and larger models with about 30000 triangles are also included. 
@@ -374,7 +385,7 @@ How many points to sample depends on the size and shape of the meshes being comp
 
 The sampling of a point on a mesh can be done in two steps: First, randomly pick a triangle of the mesh, then pick a random point on the chosen triangle. A triangle can simply be picked by uniformly choose a random triangle index. A random point on a triangle can be picked by using barycentric coordinates. As can be seen in \cref{lst:sample_point}, two random numbers \(s, t\) between 0 and 1 are chosen. The sampled point is then a convex combination of the vertices \((v_0, v_1, v_2)\) of the triangle. The condition \(s + t \leq 1\) must be fulfilled, therefore, $s$ and $t$ are randomized until the condition is met.  
 
-\begin{minipage}{\linewidth}
+\begin{minipage}{\textwidth}
   \begin{lstlisting}[caption={Sampling point on triangle by using barycentric coordinates}, label={lst:sample_point}]
     do {
       float s = random(0,1);
@@ -385,7 +396,7 @@ The sampling of a point on a mesh can be done in two steps: First, randomly pick
   \end{lstlisting}
 \end{minipage}
 
-\subsection{Computing Volume} \label{sec:computing_volume}
+\subsection{Volume preservation} \label{sec:computing_volume}
 Since the volume of a mesh is affected by simplification a way to measure the volume is needed. \emph{Zhang and Chen} \cite{zhang2001efficient} introduce a way of measuring the volume of a manifold mesh using tetrahedrons. A tetrahedron have 4 vertices, therefore, they can be created by using the vertices of a triangle and the origin. As explained in \cref{sec:volume_preservation} the volume of a tetrahedron can be calculated with \cref{eq:tetrahedron_volume}. Not taking the absolute value of the equation gives the \emph{signed volume} which is used by Zhang and Chen. As can be seen in \cref{fig:mesh_volume} triangles with a normal facing the origin gets a negative volume and triangles facing away from the origin get a positive volume. By taking the sum of all the tetrahedrons, constructed from the triangles and the origin, the volume contained within the triangles is obtained. As said before this only works if the mesh is manifold.
 
 \begin{align}
@@ -396,9 +407,22 @@ Since the volume of a mesh is affected by simplification a way to measure the vo
 \begin{figure}[h]
   \centering
   \includegraphics[width=\textwidth]{mesh_volume.eps}
-  \caption{Calculation of mesh volume}
+  \caption{Illustration of mesh volume computation}
   \label{fig:mesh_volume}
   \end{figure}
+
+
+\subsection{Execution Time} \label{sec:computation_time}
+A simple parallelization with OpenMP have been implemented with the goal of decreasing the computation time. In order to see how much the computation time is reduced it was measured for multiple runs of the simplification scheme using the office woman model. Measurements was made for the four LoD:s super, high, medium, and low and the number used threads was from 1 to 8 threads.
+
+To account for noise the measurements of the execution time is performed several times. From the collected data the mean \(\bar{x}\) and standard deviation \(s\) can be calculated. The confidence interval \([a, b]\) fo the execution time can be found by the equations shown in \cref{sec:measuring_algorithmic_performance} with \(\alpha = 0.05\).
+
+
+\iffalse
+An important property of a mesh simplification algorithm is the time it takes to simplify a full-resolution mesh to a lower-resolution mesh. While this doesn't impact the run-time of the mesh (that is accounted for by the rendering time, measured in Section~\ref{sec:rendering_time}), it is still important to reduce it as much as possible. This is especially true if the LoD is dynamically generated at run-time, but it is also important since many more meshes can be simplified per time unit (important if a simplifier is to be provided as a service, as \emph{Simplygon Linköping} does).
+
+In order to compare the execution time of different number of threads, they all target the same appearance thresholds as specified in Section~\ref{sec:appearance_preservation} by tweaking the parameters unique to each algorithm. We then measure the time it takes for the simplification algorithm to execute when using these parameters, in other words, simply by: \(time_\mathcal{A} = end_\mathcal{A} - start_\mathcal{A}\) for an algorithm \(\mathcal{A}\). Of course, this measurement is done several times to account for noise. After calculating the mean \(\bar{x}\) and the standard-deviation \(s\), one can find the confidence interval \([a, b]\) of the execution time by the equations shown in Section~\ref{sec:measuring_algorithmic_performance} with 19 degrees of freedom and \(\alpha = 5 \%\).
+\fi
 
 %\subsection{Computation Time}
 %\subsection{Memory Usage}
