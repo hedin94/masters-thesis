@@ -23,7 +23,6 @@
 In this chapter the results of the thesis is presented. First, results collected using multiple metrics for mesh appearance are presented. Afterwards, a comparison of the execution time using different numbers of threads is given. Finally, simplified models generated to be used as LoD:s as well as the new improved texture atlas is presented.
 
 \section{Luminance error}
-
 RMS luminance error was computed by rendering multiple images of a model from different camera positions as explained in \cref{sec:metrics_for_appearance_preservation} and can be seen in \cref{fig:mean_luminance_error}. Four LoD:s are presented where \emph{super} have the most amount of triangles and \emph{low} have the least amount of triangles. The error was measured for different settings of seam and volume preservation to determine what setting would give the best result. Nine different models with triangle counts between 10000 and 30118 was used in this evaluation. For each model the RMS luminance error was computed for all LoD:s. A mean of the RMS was then obtained and is presented together with a 95\% confidence interval in \cref{fig:mean_luminance_error}.
 
 \begin{figure}[h]
@@ -139,7 +138,7 @@ Simplification of the office woman model introduced black areas on the legs wher
 % low:       90
 \section{Comparison of LoD:s}
 
-To compare how different LoD:s are affected by the simplification the office woman model have been rendered after simplification. The original model has 14996 triangles and the LoD:s super, high, medium, and low have 8886, 1768, 344, 90 triangles respectively. Renderings of the Lod:s have been created both with equal distance from the camera and with the camera placed at the distance where they would actually be used which can be seen in \cref{fig:woman_lodeq,fig:woman_lod} respectively. When creating these LoD:s with the simplification algorithm the seam and volume was not considered, only the texture.
+To compare how different LoD:s are affected by the simplification the office woman model have been rendered after simplification. The original model has 14996 triangles and the LoD:s super, high, medium, and low have 8886, 1768, 344, 90 triangles respectively. Renderings of the LoD:s have been created both with equal distance from the camera and with the camera placed at the distance where they would actually be used which can be seen in \cref{fig:woman_lodeq,fig:woman_lod} respectively. When creating these LoD:s with the simplification algorithm the seam and volume was not considered, only the texture.
 
 \begin{figure}[ht]
   \centering

@@ -123,7 +123,7 @@ To get fast search and insert a hash function with few collisions is important. 
 \end{lstlisting}
 \end{minipage}
 
-Extracting all \emph{unique} vertices in a mesh can be done with the aformentioned hash map. This is done by iterating through all the vertices and inserting them into the hash map. If the map already contains a vertex we have found a duplicate and it will not be inserted. After the iterations the map will only contain unique vertices and the next step is to update the triangles to map to the new vertices. This is an easy task since when the vertices are inserted into the hash map they will be associated with an index. Therefore, we only have to iterate through the triangle indices and update them with the new indices. (See \cref{lst:remove_duplicates}).
+Extracting all \emph{unique} vertices in a mesh can be done with the aforementioned hash map. This is done by iterating through all the vertices and inserting them into the hash map. If the map already contains a vertex we have found a duplicate and it will not be inserted. After the iterations the map will only contain unique vertices and the next step is to update the triangles to map to the new vertices. This is an easy task since when the vertices are inserted into the hash map they will be associated with an index. Therefore, we only have to iterate through the triangle indices and update them with the new indices. (See \cref{lst:remove_duplicates}).
 
 \begin{minipage}{\textwidth}
   \begin{lstlisting}[caption={Removing duplicates}, label={lst:remove_duplicates}]
@@ -217,7 +217,7 @@ As a rule, the original mesh will be given as an ordinary triangle mesh (a so ca
 After doing this, the implementation basically follows the theoretical framework to the letter, where the least-cost edge is chosen to be contracted from the min-heap. Lastly, this edge is collapsed and then the remaining ``hole'' is simply (but with a few special cases...) linked back together so that the local neighborhood of the vertex still qualifies as a closed manifold.
 
 \subsection{Solving linear equation systems}
-A very common task during the simplification is to find the optimal position for a vertex after an edge collapse. As mentioned in \cref{sec:quadric-based_error_metric}, this is done by solving the linear equation system \(A v_{min} = b\) where \(v_{min}\) is the optimal position. In the original version of the QEM the optimal solution is obtained by finding \(A^{-1}\). If the matrix \(A\) is not invertable one of the vertices on the end points of the edge is chosen to be the new position.
+A very common task during the simplification is to find the optimal position for a vertex after an edge collapse. As mentioned in \cref{sec:quadric-based_error_metric}, this is done by solving the linear equation system \(A v_{min} = b\) where \(v_{min}\) is the optimal position. In the original version of the QEM the optimal solution is obtained by finding \(A^{-1}\). If the matrix \(A\) is not invertible one of the vertices on the end points of the edge is chosen to be the new position.
 
 In MixKit, the inverse of a matrix is found using Gaussian elimination with partial pivoting. The method is fast but it was noted that in many cases it fails to find the inverse of the matrix. This leads to many fallbacks to the endpoints which may give bad results for vertices with multiple attributes.
 
@@ -251,7 +251,7 @@ Parallelization during the simplification is not as easy since the edge collapse
 However, after a collapse the costs of the edges in the local neighborhood need to be updated, i.e. update cost and compute optimal position. These edges do not depend on each other and therefore the computations can be done in parallel.
 
 \subsection{Volume preservation} \label{sec:volume_preservation}
-Collapsing edges and moving vertices may change the local shape of the mesh being simplified. This can result in a loss of volume and will affect the appearance. According to Lindstrom and Turk \cite{lindstrom1998fast} , moving a vertex $v_0$ to $v$ sweeps out a volume which can be described as a tetrahedron with vertices $(v, v_0, v_1, v_2)$ as seen in \cref{fig:tetrahedron}. The volume of this tetrahedon is the change in volume that the new vertex position $v$ would give. 
+Collapsing edges and moving vertices may change the local shape of the mesh being simplified. This can result in a loss of volume and will affect the appearance. According to Lindstrom and Turk \cite{lindstrom1998fast} , moving a vertex $v_0$ to $v$ sweeps out a volume which can be described as a tetrahedron with vertices $(v, v_0, v_1, v_2)$ as seen in \cref{fig:tetrahedron}. The volume of this tetrahedron is the change in volume that the new vertex position $v$ would give. 
 
 \begin{figure}[h]
     \centering
@@ -295,13 +295,13 @@ where $v_0$ is a vertex of face $(v_0, v_1, v_2)$, $n^\intercal$ is the face nor
 \subsection{Improving Texture Atlas}
 Trying to keep the seam during simplification improves the quality of the resulting mesh. However, when a mesh is heavily simplified it is hard to keep the geometry and often gives a bad result. Removing the seam constraint gives a better geometry but now there is another problem. Since the seam is not kept we could get texture coordinates that lies outside the defined areas of the texture atlas. A common color in this area is black but it depends on what the texture artist chose.
 
-One way of finding valid pixels is to first create a mesh where vertices are defined by the texture coordinates, i.e. $v = (s, t, 0)$ where $s$, and $t$ are the texture coordinates. This creates sheets lying in the same plane where empty areas will be locations that are not defined in the texture atlas. By casting rays towards the cheats the empty areas can be detected. The origin of the rays will be based on the pixel locations but translated in the direction of the normal to the plane. They will then be casted straight down towards the sheets and if they hit anything we have found a valid pixel.
+One way of finding valid pixels is to first create a mesh where vertices are defined by the texture coordinates, i.e. $v = (s, t, 0)$ where $s$, and $t$ are the texture coordinates. This creates sheets lying in the same plane where empty areas will be locations that are not defined in the texture atlas. By casting rays toward the cheats the empty areas can be detected. The origin of the rays will be based on the pixel locations but translated in the direction of the normal to the plane. They will then be casted straight down toward the sheets and if they hit anything we have found a valid pixel.
 
 Given some scattered data, Gortler et al. \cite{Gortler96thelumigraph} present a way of filling in the empty areas based on the given data. This is done by using a image pyramid containing images of decreasing resolution. The lower resolution images is used to fill in the empty areas of the higher resolution images. The algorithm works in the two phases \emph{pull} and \emph{push} hence it is given the name \emph{pull-push}.
 
 \begin{subs}
 \subsubsection{Pull}
-The first level $r = 0$ of the pyramid is the input image and level $r + 1$ have half the size of level $r$ in each dimension. Each pixel have a data value $x^r_i$ and weight $w^r_i$. The pull phase starts at level 0 and recursively computes the values of the next level according to \cref{eq:pull_x,eq:pull_w} where $\tilde{h}$ is a gaussian filter. $\tilde{h}$ blends the neighboring pixels with an applied weight according to \cref{fig:pull_filter} which will give a blurred image. At the first level valid pixels is assigned a weight of $1$ and invalid pixels a weight of $0$. This will make sure that the valid pixels will not be changed.
+The first level $r = 0$ of the pyramid is the input image and level $r + 1$ have half the size of level $r$ in each dimension. Each pixel have a data value $x^r_i$ and weight $w^r_i$. The pull phase starts at level 0 and recursively computes the values of the next level according to \cref{eq:pull_x,eq:pull_w} where $\tilde{h}$ is a Gaussian filter. $\tilde{h}$ blends the neighboring pixels with an applied weight according to \cref{fig:pull_filter} which will give a blurred image. At the first level valid pixels is assigned a weight of $1$ and invalid pixels a weight of $0$. This will make sure that the valid pixels will not be changed.
 
 \begin{align}
   w^{r+1}_i &= \sum_k {\tilde{h}_k \min(w^r_k,1)} \label{eq:pull_x}\\
@@ -322,7 +322,7 @@ The first level $r = 0$ of the pyramid is the input image and level $r + 1$ have
 \subsubsection{Push}
 The lower resolution images generated in the pull phase are used in the push phase to fill in empty pixels in the higher resolution images. The weights that was computed for each pixel in the pull phase are used to determine how the pixel values will be blended. A lower weight means that the color will mostly be influenced by the lower resolution pixels. Higher weights means that the current pixel color will influence the most.
 
-The first step is to calculate temporay values $tx$ and $tw$ according to
+The first step is to calculate temporary values $tx$ and $tw$ according to
 \begin{align}
   tw^{r}_i &= \sum_k {h_k \min(w^{r+1}_k,1)} \label{eq:push_tw}\\
   tx^{r}_i &= \frac{1}{tw^{r}_i} \sum_k {h_k \min(w^{r+1}_k,1) x^{r+1}_i} \label{eq:push_tx}
@@ -367,7 +367,7 @@ An evaluation of the appearance of meshes simplified by the implemented simplifi
 Four LoD:s are usually used by Configura and they are defined by triangle density ($\#triangles/area$). The four levels are super (5000 $triangles/m^2$), high (1000 $triangles/m^2$), medium (200 $triangles/m^2$), and low  (50 $triangles/m^2$) and these will be used for the evaluation. Configura have textured models of humans and a subset of them have been selected to be used in the evaluation. The triangle counts lies around 15000 but smaller models with about 10000 and larger models with about 30000 triangles are also included. 
 
 \subsection{Appearance Preservation}
-In order to compare how well the appearance is preserved for different LoDs the image metric described in \cref{sec:metrics_for_appearance_preservation} can be used. The main idea is to render multiple images of both the original and simplified mesh from a set of camera positions defined by the vertices of a rhombicuboctahedron (\cref{fig:rhombicuboctahedron}). A RMS of all the pixel values of the images is then simply the error that the simplification introduced. The authors \cite{lindstrom2000image} measured difference in luminance but other metrics, such as Euclidean distance of the RGB colors, can be used.
+In order to compare how well the appearance is preserved for different LoD:s the image metric described in \cref{sec:metrics_for_appearance_preservation} can be used. The main idea is to render multiple images of both the original and simplified mesh from a set of camera positions defined by the vertices of a rhombicuboctahedron (\cref{fig:rhombicuboctahedron}). A RMS of all the pixel values of the images is then simply the error that the simplification introduced. The authors \cite{lindstrom2000image} measured difference in luminance but other metrics, such as Euclidean distance of the RGB colors, can be used.
 
 
 
@@ -415,7 +415,7 @@ Since the volume of a mesh is affected by simplification a way to measure the vo
 \subsection{Execution Time} \label{sec:computation_time}
 A simple parallelization with OpenMP have been implemented with the goal of decreasing the computation time. In order to see how much the computation time is reduced it was measured for multiple runs of the simplification scheme using the office woman model. Measurements was made for the four LoD:s super, high, medium, and low and the number used threads was from 1 to 8 threads.
 
-To account for noise the measurements of the execution time is performed several times. From the collected data the mean \(\bar{x}\) and standard deviation \(s\) can be calculated. The confidence interval \([a, b]\) fo the execution time can be found by the equations shown in \cref{sec:measuring_algorithmic_performance} with \(\alpha = 0.05\).
+To account for noise the measurements of the execution time is performed several times. From the collected data the mean \(\bar{x}\) and standard deviation \(s\) can be calculated. The confidence interval \([a, b]\) for the execution time can be found by the equations shown in \cref{sec:measuring_algorithmic_performance} with \(\alpha = 0.05\).
 
 
 \iffalse
@@ -441,7 +441,7 @@ The pack of test meshes that are going to be used in the comparison are a combin
 \subsection{Appearance Preservation} \label{sec:appearance_preservation}
 In order to compare the appearance preservation of the mesh simplification algorithms, the image-metric explained in section~\ref{sec:metrics_for_appearance_preservation} is used. It is useful since it can compare the difference of any two meshes, therefore, it does not depend on the algorithm used.
 
-For both the original mesh and a simplified mesh, 24 images with resolution $512 \times 512$ is rendered with a simple renderer based on \emph{OpenGL}. The camera is placed at the vertices of a rhombicuboctahedron and is faced towards the center where the mesh is placed. A light source is placed at the camera position. This will make sure that the surface facing the camera will be illuminated.
+For both the original mesh and a simplified mesh, 24 images with resolution $512 \times 512$ is rendered with a simple renderer based on \emph{OpenGL}. The camera is placed at the vertices of a rhombicuboctahedron and is faced toward the center where the mesh is placed. A light source is placed at the camera position. This will make sure that the surface facing the camera will be illuminated.
 
 The two sets of 24 images each is used to compute the RMS of the simplified mesh with equation~\ref{eq:rms_image_sets}. This RMS value can then be used to compare how well the algorithms perform. 
 \subsection{Polygon Count} \label{sec:polygon_count}

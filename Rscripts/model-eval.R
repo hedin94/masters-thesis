@@ -389,9 +389,11 @@ ggplot(t, aes(x=g, y=Time/1000)) +
 t <- comb[comb$Detail != " base",]
 t$g <- interaction(t$Reducer, t$Detail)
 
+a <- 0.05
+
 Summary <- t %>%
   group_by(Threads, Detail) %>%
-  summarise(Mean = mean(Time/1000), Q = qt(0.975,df=length(Time)-1)*sd(Time/1000)/sqrt(length(Time)), SD = sd(Time/1000))
+  summarise(Mean = mean(Time/1000), Q = qt(1-a/2,df=length(Time)-1)*sd(Time/1000)/sqrt(length(Time)), SD = sd(Time/1000))
 
 ggplot(Summary, aes(x=Threads, y=Mean, colour=Detail, group=Detail, shape=Detail)) + 
   geom_errorbar(aes(ymin=Mean-Q, ymax=Mean+Q), width=.3, position=pd) +

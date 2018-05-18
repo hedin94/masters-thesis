@@ -18,7 +18,7 @@ ImagePyramid pyramid;
 boolean glowEffect = false;
 
 void settings() {
-  input = loadImage("woman_input.jpg");
+  input = loadImage("Giraffe_N.png");
   size(2*input.width, input.height);
 }
 
@@ -30,7 +30,7 @@ void setup() {
     f.delete();
   }
 
-  bound = loadImage("woman_bound.png");
+  bound = loadImage("giraffe_bound.png");
   //bound = input.copy();
   //bound.filter(THRESHOLD, 0.01);
 

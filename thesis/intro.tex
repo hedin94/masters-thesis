@@ -31,64 +31,32 @@
 %%% Code:
 
 
-\chapter{Introduction}
-\label{cha:introduction}
-
-%%%%%%%%%%%%%%%%%%%%%%%%
-%% Not good!          %%
-%% Have nothing to do %%
-%% with the problem   %%
-%%%%%%%%%%%%%%%%%%%%%%%%
-\iffalse
-For many years the field of computer graphics has been an important part in many industries, but especially in the entertainment industry (for instance video games and motion pictures). These industries generate a lot of money, and are quickly growing in size. A recent survey by \emph{Kroon and Nilsson}~\cite{kroon2017game} from \emph{Dataspelsbranschen} have shown that the video games industry in Sweden generated \euro 1325 M in revenue in 2016, a steep increase from the \euro 392 M in 2012. Also, most movies nowadays use to some extent 3-D computer graphics in scenes where the cost would be to large to reproduce in reality, be too risky for actors, or simply be impossible.
-%%%%%%%%%%%%%%%%%%%%%%%%
-\fi
-
-
+\chapter{Introduction} \label{cha:introduction}
 The rendering of meshes (a collection of polygons describing a surface) is one of the main activities in computer graphics (usually, a collection of meshes; a so called scene description). In many cases, these meshes are very detailed, and require a large amount of polygons to fully describe a surface. This is problematic, since the rendering time of a scene depends on the number of polygons it has. Therefore, it is important to reduce the number of polygons in a mesh as much as possible. This is especially true in video games, where the scene needs to be rendered in real-time. However, if the number of polygons are reduced too much, it will degrade the visual quality of a mesh, giving a progressively flatter surface than intended and removing small surface details. This destroys the intended \emph{geometrical appearance} of the mesh.
 
 
-\section{Motivation}
-\label{sec:motivation}
-
+\section{Motivation} \label{sec:motivation}
 While the geometrical appearance of a mesh is important, it is not the only factor which gives the final appearance of a mesh when rendering. According to \emph{Cohen et al.}~\cite{cohen1998appearance}, both the surface curvature and color are equally as important contributors. \emph{Textured appearance} will be used as the common name for these since surface properties are usually specified with a texture map.
 
 In computer graphics, the process to reduce the number of polygons in a mesh based on some metric is called a \emph{mesh simplification algorithm}, as seen in \emph{Talton's survey}~\cite{talton2004short} in the field. Historically, these have been mostly concerned with minimizing the geometrical deviation of a mesh when applying it. Somewhat recently, methods for minimizing the texture deviation when simplifying a mesh have also appeared. They attempt to reduce the texture deviation and stretching caused when removing polygons from a mesh, as described in \emph{Hoppe et al.}~\cite{hoppe1996progressive}.
 
 By simultaneously taking into account the geometrical and texture deviation, one can preserve the \emph{visual appearance} of a mesh when simplifying it. If polygons can be removed without affecting this appearance significantly, the rendering time can be reduced for ``free''.
 
-\section{Aim}
-\label{sec:aim}
-
-\iffalse %% --------
-To survey the field for state-of-the-art mesh simplification algorithms that preserve the visual appearance of a mesh, and integrate these into \emph{Configura's} (see Section~\ref{sec:background}) graphics pipeline. This will enable Configura to generate better \emph{Level of Detail} (LoD) meshes for speeding up their rendering time. Currently, Configura only takes the geometrical deviation into account when simplifying, with no regard for the textures (e.g. diffuse or normal) applied to the mesh.
-
-Thereafter, we plan to evaluate each of these solutions by measuring their performance and ability to preserve the meshes' original appearance. In the end, the goal is to find the mesh simplification algorithm which both performs and preserves the mesh appearance well.
-\fi %% --------
-
-The aim of this thesis is to first perform a literature study of mesh simplification algorithms that preserve the visual appearance of a mesh. A suitable solution will then be integrated as a preprocessing step in \emph{CET Designer's} graphics pipeline. CET Designer is a space planning software developed by the company \emph{Configura AB} (see \cref{sec:background} for a more detailes description). Considering the visual appearance when simplifying a mesh will enable Configura to generate better \emph{Level of Detail} (LoD) meshes for speeding up their rendering time. Currently, Configura only takes into account the geometrical deviation when simplifying, with no regard for the textures (e.g. diffuse or normal) on top of the mesh.
-
-%% Maybe add some more text here?
-
-\section{Research Questions}
-\label{sec:research-questions}
+\section{Aim} \label{sec:aim}
+The aim of this thesis is to first perform a literature study of mesh simplification algorithms that preserve the visual appearance of a mesh. A suitable solution will then be integrated as a preprocessing step in \emph{CET Designer's} graphics pipeline. CET Designer is a space planning software developed by the company \emph{Configura AB} (see \cref{sec:background} for a more detailed description). Considering the visual appearance when simplifying a mesh will enable Configura to generate better \emph{Level of Detail} (LoD) meshes for speeding up their rendering time. Currently, Configura only takes into account the geometrical deviation when simplifying, with no regard for the textures (e.g. diffuse or normal) on top of the mesh.
 
 
+\section{Research Questions} \label{sec:research-questions}
 \begin{enumerate}
 \item What alternative \emph{mesh simplification schemes} exist that \emph{preserves the appearance} of a mesh? 
 \item Which of these alternatives would be appropriate to integrate into Configura's software?
-
 \end{enumerate}
 
-
-\section{Delimitations}
-\label{sec:delimitations}
+\section{Delimitations} \label{sec:delimitations}
 Since the thesis is done on a time limit a comparison of multiple mesh simplification schemes taking the appearance into account is not feasible. Therefore, one mesh simplification algorithm will be chosen to be implemented and evaluated. The choice will be based on a study of algorithms that can be found in the literature.
 
-\section{Background}
-\label{sec:background}
-
-This thesis was requested by Configura AB, a company in Linköping which provides space planning software. Their main product, \emph{CET designer}, lets companies plan, create and render 3-D office spaces (among other things). These scenes can have a large amount of polygons that need to be rendered in real-time for customers to evaluate their creations in CET designer.
+\section{Background} \label{sec:background}
+This thesis was requested by Configura AB, a company in Linköping which provides space planning software. Their main product, \emph{CET designer}, lets companies plan, create and render 3-D office spaces (among other things). These scenes can have a large amount of polygons that need to be rendered in real-time for customers to evaluate their creations in CET designer. 
 
 To allow larger scenes to be rendered with higher frame-rates (e.g. needed when exploring environments in \emph{Virtual Reality} (VR), to prevent motion sickness), it would be beneficial to reduce the amount of polygons as much as possible. The meshes in these scenes usually have textures applied to them, and it is therefore important to keep the quality as high as possible.
 

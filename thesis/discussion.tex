@@ -24,9 +24,9 @@ When looking at the color error the difference is small between the settings. Ho
 \subsection{Execution Time} \label{sec:discussion_time}
 By looking at \cref{fig:execution_time} we can see the difference when using multiple threads. Parallelization was only added to the initialization phase of the simplification since it did not have that many dependent operations. A gain in speed can be noticed by just using one more thread. The total execution time is only decreased by about 30 ms which is only a decrease of 12\%.
 
-For all four LoD:s the curves are similar. The similarity is expected since the same initial computations is performed for all levels and no parallelization is perfomed during the simplification phase.
+For all four LoD:s the curves are similar. The similarity is expected since the same initial computations is performed for all levels and no parallelization is performed during the simplification phase.
 
-The fastest execution time is obtained when using between 2 to 4 threads. Using more threads seem to increase the execution time. This could be because the threads have to wait for each other to write to the quadric matrices. In the implementation only one thread at a time can write which is not desireable.
+The fastest execution time is obtained when using between 2 to 4 threads. Using more threads seem to increase the execution time. This could be because the threads have to wait for each other to write to the quadric matrices. In the implementation only one thread at a time can write which is not desirable.
 
 
 \subsection{Improved Texture Atlas} \label{sec:discussion_texture}
@@ -47,12 +47,14 @@ When looking at the LoD:s from the distance where they would actually be used th
 %% OMP parallelization
 A very simple parallelization of the initial phase of the simplification was implemented with OpenMP, but as discussed in \cref{sec:discussion_time} only a small speedup was gained. When using more than 4 threads only increase the execution time since only one thread can write at a time. In order to reduce the time waiting for write access a solution could be to make it possible for the threads to have there own private set of quadric matrices. When all threads have finished their computations, a reduction operation could be performed that combine all versions of the matrices. This would let the threads write freely without having to wait for another thread to finish writing.
 
+
+
 \subsection{Evaluation}
 %% Models in evaluation
-The models that was used in the evaluation all had approximately the same number of triangles. Since all the meshes were textured models of humans their shape were also similar, meaning that only a small portion of modeltypes are covered by the evaluation. It would be interesting to see how the simplification scheme performs on other models, especially larger models with more triangles.
+The models that was used in the evaluation all had approximately the same number of triangles. Since all the meshes were textured models of humans their shape were also similar, meaning that only a small portion of model types are covered by the evaluation. It would be interesting to see how the simplification scheme performs on other models, especially larger models with more triangles.
 
 %% Execution time sample size
-When comparing the execution time of using different number of threads a mean execution time was computed. The number of samples collected per thread and detail pair was 120. Since the confidence intervals are narrow we can be confident that the sampled mean exectution time is close to the real mean exectution time. Therefore, the sample size seem to be large enough. 
+When comparing the execution time of using different number of threads a mean execution time was computed. The number of samples collected per thread and detail pair was 120. Since the confidence intervals are narrow we can be confident that the sampled mean execution time is close to the real mean execution time. Therefore, the sample size seem to be large enough. 
   
 %%%
 % Not applicable for this work
