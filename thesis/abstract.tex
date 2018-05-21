@@ -30,7 +30,9 @@
 %% 
 %%% Code:
 
-% \texttt{Abstract.tex}
+Level of Detail (LoD) can be generated for a mesh by removing polygons based on some geometrical error. While this works well for most meshes, it is not suitable for meshes with an associated texture atlas. By using an extended version of Quadric Error Metrics that takes both spatial coordinates and texture coordinates into account textured meshes can also be reduced.
+
+To further improve the appearance of the generated LoD a pull-push algorithm is implemented to fill in gaps in the texture atlas.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -39,5 +41,5 @@
 
 %%% Local Variables: 
 %%% mode: latex
-%%% TeX-master: "demothesis"
+%%% TeX-master: "thesis"
 %%% End: 

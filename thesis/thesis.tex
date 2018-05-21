@@ -42,6 +42,7 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{mathtools}
+%\usepackage{unicode-math}
 \usepackage{booktabs}
 \usepackage{array}
 %\usepackage[dvipsnames]{xcolor}
@@ -51,6 +52,7 @@
 \newcolumntype{C}{>{$}c<{$}}
 
 \graphicspath{{figures/}}
+
 
 \definecolor{darkred}{rgb}{0.554, 0, 0}
 \definecolor{darkblue}{rgb}{0, 0, 0.554}
@@ -90,7 +92,10 @@
 
 %\newcommand{\norm}[1]{\lvert #1 \rvert}
 %\newcommand{\dist}[1]{\lVert #1 \rVert}
-\newcommand{\dist}[1]{\left\lVert #1 \right\rVert}
+  \newcommand{\dist}[1]{\left\lVert #1 \right\rVert}
+
+  %\setmathfont{XITS Math}
+  \newcommand*{\transpose}{^{\mkern-1.5mu\mathsf{T}}}
 
 \DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
 

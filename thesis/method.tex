@@ -47,7 +47,7 @@
 In this section an explanation of how the mesh simplification scheme was implemented is given. Some problems that were encountered during the implementation is also presented as well as how they were solved.
 
 \subsection{Handling seams}
-To be able to apply a texture to a mesh a mesh parameterization is needed that maps vertices to texture coordinates. If the mesh is not homeomorphic to a disk it is split into parts which will introduce seams. Vertices along these seams is duplicated which enable us to have multiple texture coordinates. However, this is a problem during simplification and will likely make the mesh tear in the seams as seen in \cref{fig:mesh_tear}. Welding duplicate vertices removes the seams and our tearing problem goes away. This, however, does not work good for textured meshes since we can no longer have discontinuities which results in the seam shown in \cref{fig:mesh_discontinuity}. Vertices that share the same attributes are safe to remove though.
+To be able to apply a texture to a mesh a mesh parameterization is needed that maps vertices to texture coordinates. If the mesh is not homeomorphic to a disk it is split into parts which will introduce seams. Vertices along these seams is duplicated which enable us to have multiple texture coordinates. However, this is a problem during simplification and will likely make the mesh tear in the seams as seen in \cref{fig:mesh_tear}. Welding duplicate vertices, i.e. only keeping one vertex, removes the seams and our tearing problem goes away. This, however, does not work good for textured meshes since we can no longer have discontinuities which results in the seam shown in \cref{fig:mesh_discontinuity}. Vertices that share the same attributes are safe to remove though.
 
 \begin{figure}[ht]
   \centering
@@ -159,6 +159,7 @@ Extracting all \emph{unique} vertices in a mesh can be done with the aforementio
     void removeDuplicates(vector<vec3>& vertices,
                           vector<vec2>& texCoords,
                           vector<int>& triangles) {
+                            
       unordered_map<vec3, vector<int>> indices;
       unordered_map<int, int> old_to_new;
       
@@ -206,7 +207,7 @@ Extracting all \emph{unique} vertices in a mesh can be done with the aforementio
 
 \begin{subs}
 \subsubsection{Vertices with multiple attributes}
-To handle vertices with multiple unique attributes the \texttt{removeDuplicates} \cref{lst:remove_duplicates} function require some modification. A simple solution is to associate each 3-dimensional vector with an array of indices. Thus, vertices can be associated with multiple texture coordinate indices. A vertex will only be removed if it is in the same place as another vertex with the same texture coordinates. However, if the texture coordinate is unique the vertex index will be added to the end of the list associated with the spatial coordinate.
+To handle vertices with multiple unique attributes the \texttt{removeDuplicates} function in \cref{lst:remove_duplicates} require some modification. A simple solution is to associate each 3-dimensional vector with an array of indices. Thus, vertices can be associated with multiple texture coordinate indices. A vertex will only be removed if it is in the same place as another vertex with the same texture coordinates. However, if the texture coordinate is unique the vertex index will be added to the end of the list associated with the spatial coordinate.
 
 This association can then be used to create vertices divided into one or more wedges. This kind of vertex will hereafter be called \emph{multi-vertex} to distinguish it from the real vertices. For each vertex, a wedge will be created containing the vertex index and then put in an array. A multi-vertex will contain indices to this array of wedges. 
 \end{subs}
@@ -217,11 +218,11 @@ As a rule, the original mesh will be given as an ordinary triangle mesh (a so ca
 After doing this, the implementation basically follows the theoretical framework to the letter, where the least-cost edge is chosen to be contracted from the min-heap. Lastly, this edge is collapsed and then the remaining ``hole'' is simply (but with a few special cases...) linked back together so that the local neighborhood of the vertex still qualifies as a closed manifold.
 
 \subsection{Solving linear equation systems}
-A very common task during the simplification is to find the optimal position for a vertex after an edge collapse. As mentioned in \cref{sec:quadric-based_error_metric}, this is done by solving the linear equation system \(A v_{min} = b\) where \(v_{min}\) is the optimal position. In the original version of the QEM the optimal solution is obtained by finding \(A^{-1}\). If the matrix \(A\) is not invertible one of the vertices on the end points of the edge is chosen to be the new position.
+A very common task during the simplification is to find the optimal position for a vertex after an edge collapse. As mentioned in \cref{sec:quadric-based_error_metric}, this is done by solving the linear equation system \(\mathbf{A} \mathbf{v}_{min} = \mathbf{b}\) where \(\mathbf{v}_{min}\) is the optimal position. In the original version of the QEM the optimal solution is obtained by finding \(\mathbf{A}^{-1}\). If the matrix \(A\) is not invertible one of the vertices on the end points of the edge is chosen to be the new position.
 
 In MixKit, the inverse of a matrix is found using Gaussian elimination with partial pivoting. The method is fast but it was noted that in many cases it fails to find the inverse of the matrix. This leads to many fallbacks to the endpoints which may give bad results for vertices with multiple attributes.
 
-In order to have a higher rate of found solutions to the linear equation systems the linear algebra library \emph{Eigen} \footnote{\href{http://eigen.tuxfamily.org}{eigen.tuxfamily.org}} was used. This library contains numerical solvers, some more accurate and some with higher speed. First, the solvers finds a decomposition of $A$ and then the decomposition is used to find a solution. The choice of a solver is a tradeoff between speed and accuracy. A fast but also with decent accuracy is a solver using LU decomposition with partial pivoting and is a good candidate for the optimization problem. 
+In order to have a higher rate of found solutions to the linear equation systems the linear algebra library \emph{Eigen} \footnote{\href{http://eigen.tuxfamily.org}{eigen.tuxfamily.org}} was used. This library contains numerical solvers, some more accurate and some with higher speed. First, the solvers finds a decomposition of \(\mathbf{A}\) and then the decomposition is used to find a solution. The choice of a solver is a tradeoff between speed and accuracy. A fast but also with decent accuracy is a solver using LU decomposition with partial pivoting and is a good candidate for the optimization problem. 
 
 \subsection{Parallelization with OpenMP}
 During initialization a quadric is created for each multi-vertex. The quadric for a face is then applied to the three corners of the face. The face quadric calculations are independent of each other and gives a good opportunity for parallelization. A relatively easy way to get parallelization on the CPU is to use \emph{OpenMP}. The simplicity can be seen in \cref{lst:parallel} where the iteration of faces have been made parallel. Now the work of computing face quadrics is shared between multiple threads which would increase the performance. Since the vertices belong to multiple faces multiple threads could try to modify the vertex quadric concurrently. Therefore, this section is made critical meaning that the code can only be executed by one thread at a time.
@@ -269,16 +270,16 @@ Given four vertices $(v, v_0, v_1, v_2)$ of a tetrahedron the volume can be calc
 \cref{eq:tetrahedron_volume} can be rewritten as 
 
 \begin{equation} \label{eq:tetrahedron_volume_rewritten}
-\frac{area}{3} \mathbf{n}^\intercal \mathbf{v} - \frac{area}{3} \mathbf{n}^\intercal \mathbf{v}_0 = \mathbf{g}_{vol}^\intercal \mathbf{v} + d_{vol} = 0
+\frac{area}{3} \mathbf{n}\transpose \mathbf{v} - \frac{area}{3} \mathbf{n}\transpose \mathbf{v}_0 = \mathbf{g}_{vol}\transpose \mathbf{v} + d_{vol} = 0
 \end{equation}
 
 
-where $v_0$ is a vertex of face $(v_0, v_1, v_2)$, $n^\intercal$ is the face normal, and $v$ is the new vertex position. This will give a linear constraint that can easily be added to the system of linear equations, thus, increasing its dimension by one.
+where $v_0$ is a vertex of face $(v_0, v_1, v_2)$, $n\transpose$ is the face normal, and $v$ is the new vertex position. This will give a linear constraint that can easily be added to the system of linear equations, thus, increasing its dimension by one.
 
 \begin{equation} \label{eq:volume_constraint}
   \begin{bmatrix}
     \mathbf{A}                & \mathbf{g}_{vol} \\
-     \mathbf{g}_{vol}^\intercal & 0
+     \mathbf{g}_{vol}\transpose & 0
   \end{bmatrix}
   \begin{bmatrix}
     \mathbf{v}_{min} \\

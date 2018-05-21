@@ -162,65 +162,64 @@ Before any simplification can be made, a parametrization of the surface is requi
     \begin{minipage}{0.485\textwidth}
         \centering
         \includegraphics[width=\textwidth]{figures/quadric_planes.eps}
-        \caption{depiction of one of the planes \(f_k\) in the neighborhood \(N_i\) of the vertex \(v_i\). It has a normal \(\mathbf{n}_k\); found by the \(\mathbf{w}_k \times \mathbf{u}_k\) of its edges.}
+        \caption{Depiction of one of the planes \(f_k\) in the neighborhood \(N_i\) of the vertex \(v_i\). It has a normal \(\mathbf{n}_k\); found by the \(\mathbf{w}_k \times \mathbf{u}_k\) of its edges.}
         \label{fig:quadrics}
     \end{minipage}
 \end{figure}
 \fi %%%%%%%%%
 
-
-
-Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garland and Heckbert}~\cite{garland1997surface}, is based on the vertex merging paradigm. It provides a provably optimal simplification in each iteration, by collapsing the edge \((v_j, v_i) \rightarrow v_i\) and re-positioning it at \(\mathbf{v}\), which gives it the lowest possible geometrical error. By assigning a matrix \(\mathbf{Q}_i\) for each vertex \(v_i\), one can find the error \(\Delta(\mathbf{v})\) introduced by moving \(v_i\) to \(\mathbf{v}\). \(\Delta(\mathbf{v})\) is the sum of squared distances from \(\mathbf{v}\) to the planes \(\mathbf{f}_k\) in \(v_i\)'s neighborhood \(N_i\) (all polygons around \(v_i\) as in \cref{fig:quadrics}).
+Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garland and Heckbert}~\cite{garland1997surface}, is based on the vertex merging paradigm. It provides a provably optimal simplification in each iteration, by collapsing the edge \((v_j, v_i) \rightarrow v_i\) and re-positioning it at \(\mathbf{v}\), which gives it the lowest possible geometrical error. By assigning a matrix \(\mathbf{Q}_i\) for each vertex \(v_i\), one can find the error \(\mathup\Delta(\mathbf{v})\) introduced by moving \(v_i\) to \(\mathbf{v}\). \(\mathup\Delta(\mathbf{v})\) is the sum of squared distances from \(\mathbf{v}\) to the planes \(\mathbf{f}_k\) in \(v_i\)'s neighborhood \(N_i\) (all polygons around \(v_i\) as in \cref{fig:quadrics}).
 
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.4\textwidth]{figures/quadric_planes.eps}
-  \caption{depiction of one of the planes \(f_k\) in the neighborhood \(N_i\) of the vertex \(v_i\). It has a normal \(\mathbf{n}_k\); found by the \(\mathbf{w}_k \times \mathbf{u}_k\) of its edges.}
+  \caption{Depiction of one of the planes \(f_k\) in the neighborhood \(N_i\) of the vertex \(v_i\). It has a normal \(\mathbf{n}_k\); found by the \(\mathbf{w}_k \times \mathbf{u}_k\) of its edges.}
   \label{fig:quadrics}
 \end{figure}
 
 %\vspace{-0.7em}
 
-Since \(\Delta(\mathbf{v})\) is quadratic, finding a \(\mathbf{v}\) which gives a minimal error is a linear problem. The best position \(\mathbf{\bar{v}}_i\) for \(v_i\) after a collapse \((v_j, v_i) \rightarrow v_i\) is a solution to \cref{eq:quadric_opt}.
+Since \(\mathup\Delta(\mathbf{v})\) is quadratic, finding a \(\mathbf{v}\) which gives a minimal error is a linear problem. The best position \(\mathbf{\overline{v}}_i\) for \(v_i\) after a collapse \((v_j, v_i) \rightarrow v_i\) is a solution to \cref{eq:quadric_opt}.
 
 \begin{equation} \label{eq:quadric_opt}
-(\mathbf{Q}_j + \mathbf{Q}_i)\mathbf{\bar{v}}_i = \begin{bmatrix} 0 & 0 & 0 & 1 \end{bmatrix}^\intercal.
+(\mathbf{Q}_j + \mathbf{Q}_i)\mathbf{\overline{v}}_i = \begin{bmatrix} 0 & 0 & 0 & 1 \end{bmatrix}\transpose.
 \end{equation}
 
 \begin{equation} \label{eq:homogeneous_quadric}
-      \Delta(\mathbf{v}) = \mathbf{v}^\intercal \mathbf{Q}_i  \mathbf{v} \;,\;\; \mathbf{Q}_i = \sum_{f_k \in N_i}  \mathbf{f_k} \mathbf{f_k}^\intercal \; .
+      \mathup\Delta(\mathbf{v}) = \mathbf{v}\transpose \mathbf{Q}_i  \mathbf{v} \;,\;\; \mathbf{Q}_i = \sum_{f_k \in N_i}  \mathbf{f_k} \mathbf{f_k}\transpose \; .
 \end{equation}
 
-By storing the \(\Delta(\mathbf{\bar{v}}_i)\) for every valid collapse \((v_j, v_i) \rightarrow v_i\) in a min-heap, the least cost collapse on the top of the heap can be done in each iteration, removing a vertex in each step. This is repeated until either a user-given vertex count \(|\mathcal{V}|\) is reached or until some error threshold \(\epsilon\).
+By storing the \(\mathup\Delta(\mathbf{\overline{v}}_i)\) for every valid collapse \((v_j, v_i) \rightarrow v_i\) in a min-heap, the least cost collapse on the top of the heap can be done in each iteration, removing a vertex in each step. This is repeated until either a user-given vertex count \(|\mathcal{V}|\) is reached or until some error threshold \(\epsilon\).
 
-The results by \emph{Garland and Heckbert}~\cite{garland1997surface} show that QEM can reduce the simplification error by up to 50 \% in comparison to a na\"ive scheme where \(\mathbf{\bar{v}}_i = (v_i + v_j) \div 2\) and \(\Delta(\mathbf{v}) = ||\mathbf{v} - v_i||\)\iffalse, as can be seen in \cref{fig:naive_vs_quadric}\fi. They also argue that QEM gives higher-quality simplifications than \emph{vertex clustering} and that it is faster than \emph{progressive meshing} (which we also present later).
+The results by \emph{Garland and Heckbert}~\cite{garland1997surface} show that QEM can reduce the simplification error by up to 50 \% in comparison to a na\"ive scheme where \(\mathbf{\overline{v}}_i = (v_i + v_j) / 2\) and \(\Delta(\mathbf{\overline{v}}_i) = ||\mathbf{\overline{v}}_i - v_i||\). They also argue that QEM gives higher-quality simplifications than \emph{vertex clustering} and that it is faster than \emph{progressive meshing} (which we also present later).
 
 \iffalse
 \begin{figure}[ht]
     \centering
     \includegraphics[width=\textwidth]{figures/naive_simplification.png}
     \includegraphics[width=\textwidth]{figures/quadric_simplification.png}
-    \caption{simplification using a na\"ive (top image) and a quadric error metric (bottom image) at different levels of detail at some vertex count (left to right: 50 \%, 35 \% and 17 \% of original).}
+    \caption{Simplification using a na\"ive (top image) and a quadric error metric (bottom image) at different levels of detail at some vertex count (left to right: 50 \%, 35 \% and 17 \% of original).}
     \label{fig:naive_vs_quadric}
 \end{figure}
 \fi
 
 %Simplifying surfaces with color and texture using quadric error metrics
 %\subsection{Preserving appearance}
-A general version of QEM was later presented by Garland and Heckbert \cite{garland1998simplifying} where vertices can be placed in $n$-dimensional space. This makes it possible to, for example, include the color of the surface in the computation. Each vertex is treated as a vector \(v \subset \mathbb{R}^n\). Thus, when the color is considered each vertex will be represented by a 6-dimensional vector \(v = [x, y, z, r, g, b]^\intercal\). The first three values is the spatial coordinates and the last three values will be the color. The same thing can be done with for example texture coordinates where each vertex would be represented by a 5-dimensional vector \(v = [x, y, z, s, t]\) where $s, t$ is the 2D texture coordinates.
+A general version of QEM was later presented by Garland and Heckbert \cite{garland1998simplifying} where vertices can be placed in $n$-dimensional space. This makes it possible to, for example, include the color of the surface in the computation. Each vertex is treated as a vector \(v \subset \mathbb{R}^n\). Thus, when the color is considered each vertex will be represented by a 6-dimensional vector \(v = [x, y, z, r, g, b]\transpose\). The first three values is the spatial coordinates and the last three values will be the color. The same thing can be done with for example texture coordinates where each vertex would be represented by a 5-dimensional vector \(v = [x, y, z, s, t]\transpose\) where $s, t$ is the 2D texture coordinates.
 
-The original version of QEM used a 4x4 homogeneous matrix $Q_i$ for the computations. A more convenient notation is used in the general version. A face in the original model defines a plane which satisfies the equation \(n^{\intercal}v + d = 0\) where $n$ is the face normal and $d$ is a scalar. The squared distance of a vertex to a plane is given by
+The original version of QEM used a 4x4 homogeneous matrix $Q_i$ for the computations. A more convenient notation is used in the general version. A face in the original model defines a plane which satisfies the equation \(\mathbf{n}\transpose \mathbf{v} + d = 0\) where \(\mathbf{n}\) is the face normal and \(d\) is a scalar. The squared distance of a vertex to a plane is given by
 \begin{equation}
-  D^2 = (\mathbf{n}^\intercal\mathbf{v} + d)^2 = \mathbf{v}^\intercal(\mathbf{nn}^\intercal)\mathbf{v} + 2d\mathbf{n}^\intercal\mathbf{v} + d^2
+  D^2 = (\mathbf{n}\transpose\mathbf{v} + d)^2 = \mathbf{v}\transpose(\mathbf{nn}\transpose)\mathbf{v} + 2d\mathbf{n}\transpose\mathbf{v} + d^2
 \end{equation}
 
 $D^2$ can now be represented as the quadric Q
 \begin{equation}
-  Q = (\mathbf{A}, \mathbf{b}, c) = (\mathbf{nn}^\intercal, d\mathbf{n}, d^2)
+  Q = (\mathbf{A}, \mathbf{b}, c) = (\mathbf{nn}\transpose, d\mathbf{n}, d^2)
 \end{equation}
 \begin{equation}
-  Q(\mathbf{v}) = \mathbf{v}^\intercal\mathbf{Av} + 2\mathbf{bv} + c
+  Q(\mathbf{v}) = \mathbf{v}\transpose\mathbf{Av} + 2\mathbf{bv} + c
 \end{equation}
+
 
 where \(Q(\mathbf{v})\) is the sum of squared distances. This representation performs matrix operations on 3x3 matrices instead of 4x4 as in the previous notation. This increases performance when, for example, performing matrix inversions.
 
@@ -229,7 +228,7 @@ The overhead of the higher dimensional quadrics is not extreme according to Garl
 Garland and Heckbert have assumed that the properties vary continuously over the whole surface. However, if we want to for example apply a texture to a cylinder there will always be a seam where the ends of the texture meets. All vertices along this seam needs to be duplicated since they would require two different texture coordinates. The authors suggested having boundary constraints that would maintain the seam. However, in the case where a mesh have a corresponding texture atlas where each face have a specific part of the texture this might not work. The solution suggested by the authors is to allow multiple quadrics for each vertex, but, this is not yet implemented.
 
 %New quadric error metric
-Hugues Hoppe \cite{Hoppe:1999:NQM:319351.319357} also uses QEM for meshes with appearance attributes. Instead of calculating the distances to hyperplanes as Garland and Heckbert, Hoppe base the attribute error on geometric correspondence in 3D. A point p is projected onto a face in \(\mathbb{R}^3\) rather than a plane in a higher dimension and then both the geometric and attribute error is computed. According to the author this gives a better result compared to Garland and Heckberts general QEM.
+Hugues Hoppe \cite{Hoppe:1999:NQM:319351.319357} also uses QEM for meshes with appearance attributes. Instead of calculating the distances to hyperplanes as Garland and Heckbert, Hoppe base the attribute error on geometric correspondence in 3D. A point \(\mathbf{p}\) is projected onto a face in \(\mathbb{R}^3\) rather than a plane in a higher dimension and then both the geometric and attribute error is computed. According to the author this gives a better result compared to Garland and Heckberts general QEM.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
@@ -246,7 +245,7 @@ Hoppe based the simplification on the previous work \emph{Mesh Optimization} \ci
   E(M) = E_{dist}(M) + E_{spring}(M) + E_{scalar}(M) + E_{disc}(M)n
 \end{equation}
 
-\emph{Distance energy} $E_{dist}(M)$ measures the sum of the squared distances from the points to the mesh. \emph{Spring energy} $E_{spring}$ is used to regularize the optimization problem. \emph{Scalar energy} $E_{scalar}$ measures the accuracy of the scalar attributes of the mesh. The last term, $E_{disc}$ measures the geometric accuracy of the discontinuity curves (e.g creases). All legal edge collapses is placed in a priority queue where the edge collapse with lowest $\Delta E$ (estimated energy) is on the top of the queue. After a transformation is performed, the energy of the neighboring edges is updated.
+\emph{Distance energy} $E_{dist}(M)$ measures the sum of the squared distances from the points to the mesh. \emph{Spring energy} $E_{spring}$ is used to regularize the optimization problem. \emph{Scalar energy} $E_{scalar}$ measures the accuracy of the scalar attributes of the mesh. The last term, $E_{disc}$ measures the geometric accuracy of the discontinuity curves (e.g creases). All legal edge collapses is placed in a priority queue where the edge collapse with lowest $\mathup\Delta E$ (estimated energy) is on the top of the queue. After a transformation is performed, the energy of the neighboring edges is updated.
 
 %\subsection{Preserving appearance} \label{sec:texture_mapped_progressive_meshing}
 Given an arbitrary mesh, \emph{Sander et. al} \cite{sander2001texture} presents a method to construct a PM where a texture parametrization is shared between all meshes in the PM sequence. In order to create a texture mapping for a simplified mesh, the original mesh's attributes, e.g normals, is sampled. This method was developed with two goals taken into consideration:
@@ -323,8 +322,8 @@ According to \emph{David Lilja}~\cite[p.~4]{lilja2005measuring}, there are three
 
 Since not all of the algorithms in \cref{sec:related_work} have an analytical model derived by the authors, and also because the algorithms are to be evaluated in a real system, only the problems inherent to the measurement approach will be considered. One of the problems with doing measurements of a real system (a program running on a computer in this case), according to \emph{David Lilja}~\cite[p.~43]{lilja2005measuring}, is that they introduce noise. This noise needs to be modeled to be able to reach a correct conclusion, such as determining if algorithm A is faster than algorithm B. One way of doing this, according to \emph{David Lilja}~\cite[p.~48]{lilja2005measuring}, is to find the confidence interval of the measured value, by assuming the source's error is distributed according to some statistical distribution (like the Gaussian or the Student t-distribution). The confidence interval \([a,b]\) when assuming the source's error is t-distributed, can be found as shown below. Where \(n\) tests are taken (giving \(n-1\) degrees of freedom), with a significance level of \(\alpha\) (usually 5 \%).
 
-\begin{equation} a = \bar{x} - t_k\frac{s}{\sqrt{n}}, \quad
-   b = \bar{x} + t_k\frac{s}{\sqrt{n}}, \quad
+\begin{equation} a = \overline{x} - t_k\frac{s}{\sqrt{n}}, \quad
+   b = \overline{x} + t_k\frac{s}{\sqrt{n}}, \quad
 t_k = t_{1-\alpha/2,n-1} \end{equation}
 
 One common mistake, according to \emph{Schenker et al.}~\cite{schenker2001judging}, when using confidence intervals to determine if e.g. an implemented algorithm A is faster than B, is the use of the overlapping method to reach conclusions. If two confidence intervals \emph{do not} overlap, then the result is provably significant (that is, algorithm A is either faster or slower than B). However, the converse is not true, if two intervals \emph{do} overlap, then no conclusions can be reached since the result could be either significant or not significant.
