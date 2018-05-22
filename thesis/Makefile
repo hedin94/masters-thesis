@@ -11,7 +11,7 @@ PUBLISHNAME = appearance_preserving_mesh_simplification
 #Location of latexmk binary
 MKLATEX = latexmk
 #Options to latexmk, should need to be changed
-MKLATEXOPTS = -pdf -pdflatex="xelatex -interaction=nonstopmode" -use-make -f
+MKLATEXOPTS = -pdf -pdflatex="xelatex" -use-make -f
 
 all: $(PDFNAME).pdf $(PUBLISHNAME).pdf
 
