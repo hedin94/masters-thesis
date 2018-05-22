@@ -653,7 +653,7 @@
       {\tryfonts{Calibri}{Carlito}{%
           \fontsize{13pt}{15pt}\selectfont%
           \textit{\swedishenglish{\@titleenglish}{\@titleswedish}}\par}%
-      \fi}%
+      }%
       \vspace*{10mm}%
       {\tryfonts{Calibri}{Carlito}\fontsize{12pt}{13pt}\selectfont\textbf{\@author}\par
       }%
