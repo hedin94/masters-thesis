@@ -170,7 +170,6 @@ Before any simplification can be made, a parametrization of the surface is requi
 
 Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garland and Heckbert}~\cite{garland1997surface}, is based on the vertex merging paradigm. It provides a provably optimal simplification in each iteration, by collapsing the edge \((v_i, v_j) \rightarrow v_i\) and repositioning it at \(\mathbf{\overline{v}}_i\), which gives it the lowest possible geometrical error. By assigning a matrix \(\mathbf{Q}_i\) for each vertex \(v_i\), one can find the error \(\Delta(\mathbf{\overline{v}}_i)\) introduced by moving \(v_i\) to \(\mathbf{\overline{v}}_i\). \(\Delta(\mathbf{\overline{v}}_i)\) is the sum of squared distances from \(\mathbf{\overline{v}}_i\) to the planes \(\mathbf{f}_k\) in \(\mathbf{\overline{v}}_i\)'s neighborhood \(N_i\) (all polygons around \(\mathbf{\overline{v}}_i\) as in \cref{fig:quadrics}).
 
-
 \begin{figure}[ht]
   \centering
   \includegraphics[width=0.4\textwidth]{figures/quadric_planes.eps}
