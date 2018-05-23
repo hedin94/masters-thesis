@@ -1,15 +1,15 @@
-%%% lorem.tex --- 
+%%% method.tex --- 
 %% 
-%% Filename: lorem.tex
-%% Description: 
-%% Author: Ola Leifler
+%% Filename: method.tex
+%% Description:
+%% Author:
 %% Maintainer: 
-%% Created: Wed Nov 10 09:59:23 2010 (CET)
-%% Version: $Id$
-%% Version: 
-%% Last-Updated: Wed Nov 10 09:59:47 2010 (CET)
-%%           By: Ola Leifler
-%%     Update #: 2
+%% Created:
+%% Version:
+%% Version:
+%% Last-Updated:
+%%           By:
+%%     Update #:
 %% URL: 
 %% Keywords: 
 %% Compatibility: 
@@ -34,10 +34,6 @@
 \chapter{Method} \label{cha:method}
   Now that the theoretical groundwork has been laid out, we describe in \cref{sec:implementation} how the solution was implemented into Configura's graphics pipeline and then show how to evaluate it in \cref{sec:evaluation}.
   
-\iffalse
- In more detail, the implementation description shows how the different algorithms are implemented in practice and how these fit into Configura's pipeline. Moreover, we also show how the appearance evaluator has been implemented and integrated into the system. In the evaluation part of the method, we describe how to measure the computation time, memory usage, polygon count and appearance preservation of a algorithm given a certain mesh and parameters.
-\fi
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
 %%% Implementation
@@ -365,7 +361,9 @@ What neighboring pixels to blend with is determined by the pixel's location with
 An evaluation of the appearance of meshes simplified by the implemented simplification scheme was performed. In this section the the models and metrics used for the evaluation is presented.
 
 \subsection{Models}
-Four LoD:s are usually used by Configura and they are defined by triangle density ($\#triangles/area$). The four levels are super (5000 $triangles/m^2$), high (1000 $triangles/m^2$), medium (200 $triangles/m^2$), and low  (50 $triangles/m^2$) and these will be used for the evaluation. Configura have textured models of humans and a subset of them have been selected to be used in the evaluation. The triangle counts lies around 15000 but smaller models with about 10000 and larger models with about 30000 triangles are also included. 
+Four LoD:s are usually used by Configura and they are defined by triangle density ($\#triangles/area$). The four levels are super (5000 $triangles/m^2$), high (1000 $triangles/m^2$), medium (200 $triangles/m^2$), and low  (50 $triangles/m^2$) and these will be used for the evaluation. Configura have textured models of humans and a subset of them have been selected to be used in the evaluation. The triangle counts lies around 15000 but smaller models with about 10000 and larger models with about 30000 triangles are also included.
+
+For a visual comparison of LoD:s a \emph{office woman} model is used. Before any simplification have been made the model has 14996 triangles.
 
 \subsection{Appearance Preservation}
 In order to compare how well the appearance is preserved for different LoD:s the image metric described in \cref{sec:metrics_for_appearance_preservation} can be used. The main idea is to render multiple images of both the original and simplified mesh from a set of camera positions defined by the vertices of a rhombicuboctahedron (\cref{fig:rhombicuboctahedron}). A RMS of all the pixel values of the images is then simply the error that the simplification introduced. The authors \cite{lindstrom2000image} measured difference in luminance but other metrics, such as Euclidean distance of the RGB colors, can be used.

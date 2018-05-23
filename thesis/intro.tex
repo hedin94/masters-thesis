@@ -1,22 +1,21 @@
-%%% Intro.tex --- 
+%%% intro.tex --- 
 %% 
-%% Filename: Intro.tex
-%% Description: 
-%% Author: Ola Leifler
-%% Maintainer: 
-%% Created: Thu Oct 14 12:54:47 2010 (CEST)
-%% Version: $Id$
-%% Version: 
-%% Last-Updated: Thu May 19 14:12:31 2016 (+0200)
-%%           By: Ola Leifler
-%%     Update #: 5
-%% URL: 
-%% Keywords: 
-%% Compatibility: 
+%% Filename: intro.tex
+%% Description:
+%% Author:
+%% Maintainer:
+%% Created:
+%% Version:
+%% Last-Updated:
+%%           By:
+%%     Update #:
+%% URL:
+%% Keywords:
+%% Compatibility:
 %% 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% 
-%%% Commentary: 
+%%% Commentary:
 %% 
 %% 
 %% 
@@ -43,7 +42,7 @@ In computer graphics, the process to reduce the number of polygons in a mesh bas
 By simultaneously taking into account the geometrical and texture deviation, one can preserve the \emph{visual appearance} of a mesh when simplifying it. If polygons can be removed without affecting this appearance significantly, the rendering time can be reduced for ``free''.
 
 \section{Aim} \label{sec:aim}
-The aim of this thesis is to first perform a literature study of mesh simplification algorithms that preserve the visual appearance of a mesh. A suitable solution will then be integrated as a preprocessing step in \emph{CET Designer's} graphics pipeline. CET Designer is a space planning software developed by the company \emph{Configura AB} (see \cref{sec:background} for a more detailed description). Considering the visual appearance when simplifying a mesh will enable Configura to generate better \emph{Level of Detail} (LoD) meshes for speeding up their rendering time. Currently, Configura only takes into account the geometrical deviation when simplifying, with no regard for the textures (e.g. diffuse or normal) on top of the mesh.
+The aim of this thesis is to first perform a literature study of mesh simplification algorithms that preserve the visual appearance of a mesh. A suitable solution will then be integrated as a preprocessing step in \emph{CET Designer's} graphics pipeline. CET Designer is a space planning software developed by the company \emph{Configura AB} (see \cref{sec:background} for a more detailed description). Considering the visual appearance when simplifying a mesh will enable Configura to generate better \emph{Level of Detail} (LoD) meshes for speeding up their rendering time. Currently, Configura only takes the geometrical deviation into account when simplifying, with no regard for the textures (e.g. diffuse or normal) on top of the mesh.
 
 
 \section{Research Questions} \label{sec:research-questions}
@@ -56,7 +55,7 @@ The aim of this thesis is to first perform a literature study of mesh simplifica
 Since the thesis is done on a time limit a comparison of multiple mesh simplification schemes taking the appearance into account is not feasible. Therefore, one mesh simplification algorithm will be chosen to be implemented and evaluated. The choice will be based on a study of algorithms that can be found in the literature.
 
 \section{Background} \label{sec:background}
-This thesis was requested by Configura AB, a company in Linköping which provides space planning software. Their main product, \emph{CET designer}, lets companies plan, create and render 3-D office spaces (among other things). These scenes can have a large amount of polygons that need to be rendered in real-time for customers to evaluate their creations in CET designer. 
+This thesis was requested by Configura AB, a company in Linköping which provides space planning software. Their main product, \emph{CET designer}, lets companies plan, create, and render 3-D spaces (among other things). These scenes can have a large amount of polygons that need to be rendered in real-time for customers to evaluate their creations in CET designer. 
 
 To allow larger scenes to be rendered with higher frame-rates (e.g. needed when exploring environments in \emph{Virtual Reality} (VR), to prevent motion sickness), it would be beneficial to reduce the amount of polygons as much as possible. The meshes in these scenes usually have textures applied to them, and it is therefore important to keep the quality as high as possible.
 
@@ -64,7 +63,6 @@ While Configura already has a mesh simplification in their pipeline, it only acc
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% intro.tex ends here
-
 
 %%% Local Variables: 
 %%% mode: latex
