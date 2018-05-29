@@ -149,7 +149,7 @@ Before any simplification can be made, a parametrization of the surface is requi
 \section{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric}
 % Surface simplification using quadric error metric
 
-Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garland and Heckbert}~\cite{garland1997surface}, is based on the vertex merging paradigm. It provides a provably optimal simplification in each iteration, by collapsing the edge \((v_i, v_j) \rightarrow \mathbf{v}\) and repositioning it at \(\mathbf{v}\), which gives it the lowest possible geometrical error. By assigning a matrix \(\mathbf{Q}_i\) for each vertex \(v_i\), one can find the error \(\Delta(\mathbf{v})\) introduced by moving \(v_i\) to \(\mathbf{v}\). \(\Delta(\mathbf{v})\) is the sum of squared distances from \(\mathbf{v}\) to the planes \(\mathbf{f}_k\) in \(\mathbf{v}\)'s neighborhood \(N_i\) (all polygons around \(\mathbf{v}\) as in \cref{fig:quadrics}).
+Mesh simplification with \emph{Quadric Error Metrics} (QEM), due to \emph{Garland and Heckbert}~\cite{garland1997surface}, is based on the vertex merging paradigm. It provides a provably optimal simplification in each iteration, by collapsing the edge \((v_i, v_j) \rightarrow \mathbf{v}\) and repositioning it at \(\mathbf{v}\), which gives it the lowest possible geometrical error. By assigning a matrix \(\mathbf{Q}_i\) for each vertex \(v_i\), one can find the error \(\Delta(\mathbf{v})\) introduced by moving \(v_i\) to \(\mathbf{v}\). \(\Delta(\mathbf{v})\) is the sum of squared distances from \(\mathbf{v}\) to the planes \(\mathbf{f}_k = \mathbf{n}_k\mathbf{p} + d\) in \(\mathbf{v}\)'s neighborhood \(N_i\) (all polygons around \(\mathbf{v}\) as in \cref{fig:quadrics}).
 
 \begin{figure}[ht]
   \centering
@@ -167,7 +167,7 @@ Since \(\Delta(\mathbf{v})\) is quadratic, finding a \(\mathbf{v}\) which gives 
 \end{equation}
 
 \begin{equation} \label{eq:homogeneous_quadric}
-      \Delta(\mathbf{v}) = \mathbf{v}\transpose \mathbf{Q}_i  \mathbf{v} \;,\;\; \mathbf{Q}_i = \sum_{f_k \in N_i}  \mathbf{f_k} \mathbf{f_k}\transpose \; .
+      \Delta(\mathbf{v}) = \mathbf{v}\transpose \mathbf{Q}_i  \mathbf{v} \;\;\; \mathbf{Q}_i = \sum_{f_k \in N_i}  \mathbf{f_k} \mathbf{f_k}\transpose \;
 \end{equation}
 
 By storing the \(\Delta(\mathbf{v})\) for every valid collapse \((v_i, v_j) \rightarrow \mathbf{v}\) in a min-heap, the least cost collapse on the top of the heap can be done in each iteration, removing a vertex in each step. This is repeated until either a user-given vertex count \(|\mathcal{V}|\) is reached or until some error threshold \(\epsilon\).
