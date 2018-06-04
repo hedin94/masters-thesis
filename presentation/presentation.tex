@@ -20,9 +20,16 @@
 \usepackage{amsmath}
 \usepackage{mathtools}
 
+\setbeamertemplate{footline}[frame number]
+\setbeamertemplate{headline}{}
+\beamertemplatenavigationsymbolsempty
+
 \graphicspath{{../figures/}}
 
 \newcommand*{\transpose}{^{\mkern-1.5mu\mathsf{T}}}
+\newcommand{\icol}[1]{% inline column vector
+  \left(\begin{smallmatrix}#1\end{smallmatrix}\right)%
+}
 
 \title
 {Evaluation of an Appearance-Preserving Mesh Simplification Scheme}
@@ -68,7 +75,7 @@
 \begin{document}
 \captionsetup[subfloat]{labelformat=empty}
 
-\begin{frame}
+\begin{frame}[plain]
   \titlepage
 \end{frame}
 
@@ -118,7 +125,7 @@
 % quadric planes
 \begin{frame}{Quadric Error Metric}
   \begin{itemize}
-  \item Iteratively perform edge collapses
+  \item Iteratively perform edge collapses \((\mathbf{v}_i, \mathbf{v}_j)\rightarrow \mathbf{v}\)
   \item Cost based on distance to neighboring faces' planes
   \end{itemize}
   \includegraphics[width=\linewidth]{qem_precontract.eps}
@@ -128,7 +135,7 @@
   \includegraphics[width=\linewidth]{qem.eps}
 \end{frame}
 
-\begin{frame}{Quadric Error Metric}
+\begin{frame}{Calculating cost}
   Squared distance from point \(v\) to plane \(f\)
   \begin{equation*}
     \mathbf{v} = [x, y, z, 1]\transpose,~\mathbf{f} = [a, b, c, d]\transpose
@@ -139,7 +146,7 @@
     &= \mathbf{v}\transpose\mathbf{Q}\mathbf{v}
   \end{align*}
   \begin{equation*}
-    Q_f =
+    \mathbf{Q} =
     \begin{bmatrix}
       a^2 & ab  & ac  & ad \\
       ab  & b^2 & bc  & bd \\
@@ -149,11 +156,11 @@
   \end{equation*}
 \end{frame}
 
-\begin{frame}
-  Sum of distances to planes \(f_k\) of triangles in \(v_i\)'s neighborhood
+\begin{frame}{Calculating cost}
+  Sum distances to planes \(f_k\) of triangles in neighborhood \(N_i\) of \(v_i\)\\
+  ~\\
   \begin{columns}
     \begin{column}{.52\linewidth}
-
       \begin{align*}
         D^2 &= \sum_k{\mathbf{v}_i\transpose\mathbf{Q}_k\mathbf{v}_i}\\
             &= \mathbf{v}_i\transpose\left(\sum_k{\mathbf{Q}_k}\right)\mathbf{v}_i\\
@@ -161,21 +168,15 @@
       \end{align*}
     \end{column}
     \begin{column}{.48\linewidth}
-      \includegraphics{quadric_planes.eps}
+      \includegraphics{quadric_planes.eps}%
     \end{column}
   \end{columns}
 \end{frame}
 
-\begin{frame}
-  Finding optimal position for \(v_i\)
+\begin{frame}{Finding Optimal Position}
+  Optimal position \(\bar{\mathbf{v}}\) after collapse \((\mathbf{v}_i,\mathbf{v}_j) \rightarrow \mathbf{v}\) 
   \begin{equation*}
-    \begin{bmatrix}
-      q_{11} & q_{12}  & q_{13}  & q_{14} \\
-      q_{21} & q_{22}  & q_{23}  & q_{24} \\
-      q_{31} & q_{32}  & q_{33}  & q_{34} \\
-      0      & 0       & 0       & 1
-    \end{bmatrix}
-    \bar{\mathbf{v}}_i
+    (\mathbf{Q}_i + \mathbf{Q}_j)\bar{\mathbf{v}}
     =
     \begin{bmatrix}
       0\\
@@ -183,18 +184,35 @@
       0\\
       1     
     \end{bmatrix}
-      \end{equation*}
+  \end{equation*}
+  
+  \begin{equation*}
+    \begin{bmatrix}
+      q_{11} & q_{12}  & q_{13}  & q_{14} \\
+      q_{21} & q_{22}  & q_{23}  & q_{24} \\
+      q_{31} & q_{32}  & q_{33}  & q_{34} \\
+      0      & 0       & 0       & 1
+    \end{bmatrix}
+    \bar{\mathbf{v}}
+    =
+    \begin{bmatrix}
+      0\\
+      0\\
+      0\\
+      1     
+    \end{bmatrix}
+  \end{equation*}
 \end{frame}
 
-\begin{frame}{Quadric Error Metric}
+\begin{frame}{Overview of Algorithm}
   Initialization
   \begin{enumerate}
-  \item Compute \(4x4\) matrix \(Q\) for each vertex
+  \item Compute matrix \(Q\) for each vertex
   \item Compute optimal vertex position for each edge collapse
-  \item Compute cost of each edge collapse
-  \item Store edge collapses in min-heap with cost as key
+  \item Compute \emph{cost} of each edge collapse
+  \item Store edge collapses in min-heap with \emph{cost} as key
   \end{enumerate}
-
+  ~\\
   Simplification
   \begin{enumerate}
   \item Collapse edge on top of min-heap
@@ -203,29 +221,7 @@
   \end{enumerate}
 \end{frame}
 
-
-\begin{frame}{Quadric Error Metric}
-
-  \begin{columns}
-    \begin{column}{.52\linewidth}
-      
-      \begin{equation}
-        \mathbf{f}_k: \mathbf{n}_k\transpose\mathbf{v}_i + d = 0
-      \end{equation}
-      \begin{equation}
-        \mathbf{Q}_i = \sum_{f_k \in N_i}  \mathbf{f_k} \mathbf{f_k}\transpose
-      \end{equation}
-      \begin{equation}
-        \Delta(\mathbf{v}) = \mathbf{v}\transpose\mathbf{Q}\mathbf{v}
-      \end{equation}
-    \end{column}%
-    \begin{column}{.48\linewidth}
-      \includegraphics{quadric_planes.eps}
-    \end{column}
-  \end{columns}
-\end{frame}
-
-\begin{frame}{Quadric Error Metric}
+\begin{frame}{More convenient notation}
   \begin{columns}
     \begin{column}{.52\linewidth}
       \begin{align}
@@ -242,10 +238,11 @@
       \end{align}
 
       \begin{equation}
-        \mathbf{A}\mathbf{v} + \mathbf{b} = 0
-      \end{equation}
-      \begin{equation}
         Q(\mathbf{v}) = \mathbf{v}\transpose\mathbf{A}\mathbf{v} + 2\mathbf{b}\transpose\mathbf{v} + c
+      \end{equation}
+
+      \begin{equation}
+        \mathbf{A}\bar{\mathbf{v}} + \mathbf{b} = 0
       \end{equation}
     \end{column}%
     \begin{column}{.48\linewidth}
@@ -254,11 +251,204 @@
   \end{columns}
 \end{frame}
 
-% wedge vertex
-% pyramid
-% pull filter
-% push filter
+\begin{frame}{Quadric Error Metric with Attributes}
+  Extend \(\mathbf{Q}\) to include attributes
 
+\[
+    Q = (\mathbf{A}, \mathbf{b}, c) =
+      \left(
+      \left[
+        \begin{array}{c|c}
+          \mathbf{n}\mathbf{n}\transpose & \ddots 0 \ddots\\
+          \hline
+          \ddots 0 \ddots & \ddots 0 \ddots
+        \end{array}%
+      \right]
+      ,
+      \left[
+        \begin{array}{c}
+          d\mathbf{n}\\\hline 0
+        \end{array}
+      \right]
+      ,
+      d^2
+      \right)
+\]
+\end{frame}
+
+\begin{frame}{Quadric Error Metric with Attributes}
+  Expected attribute value at point \(p\):
+  \[
+    \hat{s}_j(\mathbf{p}) = \mathbf{g}_j\transpose\mathbf{p} + d_j
+  \]
+  \(\hat{s}_j\) interpolate the vertices of face \(\left(\icol{p_1\\s_1},\icol{p_2\\s_2},\icol{p_3\\s_3}\right)\)
+  ~\\
+  ~\\
+  \(\mathbf{g}_j\) and \(d_j\) obtained by solving:
+  \[
+    \left[
+    \begin{array}{cc}
+      \mathbf{p}_1\transpose & 1\\[5pt]
+      \mathbf{p}_2\transpose & 1\\[5pt]
+      \mathbf{p}_3\transpose & 1\\[5pt]
+      \mathbf{n}\transpose & 0
+    \end{array}
+  \right]
+  \left[
+    \begin{array}{c}
+      ~\\[5pt]
+      \mathbf{g}_j\\[5pt]
+      ~\\[5pt]
+      d_j
+    \end{array}
+    \right]
+    =
+    \left[
+    \begin{array}{c}
+      s_{1,j}\\[5pt]
+      s_{2,j}\\[5pt]
+      s_{3,j}\\[5pt]
+      0
+    \end{array}
+    \right]
+  \]
+\end{frame}
+
+\begin{frame}{Quadric Error Metric with Attributes}
+  \begin{align*}
+    \mathbf{A} &=
+    \left[
+      \begin{array}{c|c}
+        \mathbf{n}\mathbf{n}\transpose + \sum_j{\mathbf{g}_j\mathbf{g}_j\transpose} & -\mathbf{g}_1 \dots -\mathbf{g}_m\\
+        \hline
+        -\mathbf{g}_1 & ~\\
+        \vdots & \mathrm{I}\\
+        -\mathbf{g}_m & ~\\
+      \end{array}
+    \right]\\
+~\\
+    \mathbf{b} &=
+    \left[
+      \begin{array}{c}
+        d\mathbf{n} + \sum_j{d_j\mathbf{g}_j}\\
+        \hline
+        -d_1\\
+        \vdots\\
+        -d_m
+      \end{array}
+    \right]\\
+~\\
+    c &= d^2 + \sum_j{d_j^2}
+  \end{align*}
+\end{frame}
+
+% wedge vertex
+
+\begin{frame}{Problem with Texture Atlas}
+  \begin{columns}
+    \begin{column}[T]{.48\linewidth}
+      Bad texture values in seams
+    \end{column}
+    \begin{column}[c]{.24\linewidth}
+      \includegraphics[width=.9\linewidth]{woman_render.png}
+    \end{column}
+    \begin{column}[c]{.24\linewidth}
+      \includegraphics[width=\linewidth]{woman_input.jpg}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+
+% pyramid
+\begin{frame}{Improving Texture}
+  ~\\
+  \begin{itemize}
+  \item Use a pull-push algorithm to fill invalid pixels
+  \item Creates a pyramid of images with decreasing resolution
+  \item Each pixel is assigned weight \(w_i\) and color \(x_i\)
+  \end{itemize}
+  \includegraphics[width=.8\linewidth]{pyramid.pdf}
+\end{frame}
+
+\begin{frame}{Find valid pixels}
+  \begin{itemize}
+  \item Create mesh with UV-coordinates as vertices
+  \item Cast rays toward the mesh to find valid pixels
+  \end{itemize}
+  \begin{center}
+    \includegraphics[width=.4\linewidth]{woman_bound.png}
+  \end{center}
+\end{frame}
+
+% pull filter
+\begin{frame}{Pull Phase}
+  \begin{columns}
+    \begin{column}{.5\linewidth}
+      Create lower resolution level with gaussian blur filter
+      \begin{align*}
+        w^{r+1}_i &= \sum_k {\tilde{h}_k \min(w^r_k,1)}\\
+        x^{r+1}_i &= \frac{1}{w^{r+1}_i} \sum_k {\tilde{h}_k \min(w^r_k,1) x^r_i}
+      \end{align*}
+    \end{column}
+    \begin{column}{.4\linewidth}
+      \begin{figure}[h]
+        \includegraphics[width=\linewidth]{pull_filter.eps}
+        \caption{Weights of filter \(\tilde{h}\)}
+      \end{figure}
+    \end{column}
+    \end{columns}
+\end{frame}
+
+% push filter
+\begin{frame}{Push Phase}
+  \begin{columns}
+    \begin{column}{.5\linewidth}
+      \begin{itemize} \item Blend neighboring pixels \end{itemize}
+      \begin{align*}
+        tw^{r}_i &= \sum_k {h_k \min(w^{r+1}_k,1)}\\
+        tx^{r}_i &= \frac{1}{tw^{r}_i} \sum_k {h_k \min(w^{r+1}_k,1) x^{r+1}_i}
+      \end{align*}
+
+      \begin{itemize} \item Blend higher resolution pixels with the computed value \end{itemize}
+      \begin{align*}
+        x^r_i &= tx^r_i (1 - w^r_i) + w^r x^r_i\\
+        w^r_i &= tw^r_i (1 - w^r_i) + w^r
+      \end{align*}
+      
+    \end{column}
+    \begin{column}{.4\linewidth}
+      \includegraphics[width=\linewidth]{push_filter_color.eps}
+    \end{column}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{Pyramid in Pull Phase}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull0.png}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull1.png}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull2.png}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull3.png}\\
+  [2pt]
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull4.png}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull5.png}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull6.png}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull7.png}\\
+  %[2pt]
+  %\includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull8.png}
+\end{frame}
+
+\begin{frame}{Pyramid in Push Phase}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push8.png}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push7.png}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push6.png}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push5.png}\\
+  [2pt]
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push4.png}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push3.png}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push2.png}
+  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push1.png}\\
+  %[2pt]
+  %\includegraphics[width=.24\linewidth]{../processing/PullPush/data/push0.png}
+\end{frame}
 
 
 \section{Evaluation}
@@ -298,9 +488,6 @@
 \end{frame}
 
 % texture repair
-\begin{frame}{Improving Texture}
-  \includegraphics[width=.9\linewidth]{pyramid.pdf}
-\end{frame}
 
 
 \begin{frame}{Improving Texture}
