@@ -8,7 +8,6 @@
   \setbeamercovered{transparent}
 }
 
-
 \usepackage[english]{babel}
 
 \usepackage[latin1]{inputenc}
@@ -19,6 +18,7 @@
 \usepackage{amssymb}
 \usepackage{amsmath}
 \usepackage{mathtools}
+\usepackage{varwidth}
 
 \setbeamertemplate{footline}[frame number]
 \setbeamertemplate{headline}{}
@@ -96,28 +96,10 @@
 % 15 and 30 frames, all told.
 
 \section{Introduction}
-
-\subsection[Short First Subsection Name]{First Subsection Name}
-
-\begin{frame}{Make Titles Informative. Use Uppercase Letters.}{Subtitles are optional.}
-  \begin{itemize}
-  \item Item 1
-
-  \item Item 2
-
-  \end{itemize}
-\end{frame}
-
-
-\subsection{Second Subsection}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
-
-\begin{frame}{Make Titles Informative.}
-\end{frame}
+\subsection{First Subsection}
 
 \section{Implementation}
+\subsection{Quadric Error Metric}
 % == Figures ==
 % mesh transformations
 % plane point distance
@@ -344,6 +326,8 @@
 
 % wedge vertex
 
+\subsection{Improving Texture Atlas}
+
 \begin{frame}{Problem with Texture Atlas}
   \begin{columns}
     \begin{column}[T]{.48\linewidth}
@@ -380,21 +364,32 @@
   \end{center}
 \end{frame}
 
+\begin{frame}{Find valid pixels}
+  \begin{itemize}
+  \item Could also be obtained with a threshold-filter
+  \item Apply edge-filter to trim edges
+  \end{itemize}
+  \begin{center}
+    \includegraphics[width=.3\linewidth]{woman_bound_threshold.png}
+    \includegraphics[width=.3\linewidth]{woman_bound_threshold_edge.png}
+    \includegraphics[width=.3\linewidth]{woman_bound_threshold_edge2.png}
+  \end{center}
+\end{frame}
+
 % pull filter
 \begin{frame}{Pull Phase}
   \begin{columns}
     \begin{column}{.5\linewidth}
-      Create lower resolution level with gaussian blur filter
+      \begin{itemize}
+        \item Create lower resolution level with Gaussian blur filter
+      \end{itemize}
       \begin{align*}
         w^{r+1}_i &= \sum_k {\tilde{h}_k \min(w^r_k,1)}\\
         x^{r+1}_i &= \frac{1}{w^{r+1}_i} \sum_k {\tilde{h}_k \min(w^r_k,1) x^r_i}
       \end{align*}
     \end{column}
     \begin{column}{.4\linewidth}
-      \begin{figure}[h]
-        \includegraphics[width=\linewidth]{pull_filter.eps}
-        \caption{Weights of filter \(\tilde{h}\)}
-      \end{figure}
+      \includegraphics[width=\linewidth]{pull_filter.eps}
     \end{column}
     \end{columns}
 \end{frame}
@@ -422,42 +417,54 @@
     \end{columns}
 \end{frame}
 
+\setlength\columnsep{0pt}
+
 \begin{frame}{Pyramid in Pull Phase}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull0.png}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull1.png}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull2.png}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull3.png}\\
+  \includegraphics[width=.24\linewidth]{pullpush/pull0.png}
+  \includegraphics[width=.24\linewidth]{pullpush/pull1.png}
+  \includegraphics[width=.24\linewidth]{pullpush/pull2.png}
+  \includegraphics[width=.24\linewidth]{pullpush/pull3.png}\\
   [2pt]
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull4.png}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull5.png}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull6.png}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull7.png}\\
+  \includegraphics[width=.24\linewidth]{pullpush/pull4.png}
+  \includegraphics[width=.24\linewidth]{pullpush/pull5.png}
+  \includegraphics[width=.24\linewidth]{pullpush/pull6.png}
+  \includegraphics[width=.24\linewidth]{pullpush/pull7.png}\\
   %[2pt]
-  %\includegraphics[width=.24\linewidth]{../processing/PullPush/data/pull8.png}
+  %\includegraphics[width=.24\linewidth]{pullpush/pull8.png}
 \end{frame}
 
 \begin{frame}{Pyramid in Push Phase}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push8.png}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push7.png}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push6.png}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push5.png}\\
+  \includegraphics[width=.24\linewidth]{pullpush/push10.png}
+  \includegraphics[width=.24\linewidth]{pullpush/push9.png}
+  \includegraphics[width=.24\linewidth]{pullpush/push8.png}
+  \includegraphics[width=.24\linewidth]{pullpush/push7.png}\\
   [2pt]
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push4.png}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push3.png}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push2.png}
-  \includegraphics[width=.24\linewidth]{../processing/PullPush/data/push1.png}\\
+  \includegraphics[width=.24\linewidth]{pullpush/push6.png}
+  \includegraphics[width=.24\linewidth]{pullpush/push5.png}
+  \includegraphics[width=.24\linewidth]{pullpush/push4.png}
+  \includegraphics[width=.24\linewidth]{pullpush/push3.png}\\
   %[2pt]
-  %\includegraphics[width=.24\linewidth]{../processing/PullPush/data/push0.png}
+  %\includegraphics[width=.24\linewidth]{pullpush/push0.png}
 \end{frame}
 
 
 \section{Evaluation}
+\begin{frame}{Outline}
+  \tableofcontents[currentsection]
+\end{frame}
+
 % == Figures ==
 % rhombicuboctahedron
 % volume
 
+%\subsection{First Subsection}
 
 \section{Results}
+\begin{frame}{Outline}
+  \tableofcontents[currentsection]
+\end{frame}
+
+%\subsection{First Subsection}
 % luminance
 \begin{frame}{Rms Luminance Error}
   \includegraphics[width=.9\linewidth]{Rdata/rms_luminance.eps}

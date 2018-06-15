@@ -1,4 +1,4 @@
-String toS(color c) { //<>//
+String toS(color c) { //<>// //<>//
   return "(" + ((c>>16) & 0xFF) + ", " + ((c>>8) & 0xFF) + ", " + (c & 0xFF) + ")";
 }
 

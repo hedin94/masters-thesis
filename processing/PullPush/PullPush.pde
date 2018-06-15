@@ -3,6 +3,10 @@ import java.io.File;
 PImage input;
 PImage bound;
 
+PImage[] bounds;
+float[] thresholds;
+PImage avgBound;
+
 float threshold = 0.05;
 
 int pixelFlags[];
@@ -18,7 +22,7 @@ ImagePyramid pyramid;
 boolean glowEffect = false;
 
 void settings() {
-  input = loadImage("Giraffe_N.png");
+  input = loadImage("woman_input.jpg");
   size(2*input.width, input.height);
 }
 
@@ -30,10 +34,32 @@ void setup() {
     f.delete();
   }
 
-  bound = loadImage("giraffe_bound.png");
+  bound = loadImage("woman_bound.png");
   //bound = input.copy();
   //bound.filter(THRESHOLD, 0.01);
 
+  //bounds = new PImage[5];
+  //thresholds = new float[5];
+
+  //thresholds[0] = 0.5;
+  //thresholds[1] = 0.25;
+  //thresholds[2] = 0.125;
+  //thresholds[3] = 0.0625;
+  //thresholds[4] = 0.03125;
+
+  //for (int i=0; i<5; i++) {
+  //  bounds[i] = input.copy();
+  //  bounds[i].filter(THRESHOLD, thresholds[i]);
+  //  bounds[i].save(datadir + "bound" + i + ".png");
+  //}
+
+  //avgBound = averageBound();
+  //avgBound.save(datadir + "avgBound.png");
+  //PImage avgCopy = avgBound.copy();
+  //avgCopy.filter(THRESHOLD, 0.01);
+  //avgCopy.save(datadir + "bound.png");
+  //bound = avgCopy;
+  
   //surface.setResizable(true);
   //surface.setSize(width=input.width*2, height=input.height);
 
@@ -82,6 +108,9 @@ void draw() {
   //pyramid.image.image().filter(DILATE);
   image(pyramid.image.image(), input.width, 0);
   //filter(DILATE);
+  //image(avgBound, 0, 0);
+  //avgBound.filter(THRESHOLD, 0.01);
+  //image(avgBound, input.width, 0);
 }
 
 PImage stretchedImage(PImage img, int y) {
@@ -118,4 +147,14 @@ void gaussPullFilter() {
   hPull[0] = hPull[3] = 2.0f;
   hPull[1] = hPull[2] = 4.0f; 
   hPull[4] = 1.0f;
+}
+
+PImage averageBound() {
+  Image res = new Image(bounds[0].width, bounds[0].height);
+
+  for (int i=0; i<5; i++)
+    res = res.add(new Image(bounds[i]));
+
+  res = res.mult(1.0f/5.0f);
+  return res.image();
 }

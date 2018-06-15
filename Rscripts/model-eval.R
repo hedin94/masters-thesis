@@ -115,6 +115,10 @@ mk2_luminance_tex$Reducer <- rep("mk2 - texture", nrow(mk2_luminance_volA_tex_bo
 
 mk2_hausdorff_giraffe <- importData("mk2-hausdorff-giraffe.csv")
 
+mk2_luminance_impr_tex <- importData("data/mk2-luminance-improvedTexture.csv")
+mk2_luminance_tex <- importData("data/mk2-luminance.csv")
+mk2_hausdorff_impr_tex <- importData("data/mk2-hausdorff-improvedTexture.csv")
+
 #######################
 mk2_hausdorff_200 <- importData("Backup/mk2-hausdorff-200.csv")
 mk2_hausdorff_600 <- importData("Backup/mk2-hausdorff-600.csv")
@@ -299,6 +303,7 @@ comb <- insert(comb, mk2_luminance_tex, 1, 9)
 comb <- insert(comb, mk2_luminance_tex_bound, 1, 9)
 comb <- insert(comb, mk2_luminance_tex_vol, 1, 9)
 comb <- insert(comb, mk2_luminance_tex_vol_bound, 1, 9)
+comb <- insert(comb, mk2_luminance_impr_tex, 1, 9)
 
 comb <- create_header(colnames(mk2_hausdorff_200))
 comb <- insert(comb, mk2_hausdorff_200, 1, 4)
@@ -328,18 +333,36 @@ mk2_hausdorff_800 <- importData("mk2-hausdorff-800.csv")
 
 df <- mk2_hausdorff_800[as.character(mk2_hausdorff_800$Detail) != " base",]
 df <- mk2_hausdorff_800
-df <- comb[as.character(comb$Detail) != "base",]
+df <- comb[as.character(comb$Detail) != " base",]
+df <- comb[as.character(comb$Reducer) != "texture",]
+
+s <- 9
+
+comb <- create_header(colnames(mk2_luminance_tex))
+comb <- insert(comb, mk2_luminance_tex, 1, 9*2)
+comb <- insert(comb, mk2_luminance_impr_tex, 1, 9*2)
+df <- comb[as.character(comb$Detail) != " base",]
+df$Group <- paste(df$Model, df$Reducer) 
+
+df1 <- df[df$Reducer == "texture",]
+df2 <- df[df$Reducer == "texture seam",]
+
+diff <- data.frame(matrix(ncol=0, nrow=9*2))
+           
+diff$Model <- df1$Model
+diff$Detail <- df1$Detail
+diff$Diff <- df2$Error - df1$Error
 
 Summary <- df %>%
   group_by(Reducer, Detail) %>%
-  summarise(Mean = mean(VolumeDiff), SD = sd(VolumeDiff), Q = qt(0.975,df=length(VolumeDiff)-1)*sd(VolumeDiff)/sqrt(length(VolumeDiff)), N=length(VolumeDiff))
+  summarise(Mean = mean(Error), SD = sd(Error), Q = qt(0.975,df=length(Error)-1)*sd(Error)/sqrt(length(Error)), N=length(Error))
 
 ggplot(Summary, aes(x=Detail, y=Mean, colour=Reducer, group=Reducer, shape=Reducer)) + 
-  geom_errorbar(aes(ymin=Mean-Q, ymax=Mean+Q), width=.3, position=pd) +
+  #geom_errorbar(aes(ymin=Mean-Q, ymax=Mean+Q), width=.3, position=pd) +
   geom_line(position=pd) +
   scale_shape_manual(values=c(19, 18, 17, 15)) +
   geom_point(position=pd, size=3) +
-  ylab("Volume difference") +
+  ylab("Rms luminance error") +
   annotation_logticks(base=10, sides="l") +
   #scale_y_log10() +
   #scale_x_log10() +
