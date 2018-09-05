@@ -30,6 +30,8 @@
 \newcommand{\icol}[1]{% inline column vector
   \left(\begin{smallmatrix}#1\end{smallmatrix}\right)%
 }
+  
+\DeclarePairedDelimiter{\norm}{\lVert}{\rVert}
 
 \title
 {Evaluation of an Appearance-Preserving Mesh Simplification Scheme}
@@ -98,6 +100,23 @@
 \section{Introduction}
 \subsection{First Subsection}
 
+\begin{frame}{Vertex Merging}
+  \begin{itemize}
+  \item Mesh can be simplified by merging vertices
+  \item (a) edge collapse, (b) vertex removal, and (c) pair contraction
+  \end{itemize}
+  \includegraphics[width=.7\linewidth]{mesh_transformations.eps}
+\end{frame}
+
+\begin{frame}{Mesh Simplification Methods}
+  \begin{itemize}
+  \item Progressive meshes
+  \item Quadric Error Metrcs
+  \item Appearance-preserving Simplification
+  \end{itemize}
+\end{frame}
+
+
 \section{Implementation}
 \subsection{Quadric Error Metric}
 % == Figures ==
@@ -105,6 +124,7 @@
 % plane point distance
 % qem
 % quadric planes
+
 \begin{frame}{Quadric Error Metric}
   \begin{itemize}
   \item Iteratively perform edge collapses \((\mathbf{v}_i, \mathbf{v}_j)\rightarrow \mathbf{v}\)
@@ -456,6 +476,54 @@
 % == Figures ==
 % rhombicuboctahedron
 % volume
+
+\begin{frame}{Appearance Preservation}
+  \begin{itemize}
+  \item Two methods for model comparison
+    \begin{itemize}
+      \item Image comparison
+      \item Hausdorff distance
+      \end{itemize}
+    \item The original model is compared to four LoD:s
+  \end{itemize}
+
+\end{frame}
+
+\begin{frame}{Image comparison}
+  \begin{itemize}
+  \item Render the models to compare from multiple positions
+  \item Measure RMS of luminance between the images
+    \end{itemize}
+  \includegraphics[width=.4\linewidth]{591px-Rhombicuboctahedron.jpg}
+\end{frame}
+
+
+\begin{frame}{Hausdorff distance}
+  \begin{itemize}
+  \item Sample points on the surface of the model
+  \item Measure the distance to the other surface
+  \item The error is then the mean distance
+  \end{itemize}
+  \[e(p, S') = \min_{p' \in S'} \norm*{p' - p}\]
+  \[E(S, S') = \max_{p \in S} e(p, S')\]
+\end{frame}
+
+
+% \begin{frame}
+% \end{frame}
+
+\begin{frame}{Volume Preservation}
+  Vertices of a polygon and the origin creates a tetrahedron
+  Signed volume of a tetrahedron can be calculated with
+  \[V_i = \frac{v_0 \cdot (v_1 \times v_2)}{6}\]
+  Volume of a mesh is then the sum of the signed volumes
+  \[V_{total} = \sum_i{V_i}\]
+  \includegraphics[width=.7\linewidth]{mesh_volume.eps}
+\end{frame}
+
+\begin{frame}{Execution Time}
+\end{frame}
+
 
 %\subsection{First Subsection}
 
