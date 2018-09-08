@@ -611,7 +611,9 @@
 \fi
 
 \ifstudent
-\newcommand{\isrn}{LIU-\@departmentshort{}/\@area{}-EX-\@level{}-{}-\@publicationyear/\@currentyearthesisnumber-{}-SE}
+%\newcommand{\isrn}{LIU-\@departmentshort{}/\@area{}-EX-\@level{}-{}-\@publicationyear/\@currentyearthesisnumber-{}-SE}
+\newcommand{\isrn}{LiTH-\@departmentshort{}-EX-{}-\@publicationyear/\@currentyearthesisnumber-{}-SE}
+
 \fi
 
 \newcommand\makeundergraduatetitle{%
