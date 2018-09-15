@@ -32,7 +32,7 @@
 
 
 \chapter{Method} \label{cha:method}
-  Now that the theoretical groundwork has been laid out, we describe in \cref{sec:implementation} how the solution was implemented into Configura's graphics pipeline and then show how to evaluate it in \cref{sec:evaluation}.
+  Now that the theoretical groundwork has been laid out, I describe in \cref{sec:implementation} how the solution was implemented into Configura's graphics pipeline and then show how it has been evaluated in \cref{sec:evaluation}.
   
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%
@@ -40,10 +40,10 @@
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Implementation} \label{sec:implementation}
-In this section an explanation of how the mesh simplification scheme was implemented is given. Some problems that were encountered during the implementation is also presented as well as how they were solved.
+In this section, an explanation of how the mesh simplification scheme was implemented is given. Some problems that were encountered during the implementation is also presented as well as how they were solved.
 
 \subsection{Handling seams}
-To be able to apply a texture to a mesh a mesh parameterization is needed that maps vertices to texture coordinates. If the mesh is not homeomorphic to a disk it is split into parts which will introduce seams. Vertices along these seams is duplicated which enable us to have multiple texture coordinates. However, this is a problem during simplification and will likely make the mesh tear in the seams as seen in \cref{fig:mesh_tear}. Welding duplicate vertices, i.e. only keeping one vertex, removes the seams and our tearing problem goes away. This, however, does not work good for textured meshes since we can no longer have discontinuities which results in the seam shown in \cref{fig:mesh_discontinuity}. Vertices that share the same attributes are safe to remove though.
+To be able to apply a texture to a mesh, a mesh parameterization that maps vertices to texture coordinates is required. If the mesh is not homeomorphic to a disk, it is divided into parts which will introduce seams. Vertices along these seams is duplicated that enable us to have multiple texture coordinates. However, this is a problem during the simplification and will likely make the mesh tear in the seams as seen in \cref{fig:mesh_tear}. Welding duplicate vertices, i.e. only keeping one vertex, removes the seams and our tearing problem goes away. This, however, does not work good for textured meshes since we can no longer have discontinuities which results in the seam shown in \cref{fig:mesh_discontinuity}. Vertices that share the same attributes are safe to remove though.
 
 \begin{figure}[ht]
   \centering
@@ -94,7 +94,7 @@ The mesh representation by Hoppe \cite{hoppe1998efficient} allows vertices to ha
 
 \begin{subs}
 \subsubsection{Finding duplicate vertices}
-A fast method to find vertices that occupy the same space in 3D is to use a hash map. It is an associative container that is organized into buckets that contains the elements. Search, insert, and removal of elements have on average constant time complexity but in the worst case linear. If a key maps to the same bucket as another key it will be put in a collision chain in the same bucket. The time complexity will in that case be linear on the number of elements in that bucket.
+A fast method to find vertices that occupy the same space in 3D is to use a hash map. It is an associative container that is organized into buckets that contain the elements. Search, insert, and removal of elements have on average constant time complexity but in the worst case linear. If a key maps to the same bucket as another key it will be put in a collision chain in the same bucket. The time complexity will in that case be linear on the number of elements in that bucket.
 
 To get fast search and insert a hash function with few collisions is important. The hash function that is used at Configura can be seen in \cref{lst:hash3D}. This hash of a 3-dimensional vector is a combination of the x, y, z coordinates. The hashes of x and y is also rotated i.e. bits are circular shifted, to get fewer collisions. 
 
@@ -119,7 +119,7 @@ To get fast search and insert a hash function with few collisions is important. 
 \end{lstlisting}
 \end{minipage}
 
-Extracting all \emph{unique} vertices in a mesh can be done with the aforementioned hash map. This is done by iterating through all the vertices and inserting them into the hash map. If the map already contains a vertex we have found a duplicate and it will not be inserted. After the iterations the map will only contain unique vertices and the next step is to update the triangles to map to the new vertices. This is an easy task since when the vertices are inserted into the hash map they will be associated with an index. Therefore, we only have to iterate through the triangle indices and update them with the new indices. (See \cref{lst:remove_duplicates}).
+Extracting all \emph{unique} vertices in a mesh can be done with the aforementioned hash map. This is done by iterating through all the vertices and inserting them into the hash map. If the map already contains a vertex we have found a duplicate and it will not be inserted. After the iterations, the map will only contain unique vertices and the next step is to update the triangles to map to the new vertices. This can be done with the indices associated with each vertex in the hash map. We only have to iterate through the triangle indices and update them with the new indices. (See \cref{lst:remove_duplicates}).
 
 \begin{minipage}{\textwidth}
   \begin{lstlisting}[caption={Removing duplicates}, label={lst:remove_duplicates}]
@@ -203,25 +203,25 @@ Extracting all \emph{unique} vertices in a mesh can be done with the aforementio
 
 \begin{subs}
 \subsubsection{Vertices with multiple attributes}
-To handle vertices with multiple unique attributes the \texttt{removeDuplicates} function in \cref{lst:remove_duplicates} require some modification. A simple solution is to associate each 3-dimensional vector with an array of indices. Thus, vertices can be associated with multiple texture coordinate indices. A vertex will only be removed if it is in the same place as another vertex with the same texture coordinates. However, if the texture coordinate is unique the vertex index will be added to the end of the list associated with the spatial coordinate.
+To handle vertices with multiple unique attributes, the \texttt{removeDuplicates} function in \cref{lst:remove_duplicates} require some modification. A simple solution is to associate each 3-dimensional vector with an array of indices. Thus, vertices can be associated with multiple texture coordinate indices. A vertex will only be removed if it is in the same place as another vertex with the same texture coordinates. However, if the texture coordinate is unique the vertex index will be added to the end of the list associated with the spatial coordinate.
 
-This association can then be used to create vertices divided into one or more wedges. This kind of vertex will hereafter be called \emph{multi-vertex} to distinguish it from the real vertices. For each vertex, a wedge will be created containing the vertex index and then put in an array. A multi-vertex will contain indices to this array of wedges. 
+The association can then be used to create vertices divided into one or more wedges. This kind of vertex will hereafter be called \emph{multi-vertex} to distinguish it from the real vertices. For each vertex, a wedge will be created containing the vertex index and then put in an array. A multi-vertex will contain indices to this array of wedges. 
 \end{subs}
 
 \subsection{Quadric-Based Error Metric} \label{sec:quadric-based_error_metric2}
 As a rule, the original mesh will be given as an ordinary triangle mesh (a so called ``triangle soup''), which is not suitable for applying the QEM algorithm (since the local neighborhood information isn't available). Instead, we convert this triangle soup to a half-edge mesh. This allows easy manipulation of the local neighborhood of the mesh, which is precisely what is needed when doing an edge collapse or when calculating the error quadrics of a given vertex.
 
-After doing this, the implementation basically follows the theoretical framework to the letter, where the least-cost edge is chosen to be contracted from the min-heap. Lastly, this edge is collapsed and then the remaining ``hole'' is simply (but with a few special cases...) linked back together so that the local neighborhood of the vertex still qualifies as a closed manifold.
+After doing this, the implementation basically follows the theoretical framework to the letter, where the least-cost edge is chosen to be contracted from the min-heap. Finally, this edge is collapsed and then the remaining ``hole'' is simply linked back together so that the local neighborhood of the vertex still qualifies as a closed manifold.
 
 \subsection{Solving linear equation systems}
-A very common task during the simplification is to find the optimal position for a vertex after an edge collapse. As mentioned in \cref{sec:quadric-based_error_metric}, this is done by solving the linear equation system \(\mathbf{A} \mathbf{v}_{min} = \mathbf{b}\) where \(\mathbf{v}_{min}\) is the optimal position. In the original version of the QEM the optimal solution is obtained by finding \(\mathbf{A}^{-1}\). If the matrix \(A\) is not invertible one of the vertices on the end points of the edge is chosen to be the new position.
+A very common task during the simplification is to find the optimal position for a vertex after an edge collapse. As mentioned in \cref{sec:quadric-based_error_metric}, this is done by solving the linear equation system \(\mathbf{A} \mathbf{v}_{min} = \mathbf{b}\) where \(\mathbf{v}_{min}\) is the optimal position. In the original version of QEM, the optimal solution is obtained by finding \(\mathbf{A}^{-1}\). If the matrix \(A\) is not invertible, one of the vertices on the end points of the edge is chosen to be the new position.
 
 In MixKit, the inverse of a matrix is found using Gaussian elimination with partial pivoting. The method is fast but it was noted that in many cases it fails to find the inverse of the matrix. This leads to many fallbacks to the endpoints which may give bad results for vertices with multiple attributes.
 
-In order to have a higher rate of found solutions to the linear equation systems the linear algebra library \emph{Eigen} \footnote{\href{http://eigen.tuxfamily.org}{eigen.tuxfamily.org}} was used. This library contains numerical solvers, some more accurate and some with higher speed. First, the solvers finds a decomposition of \(\mathbf{A}\) and then the decomposition is used to find a solution. The choice of a solver is a tradeoff between speed and accuracy. A fast but also with decent accuracy is a solver using LU decomposition with partial pivoting and is a good candidate for the optimization problem. 
+In order to have a higher rate of found solutions to the linear equation systems, the linear algebra library \emph{Eigen} \cite{eigen} was used. This library contains numerical solvers, some more accurate and some with higher speed. First, the solvers finds a decomposition of \(\mathbf{A}\) and then the decomposition is used to find a solution. The choice of a solver is a tradeoff between speed and accuracy. A fast but also with decent accuracy is a solver using LU decomposition with partial pivoting and is a good candidate for the optimization problem. Therefore, this solver was used in the implementation.
 
 \subsection{Parallelization with OpenMP}
-During initialization a quadric is created for each multi-vertex. The quadric for a face is then applied to the three corners of the face. The face quadric calculations are independent of each other and gives a good opportunity for parallelization. A relatively easy way to get parallelization on the CPU is to use \emph{OpenMP}. The simplicity can be seen in \cref{lst:parallel} where the iteration of faces have been made parallel. Now the work of computing face quadrics is shared between multiple threads which would increase the performance. Since the vertices belong to multiple faces multiple threads could try to modify the vertex quadric concurrently. Therefore, this section is made critical meaning that the code can only be executed by one thread at a time.
+During the initial phase of the algortihm a quadric is created for each multi-vertex. The quadric for a face is then applied to the three corners of the face. The face quadric calculations are independent of each other and gives a good opportunity for parallelization. A relatively easy way to get parallelization on the CPU is to use \emph{OpenMP}. The simplicity can be seen in \cref{lst:parallel} where the iteration of faces have been made parallel. Now the work of computing face quadrics is shared between multiple threads which would increase the performance. Since the vertices belong to multiple faces, multiple threads could try to modify the vertex quadric concurrently. Therefore, this section is made critical meaning that the code can only be executed by one thread at a time.
 
 
 \begin{minipage}{\textwidth}
@@ -245,7 +245,7 @@ During initialization a quadric is created for each multi-vertex. The quadric fo
 
 Parallelization during the simplification is not as easy since the edge collapses are done iteratively. The min-heap is updated after each iteration meaning that the edge costs change. Therefore, the choice of an edge to collapse is dependent on the previous step, thus, parallelization is not possible.
 
-However, after a collapse the costs of the edges in the local neighborhood need to be updated, i.e. update cost and compute optimal position. These edges do not depend on each other and therefore the computations can be done in parallel.
+after an edge collapse, the costs of the edges in the local neighborhood need to be updated, i.e. update cost and compute optimal position. These edges do not depend on each other and therefore the computations can be done in parallel.
 
 \subsection{Volume preservation} \label{sec:volume_preservation}
 Collapsing edges and moving vertices may change the local shape of the mesh being simplified. This can result in a loss of volume and will affect the appearance. According to Lindstrom and Turk \cite{lindstrom1998fast} , moving a vertex $v_0$ to $v$ sweeps out a volume which can be described as a tetrahedron with vertices $(v, v_0, v_1, v_2)$ as seen in \cref{fig:tetrahedron}. The volume of this tetrahedron is the change in volume that the new vertex position $v$ would give. 
@@ -270,7 +270,7 @@ Given four vertices $(v, v_0, v_1, v_2)$ of a tetrahedron the volume can be calc
 \end{equation}
 
 
-where $v_0$ is a vertex of face $(v_0, v_1, v_2)$, $n\transpose$ is the face normal, and $v$ is the new vertex position. This will give a linear constraint that can easily be added to the system of linear equations, thus, increasing its dimension by one.
+where \(\mathbf{v}_0\) is a vertex of face \((\mathbf{v}_0, \mathbf{v}_1, \mathbf{v}_2)\), \(\mathbf{n}\transpose\) is the face normal, \(\mathbf{v}\) is the new vertex position, and \(area\) is the area of the triangle. This will give a linear constraint that can easily be added to the system of linear equations, thus, increasing its dimension by one.
 
 \begin{equation} \label{eq:volume_constraint}
   \begin{bmatrix}
@@ -292,13 +292,13 @@ where $v_0$ is a vertex of face $(v_0, v_1, v_2)$, $n\transpose$ is the face nor
 \subsection{Improving Texture Atlas}
 Trying to keep the seam during simplification improves the quality of the resulting mesh. However, when a mesh is heavily simplified it is hard to keep the geometry and often gives a bad result. Removing the seam constraint gives a better geometry but now there is another problem. Since the seam is not kept we could get texture coordinates that lies outside the defined areas of the texture atlas. A common color in this area is black but it depends on what the texture artist chose.
 
-One way of finding valid pixels is to first create a mesh where vertices are defined by the texture coordinates, i.e. $v = (s, t, 0)$ where $s$, and $t$ are the texture coordinates. This creates sheets lying in the same plane where empty areas will be locations that are not defined in the texture atlas. By casting rays toward the cheats the empty areas can be detected. The origin of the rays will be based on the pixel locations but translated in the direction of the normal to the plane. They will then be casted straight down toward the sheets and if they hit anything we have found a valid pixel.
+One way of finding valid pixels is to first create a mesh where vertices are defined by the texture coordinates, i.e. $v = (s, t, 0)$ where $s$, and $t$ are the texture coordinates and the z-coordinate is set to zero. This creates sheets lying in the same plane where empty areas will be locations that are not defined in the texture atlas. By casting rays toward the cheats the empty areas can be detected. The origin of the rays will be based on the pixel locations but translated in the direction of the normal to the plane. They will then be casted straight down toward the sheets and if they hit anything we have found a valid pixel.
 
 Given some scattered data, Gortler et al. \cite{Gortler96thelumigraph} present a way of filling in the empty areas based on the given data. This is done by using a image pyramid containing images of decreasing resolution. The lower resolution images is used to fill in the empty areas of the higher resolution images. The algorithm works in the two phases \emph{pull} and \emph{push} hence it is given the name \emph{pull-push}.
 
 \begin{subs}
 \subsubsection{Pull}
-The first level $r = 0$ of the pyramid is the input image and level $r + 1$ have half the size of level $r$ in each dimension. Each pixel have a data value $x^r_i$ and weight $w^r_i$. The pull phase starts at level 0 and recursively computes the values of the next level according to \cref{eq:pull_x,eq:pull_w} where $\tilde{h}$ is a Gaussian filter. $\tilde{h}$ blends the neighboring pixels with an applied weight according to \cref{fig:pull_filter} which will give a blurred image. At the first level valid pixels is assigned a weight of $1$ and invalid pixels a weight of $0$. This will make sure that the valid pixels will not be changed.
+The first level $r = 0$ of the pyramid is the input image and level $r + 1$ have half the size of level $r$ in each dimension. Each pixel have a data value $x^r_i$ and weight $w^r_i$. The pull phase starts at level 0 and recursively computes the values of the next level according to \cref{eq:pull_x,eq:pull_w} where $\tilde{h}$ is a Gaussian filter. $\tilde{h}$ blends the neighboring pixels with an applied weight according to \cref{fig:pull_filter} which will give a blurred image. At the first level valid pixels are assigned a weight of $1$ and invalid pixels a weight of $0$. This will make sure that the valid pixels will not be changed.
 
 \begin{align}
   w^{r+1}_i &= \sum_k {\tilde{h}_k \min(w^r_k,1)} \label{eq:pull_x}\\
@@ -325,6 +325,8 @@ The first step is to calculate temporary values $tx$ and $tw$ according to
   tx^{r}_i &= \frac{1}{tw^{r}_i} \sum_k {h_k \min(w^{r+1}_k,1) x^{r+1}_i} \label{eq:push_tx}
 \end{align}
 
+where \(w^{r+1}\) is a weight and \(x^{r+1}\) is a pixel color.
+
 The current values $x^r$ and $w^r$ are then blended with the temporary values according to
 \begin{align}
   x^r_i &= tx^r_i (1 - w^r_i) + w^r x^r_i \label{eq:push_x}\\
@@ -342,7 +344,7 @@ What neighboring pixels to blend with is determined by the pixel's location with
 
 \end{subs}
 
- Pixels at the edges of the texture needs special treatment since some neighboring pixels are missing. There exist multiple solutions to this problem such as ignoring pixels, using the value of the closest pixel, mirroring values, or wrapping around to the opposite side. Textures are often wrapped when used and therefore the wrapping seams like a good solution.
+ Pixels at the edges of the texture needs special treatment since some neighboring pixels are missing. There exist multiple solutions to this problem such as ignoring pixels, using the value of the closest pixel, mirroring values, or wrapping around to the opposite side. Textures are often wrapped when used and therefore the wrapping is a good solution.
 
  
 \clearpage
@@ -358,15 +360,17 @@ What neighboring pixels to blend with is determined by the pixel's location with
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{Evaluation} \label{sec:evaluation}
-An evaluation of the appearance of meshes simplified by the implemented simplification scheme was performed. In this section the the models and metrics used for the evaluation is presented.
+An evaluation of the appearance of meshes simplified by the implemented simplification scheme was performed. In this section, the models and metrics used for the evaluation are presented.
+
+
 
 \subsection{Models}
-Four LoD:s are usually used by Configura and they are defined by triangle density ($\#triangles/area$). The four levels are super (5000 $triangles/m^2$), high (1000 $triangles/m^2$), medium (200 $triangles/m^2$), and low  (50 $triangles/m^2$) and these will be used for the evaluation. Configura have textured models of humans and a subset of them have been selected to be used in the evaluation. The triangle counts lies around 15000 but smaller models with about 10000 and larger models with about 30000 triangles are also included.
+Four LoD:s are usually used by Configura and they are defined by triangle density (\textit{number of triangles}/\textit{area}). The four levels are super (5000 $triangles/m^2$), high (1000 $triangles/m^2$), medium (200 $triangles/m^2$), and low  (50 $triangles/m^2$) and these will be used for the evaluation. Configura have textured models of humans and a subset of them have been selected to be used in the evaluation. The triangle counts lies around 15000 but smaller models with about 10000 and larger models with about 30000 triangles are also included.
 
 For a visual comparison of LoD:s a \emph{office woman} model is used. Before any simplification have been made the model has 14996 triangles.
 
 \subsection{Appearance Preservation}
-In order to compare how well the appearance is preserved for different LoD:s the image metric described in \cref{sec:metrics_for_appearance_preservation} can be used. The main idea is to render multiple images of both the original and simplified mesh from a set of camera positions defined by the vertices of a rhombicuboctahedron (\cref{fig:rhombicuboctahedron}). A RMS of all the pixel values of the images is then simply the error that the simplification introduced. The authors \cite{lindstrom2000image} measured difference in luminance but other metrics, such as Euclidean distance of the RGB colors, can be used.
+In order to compare how well the appearance is preserved for different LoD:s the image metric described in \cref{sec:metrics_for_appearance_preservation} can be used. The main idea is to render multiple images of both the original and simplified mesh from a set of camera positions defined by the vertices of a rhombicuboctahedron (\cref{fig:rhombicuboctahedron}). A root mean square (RMS) of all the pixel values of the images is then simply the error that the simplification introduced. The authors \cite{lindstrom2000image} measured difference in luminance but other metrics, such as Euclidean distance of the RGB colors, can be used. The metric that was used was luminance.
 
 
 
@@ -382,7 +386,7 @@ This distance is not symmetric and depends on which surface you start the measur
 
 How many points to sample depends on the size and shape of the meshes being compared. For the meshes used in the evaluation 10000 points on each mesh seamed to give a stable estimate of the error introduced by the simplification.
 
-The sampling of a point on a mesh can be done in two steps: First, randomly pick a triangle of the mesh, then pick a random point on the chosen triangle. A triangle can simply be picked by uniformly choose a random triangle index. A random point on a triangle can be picked by using barycentric coordinates. As can be seen in \cref{lst:sample_point}, two random numbers \(s, t\) between 0 and 1 are chosen. The sampled point is then a convex combination of the vertices \((v_0, v_1, v_2)\) of the triangle. The condition \(s + t \leq 1\) must be fulfilled, therefore, $s$ and $t$ are randomized until the condition is met.  
+The sampling of a point on a mesh was done in two steps: First, randomly pick a triangle of the mesh, then pick a random point on the chosen triangle. A triangle can simply be picked by uniformly choose a random triangle index. A random point on a triangle can be picked by using barycentric coordinates. As can be seen in \cref{lst:sample_point}, two random numbers \(s, t\) between 0 and 1 are chosen. The sampled point is then a convex combination of the vertices \((v_0, v_1, v_2)\) of the triangle. The condition \(s + t \leq 1\) must be fulfilled, therefore, $s$ and $t$ are randomized until the condition is met.  
 
 \begin{minipage}{\textwidth}
   \begin{lstlisting}[caption={Sampling point on triangle by using barycentric coordinates}, label={lst:sample_point}]
@@ -412,9 +416,9 @@ Since the volume of a mesh is affected by simplification a way to measure the vo
 
 
 \subsection{Execution Time} \label{sec:computation_time}
-A simple parallelization with OpenMP have been implemented with the goal of decreasing the computation time. In order to see how much the computation time is reduced it was measured for multiple runs of the simplification scheme using the office woman model. Measurements was made for the four LoD:s super, high, medium, and low and the number used threads was from 1 to 8 threads.
+A simple parallelization with OpenMP have been implemented with the goal of decreasing the computation time. In order to see how much the computation time is reduced it was measured for multiple runs of the simplification scheme using the office woman model. Measurements was made for the four LoD:s super, high, medium, and low 1, 2,...,8 number of threads was used.
 
-To account for noise the measurements of the execution time is performed several times. From the collected data the mean \(\bar{x}\) and standard deviation \(s\) can be calculated. The confidence interval \([a, b]\) for the execution time can be found by the equations shown in \cref{sec:measuring_algorithmic_performance} with \(\alpha = 0.05\).
+To account for noise the measurements of the execution time is performed several times. From the collected data the mean \(\bar{x}\) and standard deviation \(s\) can be calculated. The 95\% confidence interval \([a, b]\) for the execution time can be found by the equations shown in \cref{sec:measuring_algorithmic_performance} using \(\alpha = 0.05\).
 
 
 \iffalse
