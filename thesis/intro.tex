@@ -31,7 +31,7 @@
 
 
 \chapter{Introduction} \label{cha:introduction}
-The rendering of meshes (a collection of polygons describing a surface) is one of the main activities in computer graphics (usually, a collection of meshes; a so called scene description). In many cases, these meshes are very detailed, and require a large amount of polygons to fully describe a surface. This is problematic, since the rendering time of a scene depends on the number of polygons it has. Therefore, it is important to reduce the number of polygons in a mesh as much as possible. This is especially true in video games, where the scene needs to be rendered in real-time. However, if the number of polygons are reduced too much, it will degrade the visual quality of a mesh, giving a progressively flatter surface than intended and removing small surface details. This destroys the intended \emph{geometrical appearance} of the mesh.
+The rendering of meshes (a collection of polygons describing a surface) is one of the main activities in computer graphics. In many cases, meshes are very detailed, and require a large amount of polygons to fully describe a surface. This is problematic since the rendering time of a scene depends on the number of polygons it has. Therefore, it is important to reduce the number of polygons in a mesh as much as possible. This is especially true in video games, where the scene needs to be rendered in real-time. However, if the number of polygons are reduced too much, it will degrade the visual quality of a mesh, giving a progressively flatter surface than intended and removing small surface details. This destroys the intended \emph{geometrical appearance} of the mesh.
 
 
 \section{Motivation} \label{sec:motivation}
@@ -47,19 +47,19 @@ The aim of this thesis is to first perform a literature study of mesh simplifica
 
 \section{Research Questions} \label{sec:research-questions}
 \begin{enumerate}
-\item What alternative \emph{mesh simplification schemes} exist that \emph{preserves the appearance} of a mesh? 
-\item Which of these alternatives would be appropriate to integrate into Configura's software?
+\item What alternative \emph{mesh simplification algorithm} exist that \emph{preserves the appearance} of a mesh? 
+\item Which of these mesh simplification algorithms would be appropriate to integrate into Configura's software?
 \end{enumerate}
 
 \section{Delimitations} \label{sec:delimitations}
-Since the thesis is done on a time limit a comparison of multiple mesh simplification schemes taking the appearance into account is not feasible. Therefore, one mesh simplification algorithm will be chosen to be implemented and evaluated. The choice will be based on a study of algorithms that can be found in the literature.
+Since the thesis is done on a time limit a comparison of multiple mesh simplification algorithms taking the appearance into account is not feasible. Therefore, one mesh simplification algorithm will be chosen to be implemented and evaluated. The choice will be based on a study of algorithms that can be found in the literature.
 
 \section{Background} \label{sec:background}
 This thesis was requested by Configura AB, a company in Linköping which provides space planning software. Their main product, \emph{CET designer}, lets companies plan, create, and render 3-D spaces (among other things). These scenes can have a large amount of polygons that need to be rendered in real-time for customers to evaluate their creations in CET designer. 
 
 To allow larger scenes to be rendered with higher frame-rates (e.g. needed when exploring environments in \emph{Virtual Reality} (VR), to prevent motion sickness), it would be beneficial to reduce the amount of polygons as much as possible. The meshes in these scenes usually have textures applied to them, and it is therefore important to keep the quality as high as possible.
 
-While Configura already has a mesh simplification in their pipeline, it only accounts for surface simplifications, and does not take into account the texture appearance that might be degraded when applying mesh simplification. Hence, the given task was to integrate a new mesh simplification scheme that takes into account texture quality when simplifying a mesh.
+While Configura already has a mesh simplification algorithm in their pipeline, it only accounts for surface simplifications, and does not take into account the texture appearance that might be degraded when applying mesh simplification. Hence, the given task was to integrate a new mesh simplification algorithm that takes into account texture quality when simplifying a mesh.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%% intro.tex ends here
