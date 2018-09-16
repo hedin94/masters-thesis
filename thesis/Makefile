@@ -13,7 +13,7 @@ MKLATEX = latexmk
 #Options to latexmk, should need to be changed
 MKLATEXOPTS = -pdf -pdflatex="xelatex" -use-make -f
 
-all: $(PDFNAME).pdf $(PUBLISHNAME).pdf
+all: $(PDFNAME).pdf
 
 $(PDFNAME).pdf: $(TEXMAINFILE) *.tex
 	$(MKLATEX) $(MKLATEXOPTS) $<

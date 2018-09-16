@@ -43,7 +43,7 @@
 In this section, an explanation of how the mesh simplification scheme was implemented is given. Some problems that were encountered during the implementation is also presented as well as how they were solved.
 
 \subsection{Handling seams}
-To be able to apply a texture to a mesh, a mesh parameterization that maps vertices to texture coordinates is required. If the mesh is not homeomorphic to a disk, it is divided into parts which will introduce seams. Vertices along these seams is duplicated that enable us to have multiple texture coordinates. However, this is a problem during the simplification and will likely make the mesh tear in the seams as seen in \cref{fig:mesh_tear}. Welding duplicate vertices, i.e. only keeping one vertex, removes the seams and our tearing problem goes away. This, however, does not work good for textured meshes since we can no longer have discontinuities which results in the seam shown in \cref{fig:mesh_discontinuity}. Vertices that share the same attributes are safe to remove though.
+To be able to apply a texture to a mesh, a mesh parameterization that maps vertices to texture coordinates is required. If the mesh is not homeomorphic to a disk, it is divided into parts that will introduce seams. Vertices along these seams is duplicated that enable us to have multiple texture coordinates. However, this is a problem during the simplification and will likely make the mesh tear in the seams as seen in \cref{fig:mesh_tear}. Welding duplicate vertices, i.e. only keeping one vertex, removes the seams and our tearing problem goes away. This, however, does not work good for textured meshes since we can no longer have discontinuities which results in the seam shown in \cref{fig:mesh_discontinuity}. Vertices that share the same attributes are safe to remove though.
 
 \begin{figure}[ht]
   \centering
@@ -416,7 +416,7 @@ Since the volume of a mesh is affected by simplification a way to measure the vo
 
 
 \subsection{Execution Time} \label{sec:computation_time}
-A simple parallelization with OpenMP have been implemented with the goal of decreasing the computation time. In order to see how much the computation time is reduced it was measured for multiple runs of the simplification scheme using the office woman model. Measurements was made for the four LoD:s super, high, medium, and low 1, 2,...,8 number of threads was used.
+A simple parallelization with OpenMP have been implemented with the goal of decreasing the computation time. In order to see how much the computation time is reduced it was measured for multiple runs of the simplification scheme using the office woman model. Measurements was made for the four LoD:s super, high, medium, and low and for 1, 2,...,8 number of threads.
 
 To account for noise the measurements of the execution time is performed several times. From the collected data the mean \(\bar{x}\) and standard deviation \(s\) can be calculated. The 95\% confidence interval \([a, b]\) for the execution time can be found by the equations shown in \cref{sec:measuring_algorithmic_performance} using \(\alpha = 0.05\).
 
