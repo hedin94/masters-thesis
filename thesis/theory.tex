@@ -33,7 +33,7 @@
 
 \chapter{Theory} \label{ch:theory}
 In this chapter the theory of the thesis is presented.
-Since several mesh simplification algorithms are being considered, \cref{sec:related_work} gives a brief overview of the most notable schemes found in previous work. A more detailed explanation of the algorithms can be found through \cref{sec:appearance-preserving_simplification,sec:quadric-based_error_metric,sec:progressive_meshes}. \cref{sec:mesh_parameterization,sec:vertex_with_multiple_attributes} give a short description on mesh parameterization and how seams can be handled.
+Since several mesh simplification algorithms are being considered, \cref{sec:related_work} gives a brief overview of the most notable schemes found in previous work. A more detailed explanation of the algorithms can be found through \cref{sec:appearance-preserving_simplification,sec:quadric-based_error_metric,sec:progressive_meshes}. \cref{sec:mesh_parameterization,sec:vertex_with_multi_attributes} give a short description on mesh parameterization and how seams can be handled.
 
 Afterwards, in \cref{sec:metrics_for_appearance_preservation}, the different metrics that can be used to measure the appearance preservation after a simplification has been done is presented. This will later be used to evaluate the solution empirically by giving a concrete metric for the appearance deviation.
 
@@ -234,7 +234,7 @@ Given an arbitrary mesh, \emph{Sander et. al} \cite{sander2001texture} presents 
 %%% Mesh parameterization
 %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section{Mesh Parameterization} \label{sec:mesh_parametrization}
+\section{Mesh Parameterization} \label{sec:mesh_parameterization}
 In order to apply, for example, a texture to a mesh, each vertex is given a texture coordinate. This problem of finding a mapping between a surface (mesh) and a parameter domain (texture map) is called mesh parameterization. Given a triangular mesh Hormann et al. \cite{hormann2007mesh} refers to the mapping problem as mesh parameterization. According to Hormann et al. there exists a one-to-one mapping between two surfaces with similar topology. Thus, a surface that is homeomorphic to a disk can be mapped onto a plane, i.e. a texture. If a mesh is not homeomorphic to a disk it has to be split into parts which are homeomorphic to a disk. These parts can then be put onto the same plane and only one texture is needed.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
