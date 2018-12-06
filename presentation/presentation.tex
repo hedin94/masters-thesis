@@ -53,19 +53,19 @@
 % is a graphic format that can be processed by latex or pdflatex,
 % resp., then you can add a logo as follows:
 
-\pgfdeclareimage[height=0.5cm]{university-logo}{../figures/liu_primary_black_sv.pdf}
-\logo{\pgfuseimage{university-logo}}
+%\pgfdeclareimage[height=0.5cm]{university-logo}{../figures/liu_primary_black_sv.pdf}
+%\logo{\pgfuseimage{university-logo}}
 
 
 
 % Delete this, if you do not want the table of contents to pop up at
 % the beginning of each subsection:
-\AtBeginSubsection[]
-{
-  \begin{frame}<beamer>{Outline}
-    \tableofcontents[currentsection,currentsubsection]
-  \end{frame}
-}
+%\AtBeginSubsection[]
+%{
+%  \begin{frame}<beamer>{Outline}
+%    \tableofcontents[currentsection,currentsubsection]
+%  \end{frame}
+%}
 
 
 % If you wish to uncover everything in a step-wise fashion, uncomment
@@ -117,6 +117,7 @@
   \includegraphics[width=.7\linewidth]{mesh_transformations.eps}
 \end{frame}
 
+\iffalse
 \begin{frame}{Mesh Simplification Methods}
   \begin{itemize}
   \item Progressive meshes
@@ -124,7 +125,7 @@
   \item Appearance-preserving Simplification
   \end{itemize}
 \end{frame}
-
+\fi
 
 \section{Implementation}
 \subsection{Quadric Error Metric}
@@ -146,6 +147,7 @@
   \includegraphics[width=\linewidth]{qem.eps}
 \end{frame}
 
+\iffalse
 \begin{frame}{Calculating cost}
   Squared distance from point \(v\) to plane \(f\)
   \begin{equation*}
@@ -197,6 +199,7 @@
     \end{bmatrix}
   \end{equation*}
 \end{frame}
+\fi
 
 \begin{frame}{Overview of Algorithm}
   Initialization
@@ -215,6 +218,7 @@
   \end{enumerate}
 \end{frame}
 
+\iffalse
 \begin{frame}{Alternative Notation}
   \begin{columns}
     \begin{column}{.52\linewidth}
@@ -344,6 +348,7 @@
   \end{itemize}
   \includegraphics[width=.5\linewidth]{wedge.eps}
 \end{frame}
+\fi
 
 \subsection{Improving Texture Atlas}
 
@@ -395,6 +400,7 @@
   \end{center}
 \end{frame}
 
+\iffalse
 % pull filter
 \begin{frame}{Pull Phase}
   \begin{columns}
@@ -435,6 +441,7 @@
     \end{column}
     \end{columns}
 \end{frame}
+\fi
 
 \setlength\columnsep{0pt}
 
@@ -466,7 +473,7 @@
   %\includegraphics[width=.24\linewidth]{pullpush/push0.png}
 \end{frame}
 
-
+\iffalse
 \section{Evaluation}
 \begin{frame}{Outline}
   \tableofcontents[currentsection]
@@ -528,7 +535,7 @@
   \item Measured for 1 to 8 threads
   \end{itemize}
 \end{frame}
-
+\fi
 
 %%
 % Results
@@ -538,6 +545,7 @@
   \tableofcontents[currentsection]
 \end{frame}
 
+\iffalse
 % luminance
 \begin{frame}{Rms Luminance Error}
   \includegraphics[width=.9\linewidth]{Rdata/rms_luminance.eps}
@@ -566,6 +574,7 @@
 \begin{frame}{Execution Time}
   \includegraphics[width=.9\linewidth]{Rdata/parallel_execution_time.eps}
 \end{frame}
+\fi
 
 % texture repair
 \begin{frame}{Improving Texture}
